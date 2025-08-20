@@ -10,23 +10,265 @@
     <link href="https://fonts.googleapis.com/css2?family=Abril+Fatface&family=Bebas+Neue&family=Cormorant+Garamond:wght@400;700&family=Dancing+Script:wght@400;700&family=Fjalla+One&family=IBM+Plex+Sans:wght@400;700&family=Indie+Flower&family=Josefin+Sans:wght@400;700&family=Lobster&family=Lora:wght@400;700&family=Merriweather:wght@400;700&family=Montserrat:wght@400;700&family=Oswald:wght@400;700&family=Pacifico&family=Permanent+Marker&family=Playfair+Display:wght@400;700&family=Poppins:wght@400;700&family=Quicksand:wght@400;700&family=Raleway:wght@400;400&family=Satisfy&family=Source+Sans+Pro:wght@400;700&family=Spectral:wght@400;700&family=Ubuntu:wght@400;700&family=Varela+Round&display=swap" rel="stylesheet">
     <style>
         /* Estilos para o chat */
-        /* ... Seu CSS completo aqui ... */
+        .chat-container {
+            width: 540px;
+            height: 430px;
+            margin: 0 auto;
+            border-radius: 15px;
+            overflow: hidden;
+            position: relative;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            background-image: url('https://i.imgur.com/qkWxt2w.png');
+            background-size: auto 100%;
+            background-position: left center;
+            border: 3px solid #0000ff;
+            animation: neon-border 3s infinite alternate;
+            display: flex;
+            flex-direction: column;
+            box-sizing: border-box;
+        }
+        @keyframes background-pan {
+            0% { background-position: left center; }
+            100% { background-position: right center; }
+        }
+        .chat-container.background-animated {
+            animation: neon-border 3s infinite alternate, background-pan 30s infinite linear alternate;
+        }
+        @keyframes neon-border {
+            0%   { border-color: #0000ff; }
+            33%  { border-color: #8A2BE2; }
+            66%  { border-color: #FF69B4; }
+            100% { border-color: #0000ff; }
+        }
+        .chat-box {
+            flex-grow: 1;
+            padding: 5px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            color: white;
+            text-shadow: 1px 1px 2px #000;
+        }
+        .chat-box p {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(5px);
+            padding: 3px 8px;
+            border-radius: 5px;
+            margin: 2px 0;
+            line-height: 1.2;
+        }
+        .chat-box p:first-child {
+            margin-top: auto;
+        }
+        .chat-input-area {
+            padding: 5px;
+            background: rgba(0, 0, 0, 0.7);
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+        .chat-button-group {
+            display: flex;
+            margin-top: 5px;
+            align-items: center;
+            gap: 5px;
+        }
+        .chat-input {
+            padding: 6px;
+            border: none;
+            border-radius: 5px;
+            width: 100px;
+            font-size: 0.9em;
+        }
+        #message-input {
+            flex-grow: 1;
+            margin-left: 0;
+            margin-right: 0;
+        }
+        .chat-button, .users-list-button, .emoji-button {
+            padding: 6px 10px;
+            font-size: 0.9em;
+        }
+        .users-list-panel, .emoji-panel {
+            display: none;
+            position: absolute;
+            top: 40px;
+            right: 5px;
+            width: 200px;
+            background: rgba(0, 0, 0, 0.8);
+            border-radius: 10px;
+            padding: 10px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+            z-index: 200;
+            color: white;
+            font-family: Arial, sans-serif;
+            flex-direction: column;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .settings-panel {
+            display: none;
+            position: absolute;
+            top: 40px;
+            right: 5px;
+            width: 200px;
+            background: rgba(0, 0, 0, 0.8);
+            border-radius: 10px;
+            padding: 10px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+            z-index: 200;
+            color: white;
+            font-family: Arial, sans-serif;
+            flex-direction: column;
+        }
+        .settings-panel h6 {
+            margin-top: 0;
+            margin-bottom: 8px;
+            border-bottom: 1px solid #444;
+            padding-bottom: 3px;
+            font-size: 0.9em;
+        }
+        .settings-panel .setting-row {
+            margin-bottom: 10px;
+        }
+        .settings-panel .setting-row .setting-label {
+            display: block;
+            margin-bottom: 3px;
+            font-size: 0.8em;
+        }
+        .settings-panel .toolbar-buttons button,
+        .status-icons button {
+            width: 30px;
+            height: 30px;
+            font-size: 1em;
+            padding: 0;
+        }
+        .settings-panel .setting-row input[type="color"] {
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            width: 30px;
+            height: 30px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            cursor: pointer;
+            background-color: transparent;
+        }
+        .settings-panel .setting-row input[type="color"]::-webkit-color-swatch-wrapper {
+            padding: 0;
+        }
+        .settings-panel .setting-row input[type="color"]::-webkit-color-swatch {
+            border: none;
+            border-radius: 4px;
+        }
+        .settings-panel .setting-row input[type="color"]::-moz-color-swatch {
+            border: none;
+            border-radius: 4px;
+        }
+        .settings-button {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            width: 25px;
+            height: 25px;
+            background-color: #333;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            z-index: 150;
+            font-size: 1em;
+            border: 2px solid white;
+        }
+        .status-icons {
+            gap: 5px;
+        }
+        .font-select-container {
+            max-height: 100px !important;
+        }
+        .close-btn {
+            position: absolute;
+            top: 5px;
+            right: 10px;
+            font-size: 1.5em;
+            cursor: pointer;
+            color: #fff;
+        }
+        .status-indicator {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            margin-right: 5px;
+        }
+        .status-indicator.online { background-color: #28a745; }
+        .status-indicator.busy { background-color: #dc3545; }
+        .status-indicator.away { background-color: #6c757d; }
+        .emoji-panel {
+            padding: 0;
+            display: none;
+        }
+        .emoji-tabs {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-around;
+            padding: 5px 0;
+            background: rgba(0, 0, 0, 0.7);
+            border-bottom: 1px solid #444;
+        }
+        .emoji-tabs button {
+            background: none;
+            border: none;
+            font-size: 1.2em;
+            cursor: pointer;
+            padding: 5px;
+            color: #aaa;
+            transition: color 0.2s;
+        }
+        .emoji-tabs button.active {
+            color: #fff;
+            border-bottom: 2px solid #fff;
+        }
+        .emoji-category {
+            display: none;
+            flex-wrap: wrap;
+            padding: 10px;
+            gap: 8px;
+            max-height: 250px;
+            overflow-y: auto;
+        }
+        .emoji-category.active {
+            display: flex;
+        }
+        .emoji-category button {
+            background: none;
+            border: none;
+            font-size: 1.5em;
+            cursor: pointer;
+            padding: 2px;
+            line-height: 1;
+            color: white;
+        }
+        .emoji-category button:hover {
+            transform: scale(1.2);
+            transition: transform 0.2s ease;
+        }
     </style>
 </head>
 <body>
-
 <div class="chat-container">
     <div class="settings-button" onclick="toggleSettingsPanel()">⚙️</div>
     <div class="chat-box" id="chat-messages">
     </div>
-    
     <div id="users-list-panel" class="users-list-panel">
         <span class="close-btn" onclick="toggleUsersList()">×</span>
         <h6>Online</h6>
         <ul id="users-list">
         </ul>
     </div>
-    
     <div id="emoji-panel" class="emoji-panel">
         <div class="emoji-tabs">
             <button onclick="showEmojiCategory('smileys')" class="active">😀</button>
@@ -44,7 +286,6 @@
             <button onclick="showEmojiCategory('esportes')">🏀</button>
             <button onclick="showEmojiCategory('profissoes')">👨‍🚀</button>
         </div>
-        
         <div id="smileys" class="emoji-category active"></div>
         <div id="people" class="emoji-category"></div>
         <div id="animals" class="emoji-category"></div>
@@ -60,7 +301,6 @@
         <div id="esportes" class="emoji-category"></div>
         <div id="profissoes" class="emoji-category"></div>
     </div>
-    
     <div id="settings-panel" class="settings-panel">
         <span class="close-btn" onclick="toggleSettingsPanel()">×</span>
         <h6>Configurações de Tema</h6>
@@ -144,7 +384,7 @@
     let currentTextColor = '#FFFFFF';
     let isBackgroundActive = true;
     let isTextShadowActive = true;
-    
+
     // Objeto com os emojis organizados por categoria
     const emojiCategories = {
         smileys: [
@@ -187,4 +427,249 @@
             '⚽', '🏀', '🏈', '⚾', '🥎', '🎾', '🏐', '🏉', '🏓', '🏸', '🏒', '🏑', '🏏', '🥍', '🪃', '🥅', '⛳', '🎯', '🥌', '🛷', '⛸️', '🎿', '🏂', '🪂', '🛹', '🛼', '🤿', '🎽', '🎽', '🏅', '🥇', '🥈', '🥉', '🏆', '🏆', '🎉', '🎊', '🎇', '🎆', '🎁', '🎀', '🎈', '🎊'
         ],
         profissoes: [
-            '🧑‍💼',
+            '🧑‍💼', '👨‍💼', '👩‍💼', '🧑‍⚖️', '👨‍⚖️', '👩‍⚖️', '🧑‍⚕️', '👨‍⚕️', '👩‍⚕️', '🧑‍🎓', '👨‍🎓', '👩‍🎓', '🧑‍🏫', '👨‍🏫', '👩‍🏫', '🧑‍🌾', '👨‍🌾', '👩‍🌾', '🧑‍🍳', '👨‍🍳', '👩‍🍳', '🧑‍🔧', '👨‍🔧', '👩‍🔧', '🧑‍🏭', '👨‍🏭', '👩‍🏭', '🧑‍💻', '👨‍💻', '👩‍💻', '🧑‍🎤', '👨‍🎤', '👩‍🎤', '🧑‍🎨', '👨‍🎨', '👩‍🎨', '🧑‍🚀', '👨‍🚀', '👩‍🚀', '🧑‍🚒', '👨‍🚒', '👩‍🚒', '👮', '🕵️', '💂', '👷', '🧑‍✈️', '👨‍✈️', '👩‍✈️'
+        ]
+    };
+    
+    document.getElementById('username-input').addEventListener('keydown', function(event) {
+        if (event.key === 'Enter') {
+            const username = this.value.trim();
+            if (username) {
+                currentUser = username;
+                this.disabled = true;
+                document.getElementById('message-input').disabled = false;
+                document.getElementById('send-button').disabled = false;
+                document.getElementById('message-input').focus();
+                
+                // Envia o nome e cor do usuário para o servidor ao conectar
+                socket.emit('user connected', {
+                    name: currentUser,
+                    color: currentUsernameColor,
+                    status: 'online'
+                });
+            }
+        }
+    });
+
+    document.getElementById('message-input').addEventListener('keydown', function(event) {
+        if (event.key === 'Enter') {
+            sendMessageOnline();
+        }
+    });
+
+    document.getElementById('send-button').addEventListener('click', () => {
+        sendMessageOnline();
+    });
+
+    document.getElementById('username-color').addEventListener('input', function() {
+        currentUsernameColor = this.value;
+        updateUserNameColor(currentUser, currentUsernameColor);
+    });
+
+    document.getElementById('text-color').addEventListener('input', function() {
+        currentTextColor = this.value;
+    });
+
+    function addUserToList(username, color, status) {
+        const userList = document.getElementById('users-list');
+        const newUser = document.createElement('li');
+        newUser.id = `user-${username}`;
+        newUser.innerHTML = `<span class="status-indicator ${status}"></span><span class="chat-user-name" style="color:${color}">${username}</span>`;
+        userList.appendChild(newUser);
+    }
+
+    function updateUserNameColor(username, color) {
+        const userItem = document.getElementById(`user-${username}`);
+        if (userItem) {
+            userItem.querySelector('.chat-user-name').style.color = color;
+        }
+    }
+
+    function setStatus(status) {
+        const userItem = document.getElementById(`user-${currentUser}`);
+        if (userItem) {
+            const indicator = userItem.querySelector('.status-indicator');
+            indicator.classList.remove('online', 'busy', 'away');
+            indicator.classList.add(status);
+        }
+    }
+
+    function toggleTextShadow() {
+        isTextShadowActive = !isTextShadowActive;
+        const chatBox = document.getElementById('chat-messages');
+        const button = document.getElementById('shadow-toggle-button');
+        if (isTextShadowActive) {
+            chatBox.classList.remove('no-shadow');
+            button.textContent = 'S';
+        } else {
+            chatBox.classList.add('no-shadow');
+            button.textContent = 'S';
+        }
+    }
+
+    function toggleSettingsPanel() {
+        const panel = document.getElementById('settings-panel');
+        panel.style.display = panel.style.display === 'flex' ? 'none' : 'flex';
+    }
+
+    function toggleBackground() {
+        const container = document.querySelector('.chat-container');
+        const button = document.getElementById('background-toggle-btn');
+        isBackgroundActive = !isBackgroundActive;
+
+        if (isBackgroundActive) {
+            container.style.backgroundImage = `url('https://i.imgur.com/qkWxt2w.png')`;
+            container.classList.add('background-animated');
+            button.textContent = 'Desativar Fundo';
+        } else {
+            container.style.backgroundImage = 'none';
+            container.style.backgroundColor = '#222';
+            container.classList.remove('background-animated');
+            button.textContent = 'Ativar Fundo';
+        }
+    }
+
+    function formatText(command) {
+        const input = document.getElementById('message-input');
+        const start = input.selectionStart;
+        const end = input.selectionEnd;
+        const selectedText = input.value.substring(start, end);
+        let newText = selectedText;
+
+        if (!selectedText) return;
+
+        switch (command) {
+            case 'bold':
+                newText = `<b>${selectedText}</b>`;
+                break;
+            case 'italic':
+                newText = `<i>${selectedText}</i>`;
+                break;
+            case 'underline':
+                newText = `<u>${selectedText}</u>`;
+                break;
+            case 'strike':
+                newText = `<s>${selectedText}</s>`;
+                break;
+        }
+        
+        input.value = input.value.slice(0, start) + newText + input.value.slice(end);
+    }
+    
+    function insertEmoji(emoji) {
+        const messageInput = document.getElementById('message-input');
+        const cursorPosition = messageInput.selectionStart;
+        const currentValue = messageInput.value;
+        messageInput.value = currentValue.slice(0, cursorPosition) + emoji + currentValue.slice(cursorPosition);
+        messageInput.focus();
+    }
+    
+    function toggleEmojiPanel() {
+        const emojiPanel = document.getElementById('emoji-panel');
+        emojiPanel.style.display = emojiPanel.style.display === 'flex' ? 'none' : 'flex';
+    }
+
+    function toggleUsersList() {
+        const usersListPanel = document.getElementById('users-list-panel');
+        usersListPanel.style.display = usersListPanel.style.display === 'flex' ? 'none' : 'flex';
+    }
+
+    function renderEmojis(categoryName) {
+        const container = document.getElementById(categoryName);
+        if (container.children.length === 0) {
+            const emojis = emojiCategories[categoryName];
+            let buttonsHtml = '';
+            const triplicatedEmojis = emojis.concat(emojis, emojis);
+            
+            triplicatedEmojis.forEach(emoji => {
+                buttonsHtml += `<button onclick="insertEmoji('${emoji}')">${emoji}</button>`;
+            });
+            container.innerHTML = buttonsHtml;
+        }
+    }
+
+    function showEmojiCategory(category) {
+        document.querySelectorAll('.emoji-category').forEach(el => el.classList.remove('active'));
+        document.querySelectorAll('.emoji-tabs button').forEach(el => el.classList.remove('active'));
+
+        document.getElementById(category).classList.add('active');
+        document.querySelector(`.emoji-tabs button[onclick="showEmojiCategory('${category}')"]`).classList.add('active');
+        
+        renderEmojis(category);
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        showEmojiCategory('smileys');
+    });
+
+    const socket = io();
+    const messageInput = document.getElementById('message-input');
+    const chatMessages = document.getElementById('chat-messages');
+
+    document.getElementById('send-button').addEventListener('click', () => {
+        sendMessageOnline();
+    });
+
+    messageInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+            sendMessageOnline();
+        }
+    });
+
+    // Adiciona o novo evento para receber a lista de usuários
+    socket.on('user list update', (users) => {
+        const userList = document.getElementById('users-list');
+        userList.innerHTML = ''; // Limpa a lista antes de atualizar
+        users.forEach(user => {
+            const newUser = document.createElement('li');
+            newUser.id = `user-${user.name}`;
+            newUser.innerHTML = `<span class="status-indicator ${user.status}"></span><span class="chat-user-name" style="color:${user.color}">${user.name}</span>`;
+            userList.appendChild(newUser);
+        });
+    });
+
+    function sendMessageOnline() {
+        const message = messageInput.value.trim();
+        const username = document.getElementById('username-input').value.trim();
+        const usernameColor = document.getElementById('username-color').value;
+        const textColor = document.getElementById('text-color').value;
+        const fontFamily = document.getElementById('font-select').value;
+        const isShadowActive = isTextShadowActive;
+
+        if (message && username) {
+            const formattedMessage = {
+                username,
+                message,
+                usernameColor,
+                textColor,
+                fontFamily,
+                isShadowActive
+            };
+            socket.emit('chat message', formattedMessage);
+            messageInput.value = '';
+        }
+    }
+
+    socket.on('chat message', (msg) => {
+        const newMessage = document.createElement('p');
+        
+        let usernameStyle = `color:${msg.usernameColor};`;
+        let messageStyle = `color:${msg.textColor}; font-family: ${msg.fontFamily};`;
+        
+        if (msg.isShadowActive) {
+            usernameStyle += ` text-shadow: 0 0 5px ${msg.usernameColor};`;
+            messageStyle += ` text-shadow: 0 0 5px ${msg.textColor};`;
+        }
+
+        const usernameSpan = `<b style="${usernameStyle}">${msg.username}:</b>`;
+        const messageSpan = `<span style="${messageStyle}">${msg.message}</span>`;
+        newMessage.innerHTML = `${usernameSpan} ${messageSpan}`;
+        
+        chatMessages.appendChild(newMessage);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+    });
+
+</script>
+
+</body>
+</html>
