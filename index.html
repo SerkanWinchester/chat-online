@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat Perfeito</title>
+    <script src="/socket.io/socket.io.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Abril+Fatface&family=Bebas+Neue&family=Cormorant+Garamond:wght@400;700&family=Dancing+Script:wght@400;700&family=Fjalla+One&family=IBM+Plex+Sans:wght@400;700&family=Indie+Flower&family=Josefin+Sans:wght@400;700&family=Lobster&family=Lora:wght@400;700&family=Merriweather:wght@400;700&family=Montserrat:wght@400;700&family=Oswald:wght@400;700&family=Pacifico&family=Permanent+Marker&family=Playfair+Display:wght@400;700&family=Poppins:wght@400;700&family=Quicksand:wght@400;700&family=Raleway:wght@400;400&family=Satisfy&family=Source+Sans+Pro:wght@400;700&family=Spectral:wght@400;700&family=Ubuntu:wght@400;700&family=Varela+Round&display=swap" rel="stylesheet">
+    <style>
+        /* Estilos para o chat */
+        /* ... Seu CSS completo aqui ... */
+    </style>
+</head>
+<body>
+
+<div class="chat-container">
+    <div class="settings-button" onclick="toggleSettingsPanel()">⚙️</div>
+    <div class="chat-box" id="chat-messages">
+    </div>
+    
+    <div id="users-list-panel" class="users-list-panel">
+        <span class="close-btn" onclick="toggleUsersList()">×</span>
+        <h6>Online</h6>
+        <ul id="users-list">
+        </ul>
+    </div>
+    
+    <div id="emoji-panel" class="emoji-panel">
+        <div class="emoji-tabs">
+            <button onclick="showEmojiCategory('smileys')" class="active">😀</button>
+            <button onclick="showEmojiCategory('people')">🧑</button>
+            <button onclick="showEmojiCategory('animals')">🐶</button>
+            <button onclick="showEmojiCategory('food')">🍔</button>
+            <button onclick="showEmojiCategory('travel')">✈️</button>
+            <button onclick="showEmojiCategory('activity')">⚽</button>
+            <button onclick="showEmojiCategory('objects')">💡</button>
+            <button onclick="showEmojiCategory('symbols')">❤️</button>
+            <button onclick="showEmojiCategory('flags')">🏁</button>
+            <button onclick="showEmojiCategory('transportes')">🚆</button>
+            <button onclick="showEmojiCategory('tecnologia')">📱</button>
+            <button onclick="showEmojiCategory('saude')">💉</button>
+            <button onclick="showEmojiCategory('esportes')">🏀</button>
+            <button onclick="showEmojiCategory('profissoes')">👨‍🚀</button>
+        </div>
+        
+        <div id="smileys" class="emoji-category active"></div>
+        <div id="people" class="emoji-category"></div>
+        <div id="animals" class="emoji-category"></div>
+        <div id="food" class="emoji-category"></div>
+        <div id="travel" class="emoji-category"></div>
+        <div id="activity" class="emoji-category"></div>
+        <div id="objects" class="emoji-category"></div>
+        <div id="symbols" class="emoji-category"></div>
+        <div id="flags" class="emoji-category"></div>
+        <div id="transportes" class="emoji-category"></div>
+        <div id="tecnologia" class="emoji-category"></div>
+        <div id="saude" class="emoji-category"></div>
+        <div id="esportes" class="emoji-category"></div>
+        <div id="profissoes" class="emoji-category"></div>
+    </div>
+    
+    <div id="settings-panel" class="settings-panel">
+        <span class="close-btn" onclick="toggleSettingsPanel()">×</span>
+        <h6>Configurações de Tema</h6>
+        <div class="setting-row">
+            <label for="username-color">Cor do seu nome:</label>
+            <input type="color" id="username-color" value="#FFFFFF" />
+        </div>
+        <div class="setting-row">
+            <label for="text-color">Cor da sua mensagem:</label>
+            <input type="color" id="text-color" value="#FFFFFF" />
+        </div>
+        <div class="setting-row">
+            <div class="setting-label">Ferramentas de Texto</div>
+            <div class="toolbar-buttons">
+                <button onclick="formatText('bold')" title="Negrito"><b>B</b></button>
+                <button onclick="formatText('italic')" title="Itálico"><i>I</i></button>
+                <button onclick="formatText('underline')" title="Sublinhado"><u>U</u></button>
+                <button onclick="formatText('strike')" title="Riscado"><s>S</s></button>
+                <button onclick="toggleTextShadow()" id="shadow-toggle-button" title="Ativar/Desativar Sombra">S</button>
+            </div>
+        </div>
+        <div class="setting-row">
+            <div class="setting-label">Fonte:</div>
+            <div class="font-select-container">
+                <select id="font-select" onchange="changeFont()" size="5">
+                    <option value="Arial">Arial</option>
+                    <option value="Roboto">Roboto</option>
+                    <option value="'Permanent Marker'">Permanent Marker</option>
+                    <option value="Pacifico">Pacifico</option>
+                    <option value="'Fjalla One'">Fjalla One</option>
+                    <option value="Lobster">Lobster</option>
+                    <option value="'Dancing Script'">Dancing Script</option>
+                    <option value="Oswald">Oswald</option>
+                    <option value="'Bebas Neue'">Bebas Neue</option>
+                    <option value="Merriweather">Merriweather</option>
+                    <option value="'Playfair Display'">Playfair Display</option>
+                    <option value="'Abril Fatface'">Abril Fatface</option>
+                    <option value="'Cormorant Garamond'">Cormorant Garamond</option>
+                    <option value="'IBM Plex Sans'">IBM Plex Sans</option>
+                    <option value="'Indie Flower'">Indie Flower</option>
+                    <option value="'Josefin+Sans'">Josefin Sans</option>
+                    <option value="Lora">Lora</option>
+                    <option value="Montserrat">Montserrat</option>
+                    <option value="Poppins">Poppins</option>
+                    <option value="Quicksand">Quicksand</option>
+                    <option value="Raleway">Raleway</option>
+                    <option value="Satisfy">Satisfy</option>
+                    <option value="'Source Sans Pro'">Source Sans Pro</option>
+                    <option value="Spectral">Spectral</option>
+                    <option value="Ubuntu">Ubuntu</option>
+                    <option value="'Varela Round'">Varela Round</option>
+                </select>
+            </div>
+        </div>
+        <div class="setting-row">
+            <span class="setting-label">Seu Status:</span>
+            <div class="status-icons">
+                <button onclick="setStatus('online')" title="Presente">🟢</button>
+                <button onclick="setStatus('busy')" title="Ocupado">🔴</button>
+                <button onclick="setStatus('away')" title="Ausente">⚪</button>
+            </div>
+        </div>
+        <div class="setting-row">
+            <button onclick="toggleBackground()" id="background-toggle-btn">Desativar Fundo</button>
+        </div>
+    </div>
+    <div class="chat-input-area">
+        <div class="chat-button-group">
+            <input type="text" id="username-input" class="chat-input" placeholder="Seu nome..." />
+            <input type="text" id="message-input" class="chat-input" placeholder="Sua mensagem..." disabled />
+            <button id="send-button" class="chat-button" disabled>💬</button>
+            <button id="users-list-button" class="users-list-button" onclick="toggleUsersList()">👥</button>
+            <button id="emoji-button" class="emoji-button" onclick="toggleEmojiPanel()">😊</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    let currentUser = '';
+    let currentUsernameColor = '#FFFFFF';
+    let currentTextColor = '#FFFFFF';
+    let isBackgroundActive = true;
+    let isTextShadowActive = true;
+    
+    // Objeto com os emojis organizados por categoria
+    const emojiCategories = {
+        smileys: [
+            '😀', '😁', '😂', '🤣', '😃', '😄', '😅', '😆', '😇', '😉', '😊', '😋', '😌', '😍', '🥰', '😘', '😗', '😙', '😚', '🤗', '🤩', '🤔', '🤨', '😐', '😑', '😶', '😏', '😒', '🙄', '😬', '🤥', '😌', '😔', '😪', '🤤', '😴', '😷', '🤒', '🤕', '🤢', '🤮', '🤧', '🥵', '🥶', '😵', '🤯', '🤠', '🥳', '😎', '🤓', '🧐', '😕', '😟', '🙁', '😮', '😯', '😲', '😳', '🥺', '😭', '😢', '😥', '😨', '😱', '😫', '😩', '😤', '😡', '😠', '😈', '👹', '👺', '🤡', '👻', '💀', '☠️', '💩', '👽', '👾', '🤖'
+        ],
+        people: [
+            '🧑', '👧', '👦', '👨', '👩', '👴', '👵', '👶', '👼', '🤴', '👸', '🤵', '👰', '🦸', '🦹', '🧑‍⚕️', '🧑‍🎓', '🧑‍🏫', '🧑‍⚖️', '🧑‍🌾', '🧑‍🍳', '🧑‍🔧', '🧑‍🏭', '🧑‍💻', '🧑‍💼', '🧑‍🔬', '🧑‍🎨', '🧑‍🚒', '🧑‍✈️', '🧑‍🚀', '👮', '🕵️', '💂', '👷', '🧑‍🎤', '🧘', '💃', '🕺', '👯', '🧑‍🤝‍🧑', '🫂', '🚶', '🏃', '🧍', '🧎', '🤾', '🚴', '🤸', '⛹️', '🤼'
+        ],
+        animals: [
+            '🐶', '🐱', '🐭', '🐹', '🐰', '🐻', '🐼', '🐨', '🐯', '🦁', '🐮', '🐷', '🐸', '🐒', '🦍', '🐔', '🐧', '🦅', '🦉', '🦋', '🐛', '🐝', '🐞', '🐠', '🐬', '🐳', '🦈', '🐊', '🐉', '🦕', '🦖', '🐎', '🦓', '🦒', '🐘', '🦏', '🐪', '🐫', '🐖', '🐏', '🐑', '🐐', '🦌', '🐈‍⬛', '🦢', '🦔', '🐿️', '🐇'
+        ],
+        food: [
+            '🍎', '🍏', '🍐', '🍊', '🍋', '🍌', '🍉', '🍇', '🍓', '🍒', '🍑', '🥭', '🍍', '🥥', '🥝', '🍅', '🍆', '🥑', '🥦', '🥬', '🥒', '🌽', '🥕', '🥔', '🌶️', '🍄', '🥜', '🌰', '🍞', '🥐', '🥖', '🥨', '🥞', '🧇', '🧀', '🍗', '🍖', '🍔', '🍟', '🍕', '🌭', '🌮', '🌯', '🥙', '🧆', '🥚', '🍳', '🥓', '🥩', '🍝', '🍜', '🍲', '🍛', '🍣', '🍤', '🍙', '🍚', '🍘', '🍥', '🍡', '🍢', '🍧', '🍨', '🍦', '🥧', '🍰', '🎂', '🍮', '🍭', '🍬', '🍫', '🍩', '🍪', '☕', '🍵', '🧉', '🧋', '🥛', '🥤', '🍶', '🍺', '🍻', '🥂', '🍷', '🥃', '🍸', '🍹', '🍾', '🧂', '🥣', '🥢', '🥄'
+        ],
+        travel: [
+            '🚗', '🚕', '🚌', '🚎', '🏎️', '🚓', '🚑', '🚒', '🚐', '🛻', '🚛', '🚜', '🛵', '🏍️', '🚲', '🛴', '🚄', '🚅', '🚂', '🚆', '🚇', '🚈', '🚉', '🚊', '🚁', '✈️', '🚀', '🛸', '⛵', '🛳️', '🛥️', '🚢', '⚓', '🗺️', '🧭', '🌉', '🌃', '🏙️', '🌆', '🌇', '🏠', '🏡', '🏢', '🏣', '🏤', '🏥', '🏦', '🏨', '🏫', '🏪', '🏭', '🏰', '🏯', '🏟️', '🗽', '🗼', '🗻', '🌄', '🌅', '🏜️', '🏞️', '🛤️', '🛣️', '🗺️', '🌐'
+        ],
+        activity: [
+            '⚽', '🏀', '🏈', '⚾', '🥎', '🎾', '🏐', '🏉', '🏓', '🏸', '🏒', '🏑', '🏏', '🥍', '🪃', '🥅', '⛳', '🎯', '🎳', '🎱', '🥊', '🥋', '🛹', '🛼', '🤿', '🏄‍♂️', '🏊‍♀️', '🤽', '🚣', '🤸', '🏋️', '🧘', '🏇', '🏆', '🥇', '🥈', '🥉', '🏅', '🎖️', '🎗️', '🎫', '🎟️', '🎭', '🎨', '🎬', '🎤', '🎧', '🥁', '🎷', '🎺', '🎸', '🎻', '🎲', '🧩', '🎮', '🕹️', '🎰', '🪁'
+        ],
+        objects: [
+            '⌚', '📱', '💻', '🖥️', '⌨️', '🖨️', '🖱️', '🔋', '🔌', '💡', '🔦', '☎️', '📞', '📠', '💾', '💿', '📀', '🧮', '💻', '📱', '📱', '☎️', '📞', '📠', '🔋', '🔌', '💡', '🔦', '🔗', '🔒', '🔓', '🔑', '🗝️', '🔪', '🗡️', '🔫', '💣', '🛡️', '⚔️', '🏹', '🔧', '🔨', '⛏️', '🪓', '🧱', '🧱', '🔩', '⚙️', '⚖️', '⛓️', '🪚', '🛠️'
+        ],
+        symbols: [
+            '❤️', '🧡', '💛', '💚', '💙', '💜', '🤎', '🖤', '🤍', '💔', '❣️', '💕', '💞', '💓', '💗', '💖', '💘', '💝', '🧡', '💛', '💚', '💙', '💜', '🖤', '🤍', '🤎', '💯', '✔️', '✅', '❌', '❎', '❓', '❔', '❕', '❗', '⁉️', '➕', '➖', '✖️', '➗', '♾️', '⭐', '✨', '🌟', '💫', '💥', '🔥', '🌈', '☀️', '🌕', '⚡', '💧', '🌊', '💨', '🌪️', '🌀'
+        ],
+        flags: [
+            '🇧🇷', '🇺🇸', '🇯🇵', '🇨🇦', '🇨🇳', '🇫🇷', '🇩🇪', '🇮🇳', '🇮🇹', '🇲🇽', '🇷🇺', '🇪🇸', '🇬🇧', '🇦🇺', '🇦🇷', '🇧🇪', '🇨🇱', '🇨🇴', '🇨🇺', '🇪🇬', '🇬🇷', '🇭🇰', '🇮🇩', '🇮🇪', '🇮🇱', '🇰🇷', '🇳🇱', '🇳🇴', '🇵🇹', '🇸🇦', '🇸🇪', '🇹🇭', '🇹🇷', '🇻🇳', '🇿🇦', '🇰🇷', '🇲🇽', '🇦🇪', '🇦🇺', '🇦🇹', '🇧🇪', '🇨🇭', '🇨🇿', '🇩🇰', '🇫🇮'
+        ],
+        transportes: [
+            '🚗', '🚕', '🚌', '🚎', '🏎️', '🚓', '🚑', '🚒', '🚐', '🛻', '🚛', '🚜', '🛵', '🏍️', '🚲', '🛴', '🦼', '🦽', '🛺', '🚂', '🚆', '🚇', '🚈', '🚉', '🚊', '🚝', '🚋', '🚟', '🚠', '🚡', '🚃', '🚄', '🚅', '✈️', '🛫', '🛬', '💺', '🚀', '🛸', '🛰️', '🚁', '🛶', '⛵', '🚤', '🛥️', '🛳️', '⛴️', '🚢', '⚓', '⛽'
+        ],
+        tecnologia: [
+            '📱', '💻', '🖥️', '⌨️', '🖱️', '🖲️', '🖨️', '📠', '🔌', '🔋', '🪫', '💡', '🔦', '⏰', '🕰️', '📺', '📻', '🎙️', '🎚️', '🎛️', '🎤', '🎧', '🎼', '🎵', '🎶', '📽️', '🎬', '🎥', '📹', '📷', '📸', '📟', '📞', '☎️', '📲', '💻', '🖥️', '🖨️', '⌨️', '🖱️', '🖲️', '🔦', '💡', '🔋', '🪫', '🔌', '📡'
+        ],
+        saude: [
+            '💉', '💊', '🩹', '🩺', '🔬', '🧪', '🧬', '🩸', '🌡️', '🩻', '🩼', '🩻', '🩼', '🩹', '🩺', '🔬', '🧪', '🧬', '🩸', '🌡️', '🩻', '🩼', '🧑‍⚕️', '👩‍⚕️', '👨‍⚕️', '🤒', '🤕', '😷', '🤧', '🧠', '🫀', '🫁', '🦷', '🦴', '👀', '👅', '👂', '👃', '🦶', '🦵', '💪', '🦾'
+        ],
+        esportes: [
+            '⚽', '🏀', '🏈', '⚾', '🥎', '🎾', '🏐', '🏉', '🏓', '🏸', '🏒', '🏑', '🏏', '🥍', '🪃', '🥅', '⛳', '🎯', '🥌', '🛷', '⛸️', '🎿', '🏂', '🪂', '🛹', '🛼', '🤿', '🎽', '🎽', '🏅', '🥇', '🥈', '🥉', '🏆', '🏆', '🎉', '🎊', '🎇', '🎆', '🎁', '🎀', '🎈', '🎊'
+        ],
+        profissoes: [
+            '🧑‍💼',
