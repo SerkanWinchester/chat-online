@@ -1,501 +1,425 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Chat Perfeito — Cyber</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chat Neon V.2.1</title>
 
-  <!-- Emoji picker com milhares de emojis -->
-  <script type="module" src="https://cdn.jsdelivr.net/npm/emoji-picker-element@^1/index.js"></script>
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Roboto&family=Montserrat&family=Open+Sans&family=Lato&family=Oswald&family=Raleway&family=PT+Sans&family=Roboto+Mono&family=Ubuntu&family=Playfair+Display&family=Indie+Flower&family=Pacifico&family=Exo+2&family=Anton&family=Comfortaa&family=Karla&family=Poppins&family=Nunito&family=Fira+Sans&family=Arimo&family=Acme&family=Baloo+2&family=Cairo&family=Dancing+Script&family=Fredoka+One&family=Hind&family=Inconsolata&family=Josefin+Sans&family=Kaushan+Script&family=Lobster&family=Merriweather&family=Oxygen&family=Quicksand&family=Roboto+Slab&family=Shadows+Into+Light&family=Source+Sans+Pro&family=Titillium+Web&family=Varela+Round&family=Work+Sans&family=Zilla+Slab&display=swap" rel="stylesheet">
 
-  <style>
-    :root {
-      --bg:#0d0d14;
-      --panel:#0f0f18;
-      --panel2:#141422;
-      --chip:#1f1f32;
-      --text:#eaeaff;
-      --brand1:#00f; /* azul */
-      --brand2:#9b4dff; /* roxo */
-      --brand3:#ff3dbb; /* pink */
-    }
-    * { box-sizing: border-box; }
-    html, body { height:100%; }
-    body {
-      margin:0; background:var(--bg) fixed center/cover;
-      color:var(--text); font-family: Inter, Arial, system-ui, sans-serif;
-    }
-
-    /* Neon gradient border + brilho */
-    .neon {
-      border: 3px solid transparent;
-      border-radius: 16px;
-      background:
-        linear-gradient(var(--panel2), var(--panel2)) padding-box,
-        linear-gradient(135deg, var(--brand1), var(--brand2), var(--brand3)) border-box;
-      box-shadow:
-        0 0 12px rgba(0,0,255,.45),
-        0 0 18px rgba(155,77,255,.35),
-        0 0 26px rgba(255,61,187,.25);
-      animation: pulseGlow 6s ease-in-out infinite;
-    }
-    @keyframes pulseGlow {
-      0%,100% { box-shadow:
-        0 0 10px rgba(0,0,255,.35),
-        0 0 16px rgba(155,77,255,.28),
-        0 0 22px rgba(255,61,187,.18); }
-      50% { box-shadow:
-        0 0 18px rgba(0,0,255,.55),
-        0 0 28px rgba(155,77,255,.45),
-        0 0 40px rgba(255,61,187,.35); }
-    }
-
-    header {
-      display:flex; align-items:center; gap:10px; justify-content:center;
-      padding:12px; background:rgba(10,10,18,.8); position:sticky; top:0; z-index:5;
-      border-bottom:1px solid rgba(255,255,255,.06);
-      backdrop-filter: blur(8px);
-    }
-    header .title { font-weight:800; letter-spacing:.4px; text-transform:uppercase; }
-    header .spacer { flex:1; }
-    header button {
-      background:transparent; color:var(--text); border:1px solid rgba(255,255,255,.18);
-      border-radius:10px; padding:6px 10px; cursor:pointer;
-    }
-    header button:hover { border-color: rgba(255,255,255,.35); }
-
-    #app {
-      max-width: 1100px; margin:16px auto; padding:14px;
-    }
-
-    #layout {
-      display:grid; grid-template-columns: 300px 1fr; gap:14px;
-    }
-
-    /* Sidebar */
-    .sidebar { padding:12px; background:var(--panel); }
-    .sidebar h3 { margin:0 0 10px 0; font-size:14px; opacity:.85; }
-    .user-item {
-      display:flex; align-items:center; justify-content:space-between;
-      background:var(--chip); margin:6px 0; padding:8px; border-radius:10px;
-    }
-    .user-name { font-size:14px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; max-width: 160px; }
-    .user-actions button {
-      border:none; background:transparent; color:var(--text); cursor:pointer; margin-left:6px;
-      padding:6px; border-radius:8px;
-    }
-    .user-actions button:hover { background:rgba(255,255,255,.08); }
-
-    /* Chat */
-    .chat-wrap { display:flex; flex-direction:column; padding:0; overflow:hidden; }
-    .chat-header {
-      display:flex; gap:8px; align-items:center; justify-content:space-between;
-      padding:10px 12px; background:var(--panel); border-bottom:1px solid rgba(255,255,255,.06);
-      border-top-left-radius:14px; border-top-right-radius:14px;
-    }
-    .chat-body {
-      height: 58vh; overflow-y:auto; padding:14px; background:var(--panel2);
-    }
-    .msg {
-      margin:6px 0; padding:8px 10px; background:var(--chip); border-radius:10px; word-break:break-word;
-    }
-    .self { background:rgba(0,128,255,.16); }
-
-    .chat-input {
-      display:flex; gap:8px; padding:10px; background:var(--panel); border-top:1px solid rgba(255,255,255,.06);
-      border-bottom-left-radius:14px; border-bottom-right-radius:14px;
-    }
-    .chat-input input[type="text"] {
-      padding:10px; border:none; border-radius:10px; background:#10101a; color:var(--text);
-    }
-    #username { width:22ch; }
-    #message  { flex:1; }
-    .primary {
-      border:none; border-radius:10px; padding:10px 14px; cursor:pointer; color:#fff;
-      background: linear-gradient(135deg, var(--brand1), var(--brand2), var(--brand3));
-    }
-    .primary:disabled { filter: grayscale(1) brightness(.6); cursor:not-allowed; }
-
-    /* Painéis flutuantes */
-    .panel {
-      background:var(--panel);
-      border-radius:12px; border:1px solid rgba(255,255,255,.08);
-      position:absolute; right:16px; top:62px; width:min(92vw, 360px); max-height:65vh; overflow:auto;
-      display:none; z-index:10;
-    }
-    .panel header { position:sticky; top:0; justify-content:space-between; }
-    .panel .content { padding:12px; }
-
-    /* Private windows */
-    .private-window {
-      position:fixed; bottom:16px; right:16px; width: min(420px, 92vw);
-      background: var(--panel); z-index:20; overflow:hidden;
-    }
-    .private-header {
-      display:flex; align-items:center; justify-content:space-between;
-      padding:10px; background:rgba(10,10,18,.85);
-      border-bottom:1px solid rgba(255,255,255,.06);
-    }
-    .private-body { height: 38vh; overflow-y:auto; padding:10px; background:var(--panel2); }
-    .private-input { display:flex; gap:8px; padding:10px; background:var(--panel); border-top:1px solid rgba(255,255,255,.06); }
-    .chip { font-size:12px; opacity:.8; }
-
-    /* Fundo custom */
-    .wallpaper-row { display:flex; gap:8px; align-items:center; }
-    .wallpaper-row input { flex:1; }
-  </style>
+<style>
+:root {
+  --neon-blue: #00f0ff;
+  --neon-pink: #ff00f0;
+  --neon-purple: #a200ff;
+}
+body, html {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  font-family: 'Roboto', sans-serif;
+  background: black;
+  overflow: hidden;
+}
+#loginModal {
+  position: fixed;
+  top:0; left:0;
+  width:100%; height:100%;
+  background: rgba(0,0,0,0.85);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+.modal-content {
+  background: #111;
+  padding: 30px;
+  border-radius: 15px;
+  text-align: center;
+  width: 300px;
+  box-shadow: 0 0 20px var(--neon-pink);
+  border: 2px solid var(--neon-blue);
+  animation: glow 1.5s infinite alternate;
+}
+@keyframes glow {
+  from { box-shadow: 0 0 10px var(--neon-blue); }
+  to { box-shadow: 0 0 20px var(--neon-pink); }
+}
+input, select, button {
+  width: 90%;
+  margin: 5px 0;
+  padding: 10px;
+  border-radius: 8px;
+  border: none;
+  outline: none;
+  font-size: 1rem;
+}
+button {
+  cursor: pointer;
+  background: linear-gradient(90deg,var(--neon-blue),var(--neon-purple),var(--neon-pink));
+  color:white;
+  font-weight:bold;
+  transition: 0.3s;
+}
+button:hover {
+  transform: scale(1.05);
+}
+#chatContainer {
+  display:none;
+  width:100%;
+  height:100%;
+  position: relative;
+  color:white;
+}
+#friendsList {
+  position: absolute;
+  left:0; top:0;
+  width:200px;
+  height:100%;
+  background: rgba(10,10,10,0.9);
+  overflow-y:auto;
+  border-right: 3px solid var(--neon-purple);
+  padding:10px;
+}
+.friend {
+  padding:5px;
+  margin:5px 0;
+  border-radius:5px;
+  cursor:pointer;
+  border: 1px solid var(--neon-blue);
+}
+.friend.online { background: rgba(0,255,255,0.1);}
+.friend.away { background: rgba(255,255,0,0.1);}
+.friend.busy { background: rgba(255,0,0,0.1);}
+.friend.blocked { background: rgba(255,0,0,0.3); text-decoration: line-through; }
+#mainChat {
+  margin-left:210px;
+  height:100%;
+  display:flex;
+  flex-direction:column;
+}
+#messages {
+  flex:1;
+  overflow-y:auto;
+  padding:10px;
+}
+#messageInput {
+  display:flex;
+  align-items:center;
+  padding:10px;
+  background: rgba(0,0,0,0.8);
+}
+#messageInput textarea {
+  flex:1;
+  padding:10px;
+  border-radius:10px;
+  resize:none;
+  font-size:1rem;
+  background:black;
+  color:white;
+}
+#messageInput button {
+  margin-left:5px;
+  padding:10px 20px;
+}
+.textFormat button {
+  margin-right:5px;
+}
+#backgroundSelect {
+  position: absolute;
+  right:10px; top:10px;
+  z-index: 50;
+}
+#backgroundSelect button {
+  margin: 5px;
+}
+.neonText {
+  animation: neonBlink 1s infinite alternate;
+}
+@keyframes neonBlink {
+  from { text-shadow: 0 0 5px #00f0ff,0 0 10px #00f0ff; }
+  to { text-shadow: 0 0 10px #ff00f0,0 0 20px #ff00f0; }
+}
+.chatPrivate {
+  position:absolute;
+  right:10px;
+  top:10px;
+  width:300px;
+  height:400px;
+  background: rgba(0,0,0,0.9);
+  border: 2px solid var(--neon-blue);
+  border-radius:10px;
+  overflow:hidden;
+  display:flex;
+  flex-direction:column;
+}
+.chatPrivateHeader {
+  background: rgba(20,20,20,0.95);
+  padding:5px;
+  font-weight:bold;
+  display:flex;
+  justify-content: space-between;
+}
+.chatPrivateMessages {
+  flex:1;
+  overflow-y:auto;
+  padding:5px;
+}
+.chatPrivateInput {
+  display:flex;
+  padding:5px;
+}
+.chatPrivateInput input {
+  flex:1;
+  padding:5px;
+  border-radius:5px;
+  border:none;
+  outline:none;
+}
+</style>
 </head>
 <body>
-  <div id="app" class="neon">
-    <header class="neon" style="border-radius:12px; margin-bottom:12px;">
-      <span class="title">Chat Perfeito — Cyber 😎</span>
-      <div class="spacer"></div>
-      <button id="btn-emoji" title="Emojis">😊</button>
-      <button id="btn-settings" title="Configurações">⚙️</button>
-    </header>
 
-    <div id="layout">
-      <!-- Sidebar -->
-      <aside class="sidebar neon" id="sidebar">
-        <h3>Amigos Online</h3>
-        <div id="users"></div>
-      </aside>
-
-      <!-- Chat principal -->
-      <section class="chat-wrap neon" id="chat">
-        <div class="chat-header">
-          <div>
-            <strong>Canal Público</strong>
-            <div class="chip" id="youChip"></div>
-          </div>
-          <div class="chip">Neon ON</div>
-        </div>
-        <div class="chat-body" id="messages" aria-live="polite"></div>
-        <div class="chat-input">
-          <input id="username" type="text" placeholder="Seu nome..." autocomplete="username" />
-          <input id="message"  type="text" placeholder="Digite uma mensagem..." disabled />
-          <button id="send" class="primary" disabled>Enviar 💬</button>
-        </div>
-      </section>
+<!-- Modal Login / Cadastro -->
+<div id="loginModal">
+  <div class="modal-content">
+    <h2>Bem-vindo ao Chat Neon</h2>
+    <div id="loginForm">
+      <input type="text" id="loginUsername" placeholder="Usuário">
+      <input type="password" id="loginPassword" placeholder="Senha">
+      <button onclick="loginUser()">Login</button>
+      <p>ou <span style="color:cyan; cursor:pointer;" onclick="showRegister()">Cadastrar</span></p>
     </div>
-
-    <!-- Painel: Emojis -->
-    <div id="emoji-panel" class="panel neon">
-      <header>
-        <span>Emojis</span>
-        <button id="close-emoji">✖</button>
-      </header>
-      <div class="content">
-        <emoji-picker id="emojiPicker" class="dark"></emoji-picker>
-      </div>
-    </div>
-
-    <!-- Painel: Configurações -->
-    <div id="settings-panel" class="panel neon">
-      <header>
-        <span>Configurações</span>
-        <button id="close-settings">✖</button>
-      </header>
-      <div class="content">
-        <div class="wallpaper-row">
-          <label for="wallUrl">Papel de parede (URL):</label>
-          <input id="wallUrl" type="text" placeholder="https://imagem.png" />
-          <button id="applyWall" class="primary">Aplicar</button>
-        </div>
-        <div style="margin-top:8px;">
-          <label><input id="enterToSend" type="checkbox" checked /> Enter envia</label>
-        </div>
-        <div style="margin-top:8px;">
-          <button id="resetWall">Restaurar fundo padrão</button>
-        </div>
-      </div>
+    <div id="registerForm" style="display:none;">
+      <input type="text" id="regUsername" placeholder="Usuário">
+      <input type="password" id="regPassword" placeholder="Senha">
+      <input type="password" id="regConfirm" placeholder="Confirme a senha">
+      <button onclick="registerUser()">Cadastrar</button>
+      <p>ou <span style="color:cyan; cursor:pointer;" onclick="showLogin()">Login</span></p>
     </div>
   </div>
+</div>
 
-  <!-- Socket.IO (Render) -->
-  <script>
-    // >>> AJUSTE AQUI SE TROCAR A URL <<<
-    const SERVER_URL = "https://meu-chat-lin7.onrender.com";
-  </script>
-  <script src="https://meu-chat-lin7.onrender.com/socket.io/socket.io.js"></script>
+<!-- Chat -->
+<div id="chatContainer">
+  <div id="friendsList">
+    <h3>Amigos</h3>
+    <div id="friends"></div>
+    <button onclick="addFriendPrompt()">Adicionar amigo</button>
+    <p>Status:</p>
+    <select id="statusSelect" onchange="changeStatus()">
+      <option value="online">Online</option>
+      <option value="away">Ausente</option>
+      <option value="busy">Ocupado</option>
+    </select>
+  </div>
+  <div id="mainChat">
+    <div id="messages"></div>
+    <div class="textFormat">
+      <button onclick="applyFormat('bold')"><b>B</b></button>
+      <button onclick="applyFormat('underline')"><u>U</u></button>
+      <button onclick="applyFormat('line-through')"><s>S</s></button>
+      <button onclick="applyFormat('shadow')">Sombra</button>
+      <button onclick="toggleNeon()">Neon</button>
+      <select id="fontSelect"></select>
+      <button onclick="showEmojiPicker()">😀</button>
+    </div>
+    <div id="messageInput">
+      <textarea id="msgText" rows="2" placeholder="Digite sua mensagem..."></textarea>
+      <button onclick="sendMessage()">Enviar</button>
+    </div>
+  </div>
+  <div id="backgroundSelect">
+    <button onclick="setBackground('https://xatframe.github.io/xatframes/RobFerrari_Balloons.html')">Balões</button>
+    <button onclick="setBackground('https://xatframe.github.io/xatframes/lafleur_sea.html')">Mar</button>
+    <button onclick="setBackground('https://xatframe.github.io/xatframes/robferrari_xneon.html')">XNeon</button>
+    <button onclick="setBackground('')">Cor sólida/gradiente</button>
+  </div>
+</div>
 
-  <script type="module">
-    // ====== Estado ======
-    const state = {
-      me: { id: null, name: null },
-      users: [],           // {id, name}
-      blocked: new Set(),  // ids bloqueados (espelhado do server)
-      privates: new Map()  // Map<userId, {el, bodyEl, inputEl}>
-    };
+<script>
+// Usuários e login simples
+let users = JSON.parse(localStorage.getItem('users')||'{}');
+let currentUser = null;
+let blocked = [];
 
-    // ====== DOM ======
-    const usersBox   = document.getElementById("users");
-    const messagesEl = document.getElementById("messages");
-    const usernameEl = document.getElementById("username");
-    const messageEl  = document.getElementById("message");
-    const sendBtn    = document.getElementById("send");
-    const youChip    = document.getElementById("youChip");
+function showRegister() { document.getElementById('loginForm').style.display='none'; document.getElementById('registerForm').style.display='block'; }
+function showLogin() { document.getElementById('loginForm').style.display='block'; document.getElementById('registerForm').style.display='none'; }
 
-    const emojiPanel = document.getElementById("emoji-panel");
-    const settingsPanel = document.getElementById("settings-panel");
-    const btnEmoji   = document.getElementById("btn-emoji");
-    const btnSettings= document.getElementById("btn-settings");
-    const closeEmoji = document.getElementById("close-emoji");
-    const closeSettings = document.getElementById("close-settings");
+function registerUser() {
+  const u = document.getElementById('regUsername').value;
+  const p = document.getElementById('regPassword').value;
+  const c = document.getElementById('regConfirm').value;
+  if(!u || !p || !c) { alert('Preencha todos os campos'); return; }
+  if(p!==c){ alert('Senhas não conferem'); return;}
+  if(users[u]) { alert('Usuário já existe'); return;}
+  users[u] = {password:p, friends:[], status:'online', prefs:{}, logs:{}, blocked:[]};
+  localStorage.setItem('users', JSON.stringify(users));
+  alert('Cadastro realizado!');
+  showLogin();
+}
+function loginUser() {
+  const u = document.getElementById('loginUsername').value;
+  const p = document.getElementById('loginPassword').value;
+  if(users[u] && users[u].password===p){
+    currentUser = u;
+    blocked = users[u].blocked || [];
+    document.getElementById('loginModal').style.display='none';
+    loadChat();
+  } else { alert('Usuário ou senha incorretos'); }
+}
 
-    const wallUrl = document.getElementById("wallUrl");
-    const applyWall = document.getElementById("applyWall");
-    const resetWall = document.getElementById("resetWall");
-    const enterToSend = document.getElementById("enterToSend");
+// Chat
+function loadChat(){
+  document.getElementById('friends').innerHTML='';
+  users[currentUser].friends.forEach(f=>addFriendUI(f));
+  document.getElementById('statusSelect').value=users[currentUser].status;
+}
 
-    // ====== Socket ======
-    const socket = io(SERVER_URL, { transports:["websocket","polling"] });
+// Amigos
+function addFriendPrompt(){
+  let f = prompt('Nome do amigo:');
+  if(f && !users[currentUser].friends.includes(f)){
+    users[currentUser].friends.push(f);
+    localStorage.setItem('users',JSON.stringify(users));
+    addFriendUI(f);
+  }
+}
+function addFriendUI(f){
+  let div = document.createElement('div');
+  div.className='friend '+(users[f]?.status||'online');
+  if(users[currentUser].blocked.includes(f)) div.classList.add('blocked');
+  div.innerText=f;
+  div.onclick = ()=>openPrivateChat(f);
+  document.getElementById('friends').appendChild(div);
+}
 
-    // pega meu id quando conectar
-    socket.on("connect", () => {
-      state.me.id = socket.id;
-      refreshYou();
-      socket.emit("getBlocked");
-    });
+// Status
+function changeStatus(){
+  let s = document.getElementById('statusSelect').value;
+  users[currentUser].status = s;
+  localStorage.setItem('users',JSON.stringify(users));
+  loadChat();
+}
 
-    // lista de usuários online
-    socket.on("onlineUsers", (list) => {
-      state.users = list.filter(u => u.id !== state.me.id);
-      renderUsers();
-    });
+// Mensagens
+let formats = {bold:false, underline:false, lineThrough:false, shadow:false};
+let neonActive = false;
+const fonts = ["Roboto","Montserrat","Open Sans","Lato","Oswald","Raleway","PT Sans","Roboto Mono","Ubuntu","Playfair Display","Indie Flower","Pacifico","Exo 2","Anton","Comfortaa","Karla","Poppins","Nunito","Fira Sans","Arimo","Acme","Baloo 2","Cairo","Dancing Script","Fredoka One","Hind","Inconsolata","Josefin Sans","Kaushan Script","Lobster","Merriweather","Oxygen","Quicksand","Roboto Slab","Shadows Into Light","Source Sans Pro","Titillium Web","Varela Round","Work Sans","Zilla Slab"];
+let fontSelect = document.getElementById('fontSelect');
+fonts.forEach(f=>{
+  let opt = document.createElement('option');
+  opt.value=f; opt.innerText=f;
+  fontSelect.appendChild(opt);
+});
+function changeFont(){}
 
-    // bloqueados
-    socket.on("blockedUsers", (arr) => {
-      state.blocked = new Set(arr || []);
-      renderUsers();
-    });
+// Formatação
+function applyFormat(f){ formats[f]=!formats[f]; }
+function formatMsg(msg){
+  let temp = msg;
+  if(formats.bold) temp = '<b>'+temp+'</b>';
+  if(formats.underline) temp = '<u>'+temp+'</u>';
+  if(formats.lineThrough) temp = '<s>'+temp+'</s>';
+  if(formats.shadow) temp = '<span style="text-shadow:2px 2px 5px #0ff">'+temp+'</span>';
+  return temp;
+}
+function toggleNeon(){ neonActive=!neonActive; }
 
-    // mensagens públicas
-    socket.on("chatMessage", (data) => {
-      // se o remetente está bloqueado localmente, ignora
-      if (state.blocked.has(data.from)) return;
-      const p = document.createElement("div");
-      p.className = "msg" + (data.from === state.me.id ? " self" : "");
-      p.textContent = `${data.user}: ${data.msg}`;
-      messagesEl.appendChild(p);
-      messagesEl.scrollTop = messagesEl.scrollHeight;
-    });
+function sendMessage(){
+  let msg = document.getElementById('msgText').value;
+  if(!msg) return;
+  let div = document.createElement('div');
+  div.innerHTML = formatMsg(msg);
+  if(neonActive) div.classList.add('neonText');
+  div.style.fontFamily = fontSelect.value;
+  document.getElementById('messages').appendChild(div);
+  document.getElementById('msgText').value='';
+  document.getElementById('messages').scrollTop = document.getElementById('messages').scrollHeight;
 
-    // mensagens privadas
-    socket.on("privateMessage", (data) => {
-      const partnerId = data.from === state.me.id ? data.to : data.from;
-      const partnerName = data.from === state.me.id ? getNameById(data.to) : data.fromName;
-      const win = ensurePrivateWindow(partnerId, partnerName);
-      appendPrivate(win, data.from === state.me.id, data.msg);
-    });
+  // Log
+  if(!users[currentUser].logs.global) users[currentUser].logs.global=[];
+  users[currentUser].logs.global.push({msg, time:Date.now()});
+  localStorage.setItem('users',JSON.stringify(users));
+}
 
-    // ====== UI principal ======
-    usernameEl.addEventListener("input", () => {
-      const ok = usernameEl.value.trim().length > 0;
-      messageEl.disabled = !ok;
-      sendBtn.disabled = !ok;
-    });
+// Background
+function setBackground(url){
+  if(url){
+    document.body.style.background='url('+url+') no-repeat center center fixed';
+    document.body.style.backgroundSize='cover';
+  } else {
+    let color = prompt('Digite a cor de fundo (hex ou nome) ou gradient:','#000');
+    document.body.style.background=color;
+  }
+}
 
-    // registra nome quando confirma com Enter ou foca no campo de msg
-    usernameEl.addEventListener("keydown", (e) => {
-      if (e.key === "Enter" && usernameEl.value.trim()) {
-        doRegister();
-        messageEl.focus();
-      }
-    });
-    messageEl.addEventListener("focus", () => { if (usernameEl.value.trim()) doRegister(); });
+// Emojis
+function showEmojiPicker(){
+  let emojis = ["😀","😂","😍","😎","👍","💖","🎉","🔥"];
+  let emoji = prompt('Escolha emoji: '+emojis.join(' '));
+  if(emoji) document.getElementById('msgText').value += emoji;
+}
 
-    function doRegister() {
-      if (state.me.name === usernameEl.value.trim()) return;
-      state.me.name = usernameEl.value.trim().slice(0, 40);
-      youChip.textContent = `Você: ${state.me.name}`;
-      socket.emit("register", { name: state.me.name });
-    }
+// Chat privado
+function openPrivateChat(friend){
+  if(blocked.includes(friend)) { alert('Usuário bloqueado'); return; }
+  let existing = document.getElementById('private_'+friend);
+  if(existing) return;
+  let chatDiv = document.createElement('div');
+  chatDiv.className='chatPrivate';
+  chatDiv.id='private_'+friend;
 
-    sendBtn.addEventListener("click", sendPublic);
-    messageEl.addEventListener("keydown", (e) => {
-      if (e.key === "Enter" && enterToSend.checked) {
-        e.preventDefault(); sendPublic();
-      }
-    });
+  let header = document.createElement('div');
+  header.className='chatPrivateHeader';
+  header.innerHTML = friend+' <span style="cursor:pointer;" onclick="closePrivate(\''+friend+'\')">X</span>';
+  chatDiv.appendChild(header);
 
-    function sendPublic() {
-      const msg = messageEl.value.trim();
-      if (!state.me.name || !msg) return;
-      socket.emit("chatMessage", { msg });
-      messageEl.value = "";
-    }
+  let msgsDiv = document.createElement('div');
+  msgsDiv.className='chatPrivateMessages';
+  chatDiv.appendChild(msgsDiv);
 
-    function refreshYou() {
-      youChip.textContent = state.me.name ? `Você: ${state.me.name}` : `ID: ${state.me.id?.slice(0,5) ?? ""}`;
-    }
+  let inputDiv = document.createElement('div');
+  inputDiv.className='chatPrivateInput';
+  let input = document.createElement('input');
+  input.placeholder='Mensagem...';
+  inputDiv.appendChild(input);
+  let sendBtn = document.createElement('button');
+  sendBtn.innerText='Enviar';
+  sendBtn.onclick = ()=>{
+    let text = input.value;
+    if(!text) return;
+    let msg = document.createElement('div');
+    msg.innerText = text;
+    msgsDiv.appendChild(msg);
+    input.value='';
 
-    // ====== Sidebar ======
-    function renderUsers() {
-      usersBox.innerHTML = "";
-      state.users.forEach(u => {
-        const row = document.createElement("div");
-        row.className = "user-item neon";
-        row.style.borderRadius = "10px";
+    // Log privado
+    if(!users[currentUser].logs[friend]) users[currentUser].logs[friend]=[];
+    users[currentUser].logs[friend].push({msg:text, time:Date.now()});
+    localStorage.setItem('users',JSON.stringify(users));
+  };
+  inputDiv.appendChild(sendBtn);
+  chatDiv.appendChild(inputDiv);
 
-        const left = document.createElement("div");
-        left.className = "user-name";
-        left.textContent = u.name || u.id;
+  document.body.appendChild(chatDiv);
+}
 
-        const actions = document.createElement("div");
-        actions.className = "user-actions";
-        const btnPm = document.createElement("button");
-        btnPm.title = "Chat privado";
-        btnPm.textContent = "💬";
-        btnPm.addEventListener("click", () => openPrivate(u.id, u.name));
+function closePrivate(friend){
+  let d = document.getElementById('private_'+friend);
+  if(d) d.remove();
+}
 
-        const blocked = state.blocked.has(u.id);
-        const btnBlock = document.createElement("button");
-        btnBlock.title = blocked ? "Desbloquear" : "Bloquear";
-        btnBlock.textContent = blocked ? "✅" : "🚫";
-        btnBlock.addEventListener("click", () => toggleBlock(u.id));
-
-        actions.append(btnPm, btnBlock);
-        row.append(left, actions);
-        usersBox.appendChild(row);
-      });
-    }
-
-    function toggleBlock(targetId) {
-      if (state.blocked.has(targetId)) {
-        socket.emit("unblockUser", { targetId });
-      } else {
-        socket.emit("blockUser", { targetId });
-      }
-      // server vai responder com "blockedUsers"
-    }
-
-    // ====== Privado ======
-    function getNameById(id) {
-      if (id === state.me.id) return state.me.name || "Você";
-      const u = state.users.find(x => x.id === id);
-      return u?.name || id;
-    }
-
-    function openPrivate(id, name) {
-      const win = ensurePrivateWindow(id, name);
-      win.input.focus();
-    }
-
-    function ensurePrivateWindow(partnerId, partnerName) {
-      if (state.privates.has(partnerId)) return state.privates.get(partnerId);
-
-      const wrap = document.createElement("div");
-      wrap.className = "private-window neon";
-      wrap.style.borderRadius = "14px";
-
-      // header
-      const header = document.createElement("div");
-      header.className = "private-header";
-      const title = document.createElement("div");
-      title.innerHTML = `<strong>Privado</strong><div class="chip">${partnerName}</div>`;
-      const actions = document.createElement("div");
-      const close = document.createElement("button");
-      close.textContent = "✖";
-      close.addEventListener("click", () => {
-        wrap.remove();
-        state.privates.delete(partnerId);
-      });
-      actions.appendChild(close);
-      header.append(title, actions);
-
-      // body
-      const body = document.createElement("div");
-      body.className = "private-body";
-
-      // input
-      const inputRow = document.createElement("div");
-      inputRow.className = "private-input";
-      const input = document.createElement("input");
-      input.type = "text"; input.placeholder = "Mensagem privada...";
-      const send = document.createElement("button");
-      send.className = "primary";
-      send.textContent = "Enviar";
-      send.addEventListener("click", () => sendPrivate(partnerId, input, body));
-      input.addEventListener("keydown", (e) => {
-        if (e.key === "Enter" && enterToSend.checked) sendPrivate(partnerId, input, body);
-      });
-      inputRow.append(input, send);
-
-      wrap.append(header, body, inputRow);
-      document.body.appendChild(wrap);
-      state.privates.set(partnerId, { el: wrap, bodyEl: body, input, partnerName });
-
-      // empilha janelas se abrir várias
-      positionPrivateWindows();
-      return state.privates.get(partnerId);
-    }
-
-    function positionPrivateWindows() {
-      const wins = Array.from(state.privates.values());
-      wins.forEach((w, i) => {
-        w.el.style.right = (16 + i * 24) + "px";
-        w.el.style.bottom = (16 + i * 24) + "px";
-      });
-    }
-
-    function appendPrivate(win, fromSelf, msg) {
-      const p = document.createElement("div");
-      p.className = "msg" + (fromSelf ? " self" : "");
-      p.textContent = (fromSelf ? "Você: " : `${win.partnerName}: `) + msg;
-      win.bodyEl.appendChild(p);
-      win.bodyEl.scrollTop = win.bodyEl.scrollHeight;
-    }
-
-    function sendPrivate(partnerId, input, body) {
-      const txt = (input.value || "").trim();
-      if (!txt) return;
-      if (state.blocked.has(partnerId)) {
-        alert("Você bloqueou este usuário. Desbloqueie para enviar mensagens.");
-        return;
-      }
-      socket.emit("privateMessage", { to: partnerId, msg: txt });
-      input.value = "";
-    }
-
-    // ====== Emojis ======
-    const picker = document.getElementById("emojiPicker");
-    picker.addEventListener("emoji-click", (e) => {
-      const emoji = e.detail.unicode;
-      const start = messageEl.selectionStart ?? messageEl.value.length;
-      const end   = messageEl.selectionEnd   ?? messageEl.value.length;
-      messageEl.value = messageEl.value.slice(0,start) + emoji + messageEl.value.slice(end);
-      messageEl.focus();
-      messageEl.setSelectionRange(start + emoji.length, start + emoji.length);
-    });
-
-    // abrir/fechar painéis
-    const toggle = (el) => { el.style.display = (el.style.display === "block") ? "none" : "block"; };
-    document.getElementById("btn-emoji").addEventListener("click", () => { settingsPanel.style.display="none"; toggle(emojiPanel); });
-    document.getElementById("btn-settings").addEventListener("click", () => { emojiPanel.style.display="none"; toggle(settingsPanel); });
-    document.getElementById("close-emoji").addEventListener("click", () => emojiPanel.style.display="none");
-    document.getElementById("close-settings").addEventListener("click", () => settingsPanel.style.display="none");
-    document.addEventListener("click", (e) => {
-      const inside = e.target.closest(".panel") || e.target.closest("header");
-      if (!inside) { emojiPanel.style.display="none"; settingsPanel.style.display="none"; }
-    });
-
-    // ====== Papel de parede ======
-    // carrega salvo
-    const savedWall = localStorage.getItem("wallpaperUrl");
-    if (savedWall) document.body.style.backgroundImage = `url("${savedWall}")`;
-    wallUrl.value = savedWall || "";
-
-    applyWall.addEventListener("click", () => {
-      const url = wallUrl.value.trim();
-      if (!url) return;
-      document.body.style.backgroundImage = `url("${url}")`;
-      localStorage.setItem("wallpaperUrl", url);
-    });
-    resetWall.addEventListener("click", () => {
-      localStorage.removeItem("wallpaperUrl");
-      document.body.style.backgroundImage = "";
-    });
-  </script>
+// Bloquear
+function blockFriend(friend){
+  if(!users[currentUser].blocked.includes(friend)){
+    users[currentUser].blocked.push(friend);
+    localStorage.setItem('users',JSON.stringify(users));
+    blocked.push(friend);
+    loadChat();
+  }
+}
+</script>
 </body>
 </html>
