@@ -3,218 +3,485 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Chat SL V.2.3.0</title>
-<style>
-:root{
-  --neon-blue:#00f0ff;
-  --neon-purple:#b300ff;
-  --neon-pink:#ff00d4;
-}
-body{margin:0; padding:0; font-family:'Roboto',sans-serif; background:#111; overflow:hidden;}
-
-button{cursor:pointer;}
-/* Botão flutuante do chat */
-#chatBtnFloat{
-  position:fixed; bottom:20px; right:20px; z-index:1000;
-  width:60px; height:60px; border-radius:50%; background:linear-gradient(45deg,var(--neon-blue),var(--neon-purple),var(--neon-pink));
-  color:#fff; font-weight:bold; border:none; display:flex; align-items:center; justify-content:center;
-  font-size:1.2rem; box-shadow:0 0 10px #000; transition:0.3s;
-}
-#chatBtnFloat:hover{transform:scale(1.1);}
-
-/* POPUPS FLUTUANTES */
-.popup{
-  position:fixed; top:50%; left:50%; transform:translate(-50%,-50%);
-  background:rgba(0,0,0,0.95); color:#fff; padding:15px; border-radius:12px;
-  border:2px solid var(--neon-blue); z-index:999; display:none;
-}
-.popup h3{margin-top:0;}
-.popup input{display:block; width:200px; margin:5px 0; padding:5px; border-radius:5px; border:1px solid #888;}
-.popup button{padding:5px 10px; margin-top:5px; border-radius:5px;}
-
-/* Botoes flutuantes de minimizar e fechar */
-.popup .topBar{display:flex; justify-content:space-between; align-items:center;}
-.popup .topBar span{cursor:pointer; font-weight:bold; font-size:1rem;}
-
-/* CHAT FLUTUANTE */
-#chatContainer{
-  width:540px; height:430px; background:rgba(0,0,0,0.9);
-  border:2px solid var(--neon-blue); border-radius:10px;
-  display:flex; flex-direction:column; position:fixed; bottom:100px; right:20px; z-index:998;
-  overflow:hidden; display:none;
-}
-#chatHeader{background:rgba(20,20,20,0.95); padding:5px; display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #555;}
-#chatMessages{flex:1; overflow-y:auto; padding:5px; color:#fff;}
-#chatInputContainer{display:flex; padding:5px; border-top:1px solid #555;}
-#chatInput{flex:1; padding:5px; border-radius:5px; border:1px solid #555;}
-#chatInputContainer button{padding:5px 10px; margin-left:5px;}
-
-/* Engrenagem de Configurações */
-#settingsGear{
-  position:absolute; top:5px; right:5px; width:25px; height:25px; cursor:pointer;
-  background:var(--neon-purple); border-radius:50%; display:flex; align-items:center; justify-content:center;
-  font-weight:bold; color:#fff;
-}
-#settingsPanel{
-  position:absolute; top:35px; right:5px; width:250px; background:rgba(0,0,0,0.95);
-  border:2px solid var(--neon-blue); border-radius:10px; padding:10px; display:none; color:#fff;
-}
-#settingsPanel label{display:block; margin:5px 0;}
-#settingsPanel input, #settingsPanel select{width:100%; padding:5px; margin:3px 0; border-radius:5px; border:1px solid #555;}
-</style>
-
-<!-- Google Fonts -->
+<title>Chat SL V.2.3.4</title>
+<script src="/socket.io/socket.io.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Roboto&family=Press+Start+2P&family=Montserrat&family=Lobster&family=Pacifico&family=Oswald&family=Raleway&family=Open+Sans&family=Roboto+Mono&family=Poppins&family=Ubuntu&family=Nunito&family=Comfortaa&family=Quicksand&family=Playfair+Display&family=Fira+Sans&family=Merriweather&family=Anton&family=Bebas+Neue&family=Caveat&family=Chakra+Petch&family=Exo+2&family=Archivo+Black&family=Indie+Flower&family=Inconsolata&family=Josefin+Sans&family=Kanit&family=Lato&family=Lexend&family=Manrope&family=Nanum+Gothic&family=Righteous&family=Signika&family=Varela+Round&family=Work+Sans&family=Yanone+Kaffeesatz&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Roboto&family=Press+Start+2P&display=swap" rel="stylesheet">
+<style>
+:root {
+  --neon-blue: #00f0ff;
+  --neon-purple: #b300ff;
+  --neon-pink: #ff00d4;
+}
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Roboto', sans-serif;
+  background: #111;
+  overflow: hidden;
+  transition: 0.3s;
+  color: #fff;
+}
+button {
+  cursor: pointer;
+}
 
+/* BOTÃO FLUTUANTE */
+#chatBtnFloat {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 1000;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: linear-gradient(45deg, var(--neon-blue), var(--neon-purple), var(--neon-pink));
+  color: #fff;
+  font-weight: bold;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  box-shadow: 0 0 10px #000;
+  transition: 0.3s;
+  font-family: 'Roboto', sans-serif;
+}
+#chatBtnFloat:hover {
+  transform: scale(1.1);
+}
+
+/* POPUPS FLUTUANTES */
+.popup {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(0, 0, 0, 0.95);
+  color: #fff;
+  padding: 15px;
+  border-radius: 12px;
+  border: 2px solid var(--neon-blue);
+  z-index: 999;
+  display: none;
+}
+.popup h3 {
+  margin-top: 0;
+}
+.popup input {
+  display: block;
+  width: 200px;
+  margin: 5px 0;
+  padding: 5px;
+  border-radius: 5px;
+  border: 1px solid #888;
+  background: #333;
+  color: #fff;
+  font-family: 'Roboto', sans-serif;
+}
+.popup button {
+  padding: 5px 10px;
+  margin-top: 5px;
+  font-family: 'Roboto', sans-serif;
+}
+.popup .topBar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.popup .topBar span {
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 1rem;
+}
+
+/* CHAT FLUTUANTE PRINCIPAL */
+#chatContainer {
+  width: 540px;
+  height: 430px;
+  background: rgba(0, 0, 0, 0.9);
+  border: 2px solid var(--neon-blue);
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+  bottom: 100px;
+  right: 20px;
+  z-index: 998;
+  overflow: hidden;
+  display: none;
+}
+#chatHeader {
+  background: rgba(20, 20, 20, 0.95);
+  padding: 5px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #555;
+  cursor: grab;
+  font-family: 'Roboto', sans-serif;
+}
+#chatMessages {
+  flex: 1;
+  overflow-y: auto;
+  padding: 5px;
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+}
+#chatMessages > div {
+  margin-bottom: 5px;
+  word-wrap: break-word;
+  font-family: 'Roboto', sans-serif;
+}
+#chatInputContainer {
+  display: flex;
+  padding: 5px;
+  border-top: 1px solid #555;
+}
+#chatInput {
+  flex: 1;
+  padding: 5px;
+  border-radius: 5px;
+  border: 1px solid #555;
+  background: #333;
+  color: #fff;
+  font-family: 'Roboto', sans-serif;
+}
+#chatInputContainer button {
+  padding: 5px 10px;
+  margin-left: 5px;
+}
+#chatInputContainer button, #settingsPanel button {
+    background-color: #555;
+    color: #fff;
+    border: 1px solid #777;
+    border-radius: 5px;
+    font-family: 'Roboto', sans-serif;
+}
+
+/* JANELAS PRIVADAS FLUTUANTES (Removido para simplificar) */
+
+/* FRIENDS PANEL DESLIZANTE */
+#friendsPanel {
+  position: fixed;
+  left: -220px;
+  top: 0;
+  width: 200px;
+  height: 100%;
+  background: rgba(20, 20, 20, 0.95);
+  border-right: 2px solid var(--neon-blue);
+  padding: 10px;
+  overflow-y: auto;
+  transition: 0.3s;
+  z-index: 999;
+}
+#friendsPanel.active {
+  left: 0;
+}
+.friend {
+  padding: 5px;
+  margin: 3px 0;
+  border-radius: 5px;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  font-family: 'Roboto', sans-serif;
+}
+.friend.online {
+  background: rgba(0, 255, 0, 0.2);
+}
+.friend.ausente {
+  background: rgba(255, 255, 0, 0.2);
+}
+.friend.ocupado {
+  background: rgba(255, 0, 0, 0.2);
+}
+.friend .blockBtn {
+  color: red;
+  cursor: pointer;
+}
+
+/* SETTINGS PANEL */
+#settingsPanel {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(0,0,0,0.95);
+    color: #fff;
+    padding: 15px;
+    border-radius: 12px;
+    border: 2px solid var(--neon-blue);
+    z-index: 999;
+    display: none;
+    width: 250px;
+    font-family: 'Roboto', sans-serif;
+}
+
+/* Neon piscando */
+.neonBlink {
+  animation: neonBlinkAnim 1s infinite;
+}
+@keyframes neonBlinkAnim {
+  0%, 100% {
+    text-shadow: 0 0 5px #fff;
+  }
+  50% {
+    text-shadow: 0 0 20px var(--neon-pink), 0 0 30px var(--neon-purple);
+  }
+}
+</style>
+</head>
 <body>
 
-<!-- BOTÃO FLUTUANTE -->
 <button id="chatBtnFloat" onclick="toggleChat()">💬</button>
 
-<!-- LOGIN -->
 <div id="loginPopup" class="popup">
-  <div class="topBar">
-    <span>Login</span>
-    <span onclick="closePopup('loginPopup')">X</span>
-  </div>
-  <input type="text" id="loginUser" placeholder="Usuário">
-  <input type="password" id="loginPass" placeholder="Senha">
-  <button onclick="login()">Entrar</button>
-  <p>Criar conta? <span style="color:#0ff; cursor:pointer;" onclick="showRegister()">Clique aqui</span></p>
-  <span onclick="minimizePopup('loginPopup')" style="cursor:pointer; color:#0ff;">_</span>
+    <div class="topBar"><span>Entrar</span><span onclick="closePopup('loginPopup')">X</span></div>
+    <input type="text" id="usernameInput" placeholder="Digite seu nome...">
+    <button onclick="login()">Entrar</button>
 </div>
 
-<!-- REGISTRO -->
-<div id="registerPopup" class="popup">
-  <div class="topBar">
-    <span>Cadastro</span>
-    <span onclick="closePopup('registerPopup')">X</span>
-  </div>
-  <input type="text" id="regUser" placeholder="Usuário">
-  <input type="password" id="regPass" placeholder="Senha">
-  <input type="password" id="regPassConfirm" placeholder="Confirmar senha">
-  <button onclick="register()">Registrar</button>
-  <p>Já tem conta? <span style="color:#0ff; cursor:pointer;" onclick="showLogin()">Login</span></p>
-  <span onclick="minimizePopup('registerPopup')" style="cursor:pointer; color:#0ff;">_</span>
-</div>
-
-<!-- CHAT FLUTUANTE -->
 <div id="chatContainer">
   <div id="chatHeader">
     Chat SL
     <div style="display:flex; gap:5px;">
       <div id="settingsGear" onclick="toggleSettings()">⚙</div>
       <span style="cursor:pointer;" onclick="minimizeChat()">_</span>
+      <span style="cursor:pointer;" onclick="closePopup('chatContainer')">X</span>
     </div>
   </div>
   <div id="chatMessages"></div>
   <div id="chatInputContainer">
     <input id="chatInput" placeholder="Digite sua mensagem...">
     <button onclick="sendMessage()">Enviar</button>
-  </div>
-  <div id="settingsPanel">
-    <label>Cor do fundo:</label>
-    <input type="color" id="bgColorPicker" onchange="changeBGColor()">
-    <label>Background animado:</label>
-    <select id="bgSelect" onchange="changeBGSelect()">
-      <option value="none">Nenhum</option>
-      <option value="https://xatframe.github.io/xatframes/RobFerrari_Balloons.html">Baloons</option>
-      <option value="https://xatframe.github.io/xatframes/lafleur_sea.html">Lafleur</option>
-      <option value="https://xatframe.github.io/xatframes/robferrari_xneon.html">Neon</option>
-    </select>
-    <label>Status:</label>
-    <select id="statusSelect" onchange="changeStatus()">
-      <option value="online">Online</option>
-      <option value="ausente">Ausente</option>
-      <option value="ocupado">Ocupado</option>
-    </select>
+    <button onclick="scrollToBottom(document.getElementById('chatMessages'))">🔽</button>
+    <button onclick="toggleEmojiPanel()">😊</button>
   </div>
 </div>
 
+<div id="friendsPanel">
+    <div class="topBar">
+        <span>Amigos Online</span>
+        <div onclick="toggleFriendsPanel()" style="cursor:pointer;">_</div>
+    </div>
+    <ul id="friendsList"></ul>
+</div>
+
+<div id="emojiPanel" class="popup" style="width:250px; max-height:200px; overflow-y:auto; display:none;">
+    <div style="display:flex; flex-wrap:wrap; gap:5px;">
+        <span onclick="addEmoji('😀')">😀</span>
+        <span onclick="addEmoji('😂')">😂</span>
+        <span onclick="addEmoji('😎')">😎</span>
+        <span onclick="addEmoji('😍')">😍</span>
+        <span onclick="addEmoji('🤯')">🤯</span>
+        <span onclick="addEmoji('🥳')">🥳</span>
+        <span onclick="addEmoji('😢')">😢</span>
+        <span onclick="addEmoji('😡')">😡</span>
+        <span onclick="addEmoji('👍')">👍</span>
+        <span onclick="addEmoji('👎')">👎</span>
+        </div>
+</div>
+
+<div id="settingsPanel" class="popup">
+    <div class="topBar"><span>Configurações</span><span onclick="closePopup('settingsPanel')">X</span></div>
+    <p>Fundo: <button onclick="setBgImage('https://i.imgur.com/qkWxt2w.png')">Padrão</button> <button onclick="setBgColor('#111')">Cor Sólida</button></p>
+    <p>Fonte: <select id="fontSelect"></select></p>
+    <p>Status: 
+        <button onclick="setStatus('online')">🟢</button>
+        <button onclick="setStatus('ausente')">🟡</button>
+        <button onclick="setStatus('ocupado')">🔴</button>
+    </p>
+    <p>Neon: <input type="checkbox" id="neonToggle"><label for="neonToggle">Ativar</label></p>
+    <p>Cor Neon: <input type="color" id="neonColor" value="#ff00d4"></p>
+</div>
+
 <script>
-let users = {};
+const socket = io('https://meu-chat-lin7.onrender.com');
+
 let currentUser = null;
-let chatMinimized=false;
+let neonActive = false;
+let userSettings = {};
 
-function toggleChat(){
-  const chat=document.getElementById('chatContainer');
-  chat.style.display=(chat.style.display==='flex')?'none':'flex';
-}
-
-function minimizeChat(){
-  const chat=document.getElementById('chatContainer');
-  chat.style.display='none';
-}
-
-function closePopup(id){ document.getElementById(id).style.display='none'; }
-function minimizePopup(id){ 
-  const el=document.getElementById(id);
-  el.style.display='none';
-}
-
-function showRegister(){ document.getElementById('loginPopup').style.display='none'; document.getElementById('registerPopup').style.display='block'; }
-function showLogin(){ document.getElementById('registerPopup').style.display='none'; document.getElementById('loginPopup').style.display='block'; }
-
-function register(){
-  let user=document.getElementById('regUser').value;
-  let pass=document.getElementById('regPass').value;
-  let passC=document.getElementById('regPassConfirm').value;
-  if(!user||!pass){ alert("Preencha todos os campos"); return; }
-  if(pass!==passC){ alert("Senhas não conferem"); return; }
-  if(users[user]){ alert("Usuário já existe"); return; }
-  users[user]={pass:pass, settings:{bg:'none', status:'online'}};
-  alert("Conta criada!");
-  showLogin();
-}
-
-function login(){
-  let user=document.getElementById('loginUser').value;
-  let pass=document.getElementById('loginPass').value;
-  if(users[user] && users[user].pass===pass){
-    currentUser=user;
-    document.getElementById('loginPopup').style.display='none';
-    document.getElementById('chatContainer').style.display='flex';
-    loadUserSettings();
-  } else alert("Usuário ou senha incorreto");
-}
-
-function sendMessage(){
-  let input=document.getElementById('chatInput');
-  if(input.value.trim()==='') return;
-  let msg=document.createElement('div');
-  msg.innerHTML=`<b>${currentUser}:</b> ${input.value}`;
-  document.getElementById('chatMessages').appendChild(msg);
-  input.value='';
-  document.getElementById('chatMessages').scrollTop=document.getElementById('chatMessages').scrollHeight;
-}
-
-function loadUserSettings(){
-  if(users[currentUser].settings.bg && users[currentUser].settings.bg!=='none'){
-    document.body.style.backgroundImage=`url('${users[currentUser].settings.bg}')`;
+// Funções de UI
+function toggleChat() {
+  const chatContainer = document.getElementById('chatContainer');
+  const loginPopup = document.getElementById('loginPopup');
+  if (chatContainer.style.display === 'flex') {
+    chatContainer.style.display = 'none';
+  } else {
+    if (currentUser) {
+      chatContainer.style.display = 'flex';
+    } else {
+      loginPopup.style.display = 'block';
+    }
   }
 }
-
-function toggleSettings(){
-  const panel=document.getElementById('settingsPanel');
-  panel.style.display=(panel.style.display==='block')?'none':'block';
+function minimizeChat() { document.getElementById('chatContainer').style.display = 'none'; }
+function closePopup(id) { document.getElementById(id).style.display = 'none'; }
+function toggleFriendsPanel() { document.getElementById('friendsPanel').classList.toggle('active'); }
+function toggleEmojiPanel() {
+  const panel = document.getElementById('emojiPanel');
+  panel.style.display = (panel.style.display === 'block') ? 'none' : 'block';
+}
+function toggleSettings() {
+  const panel = document.getElementById('settingsPanel');
+  panel.style.display = (panel.style.display === 'block') ? 'none' : 'block';
 }
 
-function changeBGColor(){
-  document.body.style.backgroundImage='none';
-  document.body.style.backgroundColor=document.getElementById('bgColorPicker').value;
+// Lógica de Login (simplificada para o servidor)
+function login() {
+  const username = document.getElementById('usernameInput').value;
+  if (!username) { alert("Por favor, digite seu nome."); return; }
+  currentUser = username;
+  document.getElementById('loginPopup').style.display = 'none';
+  document.getElementById('chatContainer').style.display = 'flex';
+  document.getElementById('chatInput').focus();
+  socket.emit('user connected', {
+    name: currentUser,
+    color: '#FFFFFF', // Cor padrão
+    status: 'online'
+  });
+}
+function logout() {
+  currentUser = null;
+  document.getElementById('chatContainer').style.display = 'none';
+  document.getElementById('loginPopup').style.display = 'block';
 }
 
-function changeBGSelect(){
-  const val=document.getElementById('bgSelect').value;
-  if(val==='none'){ document.body.style.backgroundImage='none'; return; }
-  document.body.style.backgroundImage=`url('${val}')`;
+// Mensagens
+function sendMessage() {
+  const input = document.getElementById('chatInput');
+  if (input.value.trim() === '') return;
+  const message = input.value;
+  socket.emit('chat message', {
+    username: currentUser,
+    message: message,
+    settings: userSettings
+  });
+  input.value = '';
 }
 
-function changeStatus(){
-  users[currentUser].settings.status=document.getElementById('statusSelect').value;
+function scrollToBottom(el) {
+  if (el) el.scrollTop = el.scrollHeight;
 }
+function addEmoji(emoji) {
+  const input = document.getElementById('chatInput');
+  input.value += emoji;
+  input.focus();
+}
+
+// Friends
+socket.on('user list update', (users) => {
+  const list = document.getElementById('friendsList');
+  list.innerHTML = '';
+  for (const id in users) {
+    const u = users[id];
+    if (u.name === currentUser) continue;
+    const friendDiv = document.createElement('li');
+    friendDiv.className = 'friend ' + u.status;
+    friendDiv.innerHTML = `<span onclick="alert('Funcionalidade de chat privado ainda não implementada.')">${u.name} (${u.status})</span>`;
+    list.appendChild(friendDiv);
+  }
+});
+
+// Configurações
+document.getElementById('neonToggle').addEventListener('change', (e) => {
+    neonActive = e.target.checked;
+});
+
+document.getElementById('neonColor').addEventListener('change', (e) => {
+    userSettings.neonColor = e.target.value;
+});
+
+document.getElementById('fontSelect').addEventListener('change', (e) => {
+    userSettings.font = e.target.value;
+    document.getElementById('chatMessages').style.fontFamily = userSettings.font;
+    document.getElementById('chatInput').style.fontFamily = userSettings.font;
+});
+
+function setBgImage(url) {
+    document.body.style.backgroundImage = `url('${url}')`;
+    document.body.style.backgroundColor = 'transparent';
+    userSettings.bg = url;
+}
+function setBgColor(color) {
+    document.body.style.backgroundColor = color;
+    document.body.style.backgroundImage = 'none';
+    userSettings.bg = color;
+}
+function setStatus(status) {
+    userSettings.status = status;
+    socket.emit('user status update', { name: currentUser, status: status });
+    // A lista de amigos será atualizada pelo servidor
+}
+
+// Inicialização
+document.addEventListener('DOMContentLoaded', () => {
+    document.getElementById('loginPopup').style.display = 'block';
+
+    const fontSelect = document.getElementById('fontSelect');
+    const fonts = ['Roboto', 'Press Start 2P', 'Montserrat', 'Pacifico', 'Oswald', 'Raleway'];
+    fonts.forEach(font => {
+        const opt = document.createElement('option');
+        opt.value = font;
+        opt.textContent = font;
+        fontSelect.appendChild(opt);
+    });
+
+    const dragElement = (element, header) => {
+        let isDragging = false;
+        let offsetX, offsetY;
+        header.addEventListener('mousedown', (e) => {
+            isDragging = true;
+            offsetX = e.clientX - element.getBoundingClientRect().left;
+            offsetY = e.clientY - element.getBoundingClientRect().top;
+            element.style.cursor = 'grabbing';
+        });
+        document.addEventListener('mousemove', (e) => {
+            if (!isDragging) return;
+            element.style.left = `${e.clientX - offsetX}px`;
+            element.style.top = `${e.clientY - offsetY}px`;
+        });
+        document.addEventListener('mouseup', () => {
+            isDragging = false;
+            element.style.cursor = 'grab';
+        });
+    };
+
+    dragElement(document.getElementById('chatContainer'), document.getElementById('chatHeader'));
+    dragElement(document.getElementById('loginPopup'), document.getElementById('loginPopup').querySelector('.topBar'));
+    dragElement(document.getElementById('emojiPanel'), document.getElementById('emojiPanel').querySelector('.topBar'));
+    dragElement(document.getElementById('settingsPanel'), document.getElementById('settingsPanel').querySelector('.topBar'));
+});
+
+// Comunicação com o servidor
+socket.on('chat message', (msg) => {
+    const chatMessages = document.getElementById('chatMessages');
+    const msgDiv = document.createElement('div');
+    const userFont = msg.settings && msg.settings.font ? msg.settings.font : 'Roboto';
+    const msgContent = msg.settings && msg.settings.neonActive ? 
+        `<span class="neonBlink" style="color:${msg.settings.neonColor}">${msg.message}</span>` : 
+        msg.message;
+    msgDiv.innerHTML = `<b style="font-family:'${userFont}'">${msg.username}:</b> <span style="font-family:'${userFont}'">${msgContent}</span>`;
+    chatMessages.appendChild(msgDiv);
+    scrollToBottom(chatMessages);
+});
+
+socket.on('user list update', (updatedUsers) => {
+  const friendsList = document.getElementById('friendsList');
+  friendsList.innerHTML = '';
+  Object.values(updatedUsers).forEach(user => {
+    if (user.name !== currentUser) {
+      const friendItem = document.createElement('li');
+      friendItem.className = 'friend ' + user.status;
+      friendItem.innerHTML = `<span onclick="alert('Funcionalidade de chat privado ainda não implementada.')">${user.name} (${user.status})</span>`;
+      friendsList.appendChild(friendItem);
+    }
+  });
+});
 </script>
 
 </body>
