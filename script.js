@@ -1,123 +1,174 @@
-const socket = io();
+// Conexão com o servidor do Render
+const socket = io('https://meu-chat-lin7.onrender.com');
 
-// Elementos
-const openChatBtn = document.getElementById("openChatBtn");
-const chatWindow = document.getElementById("chatWindow");
-const authPopup = document.getElementById("authPopup");
-const settingsPopup = document.getElementById("settingsPopup");
+// Elementos do DOM
+const openChatBtn = document.getElementById('openChatBtn');
+const authPopup = document.getElementById('authPopup');
+const chatWindow = document.getElementById('chatWindow');
+const settingsPopup = document.getElementById('settingsPopup');
+const chatMessages = document.getElementById('chatMessages');
+const chatInput = document.getElementById('chatInput');
+const sendBtn = document.getElementById('sendBtn');
+const loginBtn = document.getElementById('loginBtn');
+const registerBtn = document.getElementById('registerBtn');
+const logoutBtn = document.getElementById('logoutBtn');
+const settingsBtn = document.getElementById('settingsBtn');
 
-const loginBtn = document.getElementById("loginBtn");
-const registerBtn = document.getElementById("registerBtn");
-const logoutBtn = document.getElementById("logoutBtn");
-const closeAuth = document.getElementById("closeAuth");
-const minimizeAuth = document.getElementById("minimizeAuth");
-const minimizeChat = document.getElementById("minimizeChat");
+const usernameInput = document.getElementById('username');
+const passwordInput = document.getElementById('password');
+const confirmPasswordInput = document.getElementById('confirmPassword');
+const minimizeAuthBtn = document.getElementById('minimizeAuth');
+const closeAuthBtn = document.getElementById('closeAuth');
+const minimizeChatBtn = document.getElementById('minimizeChat');
 
-const sendBtn = document.getElementById("sendBtn");
-const chatMessages = document.getElementById("chatMessages");
-const chatInput = document.getElementById("chatInput");
+const bgColorPicker = document.getElementById('bgColorPicker');
+const bgUpload = document.getElementById('bgUpload');
+const bgPreset = document.getElementById('bgPreset');
+const closeSettingsBtn = document.getElementById('closeSettings');
 
-const settingsBtn = document.getElementById("settingsBtn");
-const closeSettings = document.getElementById("closeSettings");
-const bgColorPicker = document.getElementById("bgColorPicker");
-const bgUpload = document.getElementById("bgUpload");
-const bgPreset = document.getElementById("bgPreset");
-
+// Variáveis de estado
 let currentUser = null;
+let users = {};
 
-// Abrir chat
-openChatBtn.addEventListener("click", () => {
-  if (!currentUser) {
-    authPopup.style.display = "block";
-  } else {
-    chatWindow.style.display = "block";
-  }
-});
+// Funções de UI
+function toggleWindow(element) {
+  element.style.display = (element.style.display === 'flex') ? 'none' : 'flex';
+}
 
-// Login
-loginBtn.addEventListener("click", () => {
-  const username = document.getElementById("username").value;
-  const password = document.getElementById("password").value;
-  currentUser = username;
-  localStorage.setItem("user", username);
-  authPopup.style.display = "none";
-  chatWindow.style.display = "block";
-  socket.emit("login", username);
-});
+function closeWindow(element) {
+  element.style.display = 'none';
+}
 
-// Cadastro
-registerBtn.addEventListener("click", () => {
-  const username = document.getElementById("username").value;
-  const pass = document.getElementById("password").value;
-  const confirm = document.getElementById("confirmPassword").value;
-  if (pass !== confirm) {
-    alert("Senhas não coincidem!");
+function minimizeWindow(element) {
+  element.style.display = 'none';
+}
+
+function showAuth() {
+  closeWindow(chatWindow);
+  toggleWindow(authPopup);
+}
+
+function showChat() {
+  closeWindow(authPopup);
+  toggleWindow(chatWindow);
+}
+
+function showSettings() {
+  toggleWindow(settingsPopup);
+}
+
+function setBgColor() {
+  document.body.style.backgroundColor = bgColorPicker.value;
+  document.body.style.backgroundImage = 'none';
+}
+
+function setBgImage(url) {
+  document.body.style.backgroundImage = `url('${url}')`;
+}
+
+function register() {
+  if (passwordInput.value !== confirmPasswordInput.value) {
+    alert('As senhas não coincidem!');
     return;
   }
-  alert("Cadastro realizado!");
-});
+  if (users[usernameInput.value]) {
+    alert('Usuário já existe!');
+    return;
+  }
+  users[usernameInput.value] = { password: passwordInput.value };
+  alert('Usuário cadastrado com sucesso!');
+  login();
+}
 
-// Logout
-logoutBtn.addEventListener("click", () => {
+function login() {
+  if (users[usernameInput.value] && users[usernameInput.value].password === passwordInput.value) {
+    currentUser = usernameInput.value;
+    alert('Login realizado com sucesso!');
+    socket.emit('user connected', { name: currentUser });
+    showChat();
+  } else {
+    alert('Usuário ou senha incorretos!');
+  }
+}
+
+function logout() {
   currentUser = null;
-  localStorage.removeItem("user");
-  chatWindow.style.display = "none";
-  authPopup.style.display = "block";
-});
+  socket.disconnect();
+  location.reload();
+}
 
-// Minimizar
-minimizeChat.addEventListener("click", () => {
-  chatWindow.style.display = "none";
-});
+function sendMessage() {
+  const message = chatInput.value.trim();
+  if (message && currentUser) {
+    socket.emit('chat message', { user: currentUser, text: message });
+    chatInput.value = '';
+    scrollToBottom();
+  }
+}
 
-minimizeAuth.addEventListener("click", () => {
-  authPopup.style.display = "none";
-});
-
-closeAuth.addEventListener("click", () => {
-  authPopup.style.display = "none";
-});
-
-// Enviar mensagem
-sendBtn.addEventListener("click", () => {
-  const msg = chatInput.value;
-  if (msg.trim() === "") return;
-  socket.emit("message", { user: currentUser, text: msg });
-  chatInput.value = "";
-});
-
-// Receber mensagens
-socket.on("message", (data) => {
-  const div = document.createElement("div");
-  div.innerHTML = `<b>${data.user}:</b> ${data.text}`;
-  chatMessages.appendChild(div);
+function scrollToBottom() {
   chatMessages.scrollTop = chatMessages.scrollHeight;
+}
+
+// Lógica de arrastar janelas
+function makeDraggable(element, header) {
+  let isDragging = false;
+  let offsetX, offsetY;
+
+  header.addEventListener('mousedown', (e) => {
+    isDragging = true;
+    offsetX = e.clientX - element.getBoundingClientRect().left;
+    offsetY = e.clientY - element.getBoundingClientRect().top;
+    element.style.cursor = 'grabbing';
+  });
+
+  document.addEventListener('mousemove', (e) => {
+    if (!isDragging) return;
+    element.style.left = `${e.clientX - offsetX}px`;
+    element.style.top = `${e.clientY - offsetY}px`;
+  });
+
+  document.addEventListener('mouseup', () => {
+    isDragging = false;
+    element.style.cursor = 'grab';
+  });
+}
+
+// Event Listeners
+openChatBtn.addEventListener('click', showAuth);
+minimizeAuthBtn.addEventListener('click', () => minimizeWindow(authPopup));
+closeAuthBtn.addEventListener('click', () => closeWindow(authPopup));
+loginBtn.addEventListener('click', login);
+registerBtn.addEventListener('click', register);
+logoutBtn.addEventListener('click', logout);
+settingsBtn.addEventListener('click', showSettings);
+minimizeChatBtn.addEventListener('click', () => minimizeWindow(chatWindow));
+closeSettingsBtn.addEventListener('click', () => closeWindow(settingsPopup));
+sendBtn.addEventListener('click', sendMessage);
+chatInput.addEventListener('keydown', (e) => {
+  if (e.key === 'Enter') {
+    sendMessage();
+  }
+});
+bgColorPicker.addEventListener('input', setBgColor);
+bgPreset.addEventListener('change', (e) => {
+  if (e.target.value) {
+    setBgImage(e.target.value);
+  }
 });
 
-// Configurações
-settingsBtn.addEventListener("click", () => {
-  settingsPopup.style.display = "block";
+// Inicialização
+document.addEventListener('DOMContentLoaded', () => {
+  makeDraggable(authPopup, authPopup.querySelector('.popup-header'));
+  makeDraggable(chatWindow, chatWindow.querySelector('.chat-header'));
+  makeDraggable(settingsPopup, settingsPopup.querySelector('.popup-header'));
 });
 
-closeSettings.addEventListener("click", () => {
-  settingsPopup.style.display = "none";
-});
-
-// Fundo
-bgColorPicker.addEventListener("input", (e) => {
-  chatWindow.style.background = e.target.value;
-});
-
-bgPreset.addEventListener("change", (e) => {
-  chatWindow.style.background = `url('${e.target.value}') center/cover no-repeat`;
-});
-
-bgUpload.addEventListener("change", (e) => {
-  const file = e.target.files[0];
-  if (!file) return;
-  const reader = new FileReader();
-  reader.onload = () => {
-    chatWindow.style.background = `url('${reader.result}') center/cover no-repeat`;
-  };
-  reader.readAsDataURL(file);
+// Recebe mensagens do servidor
+socket.on('chat message', (msg) => {
+  const messageDiv = document.createElement('div');
+  messageDiv.className = 'chat-message';
+  messageDiv.textContent = `${msg.user}: ${msg.text}`;
+  chatMessages.appendChild(messageDiv);
+  scrollToBottom();
 });
