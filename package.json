@@ -1,12 +1,13 @@
 {
-  "name": "chat-sl",
-  "version": "3.0.0",
+  "name": "chat-flutuante",
+  "version": "2.3.0",
+  "description": "Chat flutuante estilo Messenger para Blogger e GitHub",
   "main": "server.js",
   "scripts": {
     "start": "node server.js"
   },
   "dependencies": {
-    "express": "^4.18.2",
+    "express": "^4.19.2",
     "socket.io": "^4.8.1"
   }
 }
