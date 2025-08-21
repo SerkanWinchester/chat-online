@@ -1,51 +1,29 @@
-const express = require('express');
-const http = require('http');
-const socketIo = require('socket.io');
-const path = require('path');
-const cors = require('cors'); // Importa a biblioteca CORS
+const express = require("express");
+const http = require("http");
+const { Server } = require("socket.io");
+const path = require("path");
 
 const app = express();
 const server = http.createServer(app);
-const io = socketIo(server, {
-  cors: {
-    origin: "*", // Permite acesso de qualquer origem
-    methods: ["GET", "POST"]
-  }
+const io = new Server(server);
+
+// serve os arquivos da pasta public
+app.use(express.static(path.join(__dirname, "public")));
+
+io.on("connection", (socket) => {
+    console.log("Novo usuário conectado:", socket.id);
+
+    socket.on("chatMessage", (data) => {
+        console.log("Mensagem recebida:", data);
+        io.emit("chatMessage", data); // envia para todos os clientes
+    });
+
+    socket.on("disconnect", () => {
+        console.log("Usuário desconectou:", socket.id);
+    });
 });
 
-// Define a porta do servidor
 const PORT = process.env.PORT || 3000;
-
-// Habilita o CORS para permitir requisições de outras origens
-app.use(cors());
-
-// Serve os arquivos estáticos da pasta raiz
-app.use(express.static(path.join(__dirname)));
-
-// Quando um cliente se conectar
-io.on('connection', (socket) => {
-  console.log('Novo usuário conectado');
-  
-  // O cliente envia seu nome e cor para ser adicionado à lista
-  socket.on('user connected', (user) => {
-    users[socket.id] = user;
-    io.emit('user list update', Object.values(users));
-  });
-
-  // Quando o servidor recebe uma mensagem do chat, ele retransmite para todos
-  socket.on('chat message', (msg) => {
-    io.emit('chat message', msg);
-  });
-
-  // Quando um cliente desconecta
-  socket.on('disconnect', () => {
-    console.log('Usuário desconectado');
-    delete users[socket.id];
-    io.emit('user list update', Object.values(users));
-  });
-});
-
-// Inicia o servidor
 server.listen(PORT, () => {
-  console.log(`Servidor rodando na porta ${PORT}`);
+    console.log(`Servidor rodando na porta ${PORT}`);
 });
