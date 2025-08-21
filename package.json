@@ -1,13 +1,14 @@
 {
-  "name": "chat-flutuante",
-  "version": "2.3.0",
-  "description": "Chat flutuante estilo Messenger para Blogger e GitHub",
+  "name": "chat-online",
+  "version": "1.0.0",
+  "description": "Chat em tempo real com Node.js e Socket.io",
   "main": "server.js",
   "scripts": {
     "start": "node server.js"
   },
   "dependencies": {
     "express": "^4.19.2",
-    "socket.io": "^4.8.1"
+    "socket.io": "^4.7.5",
+    "cors": "^2.8.5"
   }
 }
