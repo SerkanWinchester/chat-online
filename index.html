@@ -1,62 +1,69 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Chat SL V.3.0</title>
-<script src="https://cdn.socket.io/4.8.1/socket.io.min.js"></script>
-<link rel="stylesheet" href="chat.css">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Roboto&family=Press+Start+2P&family=Pacifico&family=Montserrat&display=swap" rel="stylesheet">
+  <meta charset="UTF-8">
+  <title>Chat Flutuante</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<button id="chatBtnFloat">💬</button>
+  <!-- Botão flutuante para abrir o chat -->
+  <button id="openChatBtn">💬</button>
 
-<div id="loginPopup" class="popup">
-  <div class="topBar"><span>Login</span><span onclick="closePopup('loginPopup')">X</span></div>
-  <input type="text" id="usernameInput" placeholder="Nome de usuário">
-  <button onclick="login()">Entrar</button>
-</div>
-
-<div id="chatContainer">
-  <div id="chatHeader">
-    Chat SL
-    <div style="display:flex; gap:5px;">
-      <span onclick="toggleSettings()">⚙</span>
-      <span onclick="minimizeChat()">_</span>
-      <span onclick="closePopup('chatContainer')">X</span>
+  <!-- Janela de Login/Cadastro -->
+  <div id="authPopup" class="popup">
+    <div class="popup-header">
+      <span>Login / Cadastro</span>
+      <div class="popup-controls">
+        <button id="minimizeAuth">—</button>
+        <button id="closeAuth">✖</button>
+      </div>
+    </div>
+    <div class="popup-body">
+      <input type="text" id="username" placeholder="Usuário">
+      <input type="password" id="password" placeholder="Senha">
+      <input type="password" id="confirmPassword" placeholder="Confirmar Senha">
+      <button id="registerBtn">Cadastrar</button>
+      <button id="loginBtn">Login</button>
     </div>
   </div>
-  <div id="chatMessages"></div>
-  <div id="chatInputContainer">
-    <input id="chatInput" placeholder="Digite sua mensagem...">
-    <button onclick="sendMessage()">Enviar</button>
-    <button onclick="scrollToBottom()">🔽</button>
-    <button onclick="toggleEmojiPanel()">😊</button>
+
+  <!-- Janela do Chat -->
+  <div id="chatWindow" class="chat">
+    <div class="chat-header">
+      <span>Chat Flutuante</span>
+      <div class="chat-controls">
+        <button id="settingsBtn">⚙️</button>
+        <button id="minimizeChat">—</button>
+        <button id="logoutBtn">⎋</button>
+      </div>
+    </div>
+    <div id="chatMessages" class="chat-messages"></div>
+    <div class="chat-input">
+      <textarea id="chatInput" placeholder="Digite sua mensagem..."></textarea>
+      <button id="sendBtn">Enviar</button>
+    </div>
   </div>
-</div>
 
-<div id="friendsPanel">
-  <div class="topBar"><span>Amigos</span><span onclick="toggleFriendsPanel()">_</span></div>
-  <ul id="friendsList"></ul>
-</div>
+  <!-- Configurações -->
+  <div id="settingsPopup" class="popup">
+    <div class="popup-header">
+      <span>Configurações</span>
+      <button id="closeSettings">✖</button>
+    </div>
+    <div class="popup-body">
+      <label>Papel de parede:</label>
+      <input type="color" id="bgColorPicker">
+      <input type="file" id="bgUpload" accept="image/*">
+      <select id="bgPreset">
+        <option value="">Escolher...</option>
+        <option value="https://xatframe.github.io/xatframes/RobFerrari_Balloons.html">Balloons</option>
+        <option value="https://xatframe.github.io/xatframes/lafleur_sea.html">Sea</option>
+        <option value="https://xatframe.github.io/xatframes/robferrari_xneon.html">Neon</option>
+      </select>
+    </div>
+  </div>
 
-<div id="emojiPanel" class="popup"></div>
-<div id="settingsPanel" class="popup">
-  <div class="topBar"><span>Configurações</span><span onclick="closePopup('settingsPanel')">X</span></div>
-  <p>Fundo: <button onclick="setBgImage('https://xatframe.github.io/xatframes/RobFerrari_Balloons.html')">Balloon</button>
-     <button onclick="setBgImage('https://xatframe.github.io/xatframes/lafleur_sea.html')">Sea</button>
-     <button onclick="setBgImage('https://xatframe.github.io/xatframes/robferrari_xneon.html')">Neon</button>
-     <button onclick="setBgColor('#111')">Cor sólida</button></p>
-  <p>Fonte: <select id="fontSelect"></select></p>
-  <p>Status: <button onclick="setStatus('online')">🟢</button>
-             <button onclick="setStatus('ausente')">🟡</button>
-             <button onclick="setStatus('ocupado')">🔴</button></p>
-  <p>Neon: <input type="checkbox" id="neonToggle"> Ativar</p>
-  <p>Cor Neon: <input type="color" id="neonColor" value="#ff00d4"></p>
-</div>
-
-<script src="chat.js"></script>
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="script.js"></script>
 </body>
 </html>
