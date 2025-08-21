@@ -4,646 +4,70 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chat Perfeito</title>
-    <script src="/socket.io/socket.io.js"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Abril+Fatface&family=Bebas+Neue&family=Cormorant+Garamond:wght@400;700&family=Dancing+Script:wght@400;700&family=Fjalla+One&family=IBM+Plex+Sans:wght@400;700&family=Indie+Flower&family=Josefin+Sans:wght@400;700&family=Lobster&family=Lora:wght@400;700&family=Merriweather:wght@400;700&family=Montserrat:wght@400;700&family=Oswald:wght@400;700&family=Pacifico&family=Permanent+Marker&family=Playfair+Display:wght@400;700&family=Poppins:wght@400;700&family=Quicksand:wght@400;700&family=Raleway:wght@400;400&family=Satisfy&family=Source+Sans+Pro:wght@400;700&family=Spectral:wght@400;700&family=Ubuntu:wght@400;700&family=Varela+Round&display=swap" rel="stylesheet">
     <style>
-        /* Estilos para o chat */
-        .chat-container {
-            width: 540px;
-            height: 430px;
-            margin: 0 auto;
-            border-radius: 15px;
-            overflow: hidden;
-            position: relative;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-            background-image: url('https://i.imgur.com/qkWxt2w.png');
-            background-size: auto 100%;
-            background-position: left center;
-            border: 3px solid #0000ff;
-            animation: neon-border 3s infinite alternate;
-            display: flex;
-            flex-direction: column;
-            box-sizing: border-box;
-        }
-        @keyframes background-pan {
-            0% { background-position: left center; }
-            100% { background-position: right center; }
-        }
-        .chat-container.background-animated {
-            animation: neon-border 3s infinite alternate, background-pan 30s infinite linear alternate;
-        }
-        @keyframes neon-border {
-            0%   { border-color: #0000ff; }
-            33%  { border-color: #8A2BE2; }
-            66%  { border-color: #FF69B4; }
-            100% { border-color: #0000ff; }
-        }
-        .chat-box {
-            flex-grow: 1;
-            padding: 5px;
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-            justify-content: flex-end;
-            color: white;
-            text-shadow: 1px 1px 2px #000;
-        }
-        .chat-box p {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(5px);
-            padding: 3px 8px;
-            border-radius: 5px;
-            margin: 2px 0;
-            line-height: 1.2;
-        }
-        .chat-box p:first-child {
-            margin-top: auto;
-        }
-        .chat-input-area {
-            padding: 5px;
-            background: rgba(0, 0, 0, 0.7);
-            display: flex;
-            flex-direction: column;
-            position: relative;
-        }
-        .chat-button-group {
-            display: flex;
-            margin-top: 5px;
-            align-items: center;
-            gap: 5px;
-        }
-        .chat-input {
-            padding: 6px;
-            border: none;
-            border-radius: 5px;
-            width: 100px;
-            font-size: 0.9em;
-        }
-        #message-input {
-            flex-grow: 1;
-            margin-left: 0;
-            margin-right: 0;
-        }
-        .chat-button, .users-list-button, .emoji-button {
-            padding: 6px 10px;
-            font-size: 0.9em;
-        }
-        .users-list-panel, .emoji-panel {
-            display: none;
-            position: absolute;
-            top: 40px;
-            right: 5px;
-            width: 200px;
-            background: rgba(0, 0, 0, 0.8);
-            border-radius: 10px;
-            padding: 10px;
-            box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
-            z-index: 200;
-            color: white;
-            font-family: Arial, sans-serif;
-            flex-direction: column;
-            max-height: 300px;
-            overflow-y: auto;
-        }
-        .settings-panel {
-            display: none;
-            position: absolute;
-            top: 40px;
-            right: 5px;
-            width: 200px;
-            background: rgba(0, 0, 0, 0.8);
-            border-radius: 10px;
-            padding: 10px;
-            box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
-            z-index: 200;
-            color: white;
-            font-family: Arial, sans-serif;
-            flex-direction: column;
-        }
-        .settings-panel h6 {
-            margin-top: 0;
-            margin-bottom: 8px;
-            border-bottom: 1px solid #444;
-            padding-bottom: 3px;
-            font-size: 0.9em;
-        }
-        .settings-panel .setting-row {
-            margin-bottom: 10px;
-        }
-        .settings-panel .setting-row .setting-label {
-            display: block;
-            margin-bottom: 3px;
-            font-size: 0.8em;
-        }
-        .settings-panel .toolbar-buttons button,
-        .status-icons button {
-            width: 30px;
-            height: 30px;
-            font-size: 1em;
-            padding: 0;
-        }
-        .settings-panel .setting-row input[type="color"] {
-            -webkit-appearance: none;
-            -moz-appearance: none;
-            appearance: none;
-            width: 30px;
-            height: 30px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            cursor: pointer;
-            background-color: transparent;
-        }
-        .settings-panel .setting-row input[type="color"]::-webkit-color-swatch-wrapper {
-            padding: 0;
-        }
-        .settings-panel .setting-row input[type="color"]::-webkit-color-swatch {
-            border: none;
-            border-radius: 4px;
-        }
-        .settings-panel .setting-row input[type="color"]::-moz-color-swatch {
-            border: none;
-            border-radius: 4px;
-        }
-        .settings-button {
-            position: absolute;
-            top: 5px;
-            right: 5px;
-            width: 25px;
-            height: 25px;
-            background-color: #333;
-            color: white;
-            border-radius: 50%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            cursor: pointer;
-            z-index: 150;
-            font-size: 1em;
-            border: 2px solid white;
-        }
-        .status-icons {
-            gap: 5px;
-        }
-        .font-select-container {
-            max-height: 100px !important;
-        }
-        .close-btn {
-            position: absolute;
-            top: 5px;
-            right: 10px;
-            font-size: 1.5em;
-            cursor: pointer;
-            color: #fff;
-        }
-        .status-indicator {
-            display: inline-block;
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            margin-right: 5px;
-        }
-        .status-indicator.online { background-color: #28a745; }
-        .status-indicator.busy { background-color: #dc3545; }
-        .status-indicator.away { background-color: #6c757d; }
-        .emoji-panel {
-            padding: 0;
-            display: none;
-        }
-        .emoji-tabs {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: space-around;
-            padding: 5px 0;
-            background: rgba(0, 0, 0, 0.7);
-            border-bottom: 1px solid #444;
-        }
-        .emoji-tabs button {
-            background: none;
-            border: none;
-            font-size: 1.2em;
-            cursor: pointer;
-            padding: 5px;
-            color: #aaa;
-            transition: color 0.2s;
-        }
-        .emoji-tabs button.active {
-            color: #fff;
-            border-bottom: 2px solid #fff;
-        }
-        .emoji-category {
-            display: none;
-            flex-wrap: wrap;
-            padding: 10px;
-            gap: 8px;
-            max-height: 250px;
-            overflow-y: auto;
-        }
-        .emoji-category.active {
-            display: flex;
-        }
-        .emoji-category button {
-            background: none;
-            border: none;
-            font-size: 1.5em;
-            cursor: pointer;
-            padding: 2px;
-            line-height: 1;
-            color: white;
-        }
-        .emoji-category button:hover {
-            transform: scale(1.2);
-            transition: transform 0.2s ease;
-        }
+        body { font-family: Arial, sans-serif; margin: 0; background: #1e1e1e; color: #fff; }
+        header { background: #333; padding: 10px; text-align: center; font-size: 18px; }
+        #chat-container { display: flex; flex-direction: column; height: calc(100vh - 50px); }
+        #chat-messages { flex: 1; overflow-y: auto; padding: 10px; background: #222; }
+        #chat-messages p { margin: 5px 0; padding: 6px 10px; background: #444; border-radius: 8px; }
+        #chat-input { display: flex; padding: 10px; background: #111; gap: 5px; }
+        #username-input, #message-input { padding: 8px; border: none; border-radius: 5px; }
+        #username-input { width: 20%; }
+        #message-input { flex: 1; }
+        button { padding: 8px 12px; border: none; border-radius: 5px; background: #0084ff; color: white; cursor: pointer; }
+        button:disabled { background: gray; cursor: not-allowed; }
     </style>
 </head>
 <body>
-    <div class="chat-container">
-        <div class="settings-button" onclick="toggleSettingsPanel()">⚙️</div>
-        <div class="chat-box" id="chat-messages"></div>
-        <div id="users-list-panel" class="users-list-panel">
-            <span class="close-btn" onclick="toggleUsersList()">×</span>
-            <h6>Online</h6>
-            <ul id="users-list"></ul>
-        </div>
-        <div id="emoji-panel" class="emoji-panel">
-            <div class="emoji-tabs">
-                <button onclick="showEmojiCategory('smileys')" class="active">😀</button>
-                <button onclick="showEmojiCategory('people')">🧑</button>
-                <button onclick="showEmojiCategory('animals')">🐶</button>
-                <button onclick="showEmojiCategory('food')">🍔</button>
-                <button onclick="showEmojiCategory('travel')">✈️</button>
-                <button onclick="showEmojiCategory('activity')">⚽</button>
-                <button onclick="showEmojiCategory('objects')">💡</button>
-                <button onclick="showEmojiCategory('symbols')">❤️</button>
-                <button onclick="showEmojiCategory('flags')">🏁</button>
-                <button onclick="showEmojiCategory('transportes')">🚆</button>
-                <button onclick="showEmojiCategory('tecnologia')">📱</button>
-                <button onclick="showEmojiCategory('saude')">💉</button>
-                <button onclick="showEmojiCategory('esportes')">🏀</button>
-                <button onclick="showEmojiCategory('profissoes')">👨‍🚀</button>
-            </div>
-            <div id="smileys" class="emoji-category active"></div>
-            <div id="people" class="emoji-category"></div>
-            <div id="animals" class="emoji-category"></div>
-            <div id="food" class="emoji-category"></div>
-            <div id="travel" class="emoji-category"></div>
-            <div id="activity" class="emoji-category"></div>
-            <div id="objects" class="emoji-category"></div>
-            <div id="symbols" class="emoji-category"></div>
-            <div id="flags" class="emoji-category"></div>
-            <div id="transportes" class="emoji-category"></div>
-            <div id="tecnologia" class="emoji-category"></div>
-            <div id="saude" class="emoji-category"></div>
-            <div id="esportes" class="emoji-category"></div>
-            <div id="profissoes" class="emoji-category"></div>
-        </div>
-        <div id="settings-panel" class="settings-panel">
-            <span class="close-btn" onclick="toggleSettingsPanel()">×</span>
-            <h6>Configurações de Tema</h6>
-            <div class="setting-row">
-                <label for="username-color">Cor do seu nome:</label>
-                <input type="color" id="username-color" value="#FFFFFF" />
-            </div>
-            <div class="setting-row">
-                <label for="text-color">Cor da sua mensagem:</label>
-                <input type="color" id="text-color" value="#FFFFFF" />
-            </div>
-            <div class="setting-row">
-                <div class="setting-label">Ferramentas de Texto</div>
-                <div class="toolbar-buttons">
-                    <button onclick="formatText('bold')" title="Negrito"><b>B</b></button>
-                    <button onclick="formatText('italic')" title="Itálico"><i>I</i></button>
-                    <button onclick="formatText('underline')" title="Sublinhado"><u>U</u></button>
-                    <button onclick="formatText('strike')" title="Riscado"><s>S</s></button>
-                    <button onclick="toggleTextShadow()" id="shadow-toggle-button" title="Ativar/Desativar Sombra">S</button>
-                </div>
-            </div>
-            <div class="setting-row">
-                <div class="setting-label">Fonte:</div>
-                <div class="font-select-container">
-                    <select id="font-select" onchange="changeFont()" size="5">
-                        <option value="Arial">Arial</option>
-                        <option value="Roboto">Roboto</option>
-                        <option value="'Permanent Marker'">Permanent Marker</option>
-                        <option value="Pacifico">Pacifico</option>
-                        <option value="'Fjalla One'">Fjalla One</option>
-                        <option value="Lobster">Lobster</option>
-                        <option value="'Dancing Script'">Dancing Script</option>
-                        <option value="Oswald">Oswald</option>
-                        <option value="'Bebas Neue'">Bebas Neue</option>
-                        <option value="Merriweather">Merriweather</option>
-                        <option value="'Playfair Display'">Playfair Display</option>
-                        <option value="'Abril Fatface'">Abril Fatface</option>
-                        <option value="'Cormorant Garamond'">Cormorant Garamond</option>
-                        <option value="'IBM Plex Sans'">IBM Plex Sans</option>
-                        <option value="'Indie Flower'">Indie Flower</option>
-                        <option value="'Josefin+Sans'">Josefin Sans</option>
-                        <option value="Lora">Lora</option>
-                        <option value="Montserrat">Montserrat</option>
-                        <option value="Poppins">Poppins</option>
-                        <option value="Quicksand">Quicksand</option>
-                        <option value="Raleway">Raleway</option>
-                        <option value="Satisfy">Satisfy</option>
-                        <option value="'Source Sans Pro'">Source Sans Pro</option>
-                        <option value="Spectral">Spectral</option>
-                        <option value="Ubuntu">Ubuntu</option>
-                        <option value="'Varela Round'">Varela Round</option>
-                    </select>
-                </div>
-            </div>
-            <div class="setting-row">
-                <span class="setting-label">Seu Status:</span>
-                <div class="status-icons">
-                    <button onclick="setStatus('online')" title="Presente">🟢</button>
-                    <button onclick="setStatus('busy')" title="Ocupado">🔴</button>
-                    <button onclick="setStatus('away')" title="Ausente">⚪</button>
-                </div>
-            </div>
-            <div class="setting-row">
-                <button onclick="toggleBackground()" id="background-toggle-btn">Desativar Fundo</button>
-            </div>
-        </div>
-        <div class="chat-input-area">
-            <div class="chat-button-group">
-                <input type="text" id="username-input" class="chat-input" placeholder="Seu nome..." />
-                <input type="text" id="message-input" class="chat-input" placeholder="Sua mensagem..." disabled />
-                <button id="send-button" class="chat-button" disabled>💬</button>
-                <button id="users-list-button" class="users-list-button" onclick="toggleUsersList()">👥</button>
-                <button id="emoji-button" class="emoji-button" onclick="toggleEmojiPanel()">😊</button>
-            </div>
+    <header>Chat Perfeito 😎</header>
+    <div id="chat-container">
+        <div id="chat-messages"></div>
+        <div id="chat-input">
+            <input type="text" id="username-input" placeholder="Seu nome...">
+            <input type="text" id="message-input" placeholder="Digite uma mensagem..." disabled>
+            <button id="send-button" disabled>💬</button>
         </div>
     </div>
+
+    <!-- Importa socket.io -->
+    <script src="/socket.io/socket.io.js"></script>
     <script>
-        const socket = io('https://meu-chat-lin7.onrender.com');
+        const socket = io();
 
-        // Variáveis globais para os elementos
-        let currentUser = '';
-        let currentUsernameColor = '#FFFFFF';
-        let currentTextColor = '#FFFFFF';
-        let isBackgroundActive = true;
-        let isTextShadowActive = true;
+        const usernameInput = document.getElementById("username-input");
+        const messageInput = document.getElementById("message-input");
+        const sendButton = document.getElementById("send-button");
+        const chatBox = document.getElementById("chat-messages");
 
-        const emojiCategories = {
-            smileys: [
-                '😀', '😁', '😂', '🤣', '😃', '😄', '😅', '😆', '😇', '😉', '😊', '😋', '😌', '😍', '🥰', '😘', '😗', '😙', '😚', '🤗', '🤩', '🤔', '🤨', '😐', '😑', '😶', '😏', '😒', '🙄', '😬', '🤥', '😌', '😔', '😪', '🤤', '😴', '😷', '🤒', '🤕', '🤢', '🤮', '🤧', '🥵', '🥶', '😵', '🤯', '🤠', '🥳', '😎', '🤓', '🧐', '😕', '😟', '🙁', '😮', '😯', '😲', '😳', '🥺', '😭', '😢', '😥', '😨', '😱', '😫', '😩', '😤', '😡', '😠', '😈', '👹', '👺', '🤡', '👻', '💀', '☠️', '💩', '👽', '👾', '🤖'
-            ],
-            people: [
-                '🧑', '👧', '👦', '👨', '👩', '👴', '👵', '👶', '👼', '🤴', '👸', '🤵', '👰', '🦸', '🦹', '🧑‍⚕️', '🧑‍🎓', '🧑‍🏫', '🧑‍⚖️', '🧑‍🌾', '🧑‍🍳', '🧑‍🔧', '🧑‍🏭', '🧑‍💻', '🧑‍💼', '🧑‍🔬', '🧑‍🎨', '🧑‍🚒', '🧑‍✈️', '🧑‍🚀', '👮', '🕵️', '💂', '👷', '🧑‍🎤', '🧘', '💃', '🕺', '👯', '🧑‍🤝‍🧑', '🫂', '🚶', '🏃', '🧍', '🧎', '🤾', '🚴', '🤸', '⛹️', '🤼'
-            ],
-            animals: [
-                '🐶', '🐱', '🐭', '🐹', '🐰', '🐻', '🐼', '🐨', '🐯', '🦁', '🐮', '🐷', '🐸', '🐒', '🦍', '🐔', '🐧', '🦅', '🦉', '🦋', '🐛', '🐝', '🐞', '🐠', '🐬', '🐳', '🦈', '🐊', '🐉', '🦕', '🦖', '🐎', '🦓', '🦒', '🐘', '🦏', '🐪', '🐫', '🐖', '🐏', '🐑', '🐐', '🦌', '🐈‍⬛', '🦢', '🦔', '🐿️', '🐇'
-            ],
-            food: [
-                '🍎', '🍏', '🍐', '🍊', '🍋', '🍌', '🍉', '🍇', '🍓', '🍒', '🍑', '🥭', '🍍', '🥥', '🥝', '🍅', '🍆', '🥑', '🥦', '🥬', '🥒', '🌽', '🥕', '🥔', '🌶️', '🍄', '🥜', '🌰', '🍞', '🥐', '🥖', '🥨', '🥞', '🧇', '🧀', '🍗', '🍖', '🍔', '🍟', '🍕', '🌭', '🌮', '🌯', '🥙', '🧆', '🥚', '🍳', '🥓', '🥩', '🍝', '🍜', '🍲', '🍛', '🍣', '🍤', '🍙', '🍚', '🍘', '🍥', '🍡', '🍢', '🍧', '🍨', '🍦', '🥧', '🍰', '🎂', '🍮', '🍭', '🍬', '🍫', '🍩', '🍪', '☕', '🍵', '🧉', '🧋', '🥛', '🥤', '🍶', '🍺', '🍻', '🥂', '🍷', '🥃', '🍸', '🍹', '🍾', '🧂', '🥣', '🥢', '🥄'
-            ],
-            travel: [
-                '🚗', '🚕', '🚌', '🚎', '🏎️', '🚓', '🚑', '🚒', '🚐', '🛻', '🚛', '🚜', '🛵', '🏍️', '🚲', '🛴', '🚄', '🚅', '🚂', '🚆', '🚇', '🚈', '🚉', '🚊', '🚁', '✈️', '🚀', '🛸', '⛵', '🛳️', '🛥️', '🚢', '⚓', '🗺️', '🧭', '🌉', '🌃', '🏙️', '🌆', '🌇', '🏠', '🏡', '🏢', '🏣', '🏤', '🏥', '🏦', '🏨', '🏫', '🏪', '🏪', '🏭', '🏰', '🏯', '🏟️', '🗽', '🗼', '🗻', '🌄', '🌅', '🏜️', '🏞️', '🛤️', '🛣️', '🗺️', '🌐'
-            ],
-            activity: [
-                '⚽', '🏀', '🏈', '⚾', '🥎', '🎾', '🏐', '🏉', '🏓', '🏸', '🏒', '🏑', '🏏', '🥍', '🪃', '🥅', '⛳', '🎯', '🎳', '🎱', '🥊', '🥋', '🛹', '🛼', '🤿', '🏄‍♂️', '🏊‍♀️', '🤽', '🚣', '🤸', '🏋️', '🧘', '🏇', '🏆', '🥇', '🥈', '🥉', '🏅', '🎖️', '🎗️', '🎫', '🎟️', '🎭', '🎨', '🎬', '🎤', '🎧', '🥁', '🎷', '🎺', '🎸', '🎻', '🎲', '🧩', '🎮', '🕹️', '🎰', '🪁'
-            ],
-            objects: [
-                '⌚', '📱', '💻', '🖥️', '⌨️', '🖨️', '🖱️', '🔋', '🔌', '💡', '🔦', '☎️', '📞', '📠', '💾', '💿', '📀', '🧮', '💻', '📱', '📱', '☎️', '📞', '📠', '🔋', '🔌', '💡', '🔦', '🔗', '🔒', '🔓', '🔑', '🗝️', '🔪', '🗡️', '🔫', '💣', '🛡️', '⚔️', '🏹', '🔧', '🔨', '⛏️', '🪓', '🧱', '🧱', '🔩', '⚙️', '⚖️', '⛓️', '🪚', '🛠️'
-            ],
-            symbols: [
-                '❤️', '🧡', '💛', '💚', '💙', '💜', '🤎', '🖤', '🤍', '💔', '❣️', '💕', '💞', '💓', '💗', '💖', '💘', '💝', '🧡', '💛', '💚', '💙', '💜', '🖤', '🤍', '🤎', '💯', '✔️', '✅', '❌', '❎', '❓', '❔', '❕', '❗', '⁉️', '➕', '➖', '✖️', '➗', '♾️', '⭐', '✨', '🌟', '💫', '💥', '🔥', '🌈', '☀️', '🌕', '⚡', '💧', '🌊', '💨', '🌪️', '🌀'
-            ],
-            flags: [
-                '🇧🇷', '🇺🇸', '🇯🇵', '🇨🇦', '🇨🇳', '🇫🇷', '🇩🇪', '🇮🇳', '🇮🇹', '🇲🇽', '🇷🇺', '🇪🇸', '🇬🇧', '🇦🇺', '🇦🇷', '🇧🇪', '🇨🇱', '🇨🇴', '🇨🇺', '🇪🇬', '🇬🇷', '🇭🇰', '🇮🇩', '🇮🇪', '🇮🇱', '🇰🇷', '🇳🇱', '🇳🇴', '🇵🇹', '🇸🇦', '🇸🇪', '🇹🇭', '🇹🇷', '🇻🇳', '🇿🇦', '🇰🇷', '🇲🇽', '🇦🇪', '🇦🇺', '🇦🇹', '🇧🇪', '🇨🇭', '🇨🇿', '🇩🇰', '🇫🇮'
-            ],
-            transportes: [
-                '🚗', '🚕', '🚌', '🚎', '🏎️', '🚓', '🚑', '🚒', '🚐', '🛻', '🚛', '🚜', '🛵', '🏍️', '🚲', '🛴', '🦼', '🦽', '🛺', '🚂', '🚆', '🚇', '🚈', '🚉', '🚊', '🚝', '🚋', '🚟', '🚠', '🚡', '🚃', '🚄', '🚅', '✈️', '🛫', '🛬', '💺', '🚀', '🛸', '🛰️', '🚁', '🛶', '⛵', '🚤', '🛥️', '🛳️', '⛴️', '🚢', '⚓', '⛽'
-            ],
-            tecnologia: [
-                '📱', '💻', '🖥️', '⌨️', '🖱️', '🖲️', '🖨️', '📠', '🔌', '🔋', '🪫', '💡', '🔦', '⏰', '🕰️', '📺', '📻', '🎙️', '🎚️', '🎛️', '🎤', '🎧', '🎼', '🎵', '🎶', '📽️', '🎬', '🎥', '📹', '📷', '📸', '📟', '📞', '☎️', '📲', '💻', '🖥️', '🖨️', '⌨️', '🖱️', '🖲️', '🔦', '💡', '🔋', '🪫', '🔌', '📡'
-            ],
-            saude: [
-                '💉', '💊', '🩹', '🩺', '🔬', '🧪', '🧬', '🩸', '🌡️', '🩻', '🩼', '🩻', '🩼', '🩹', '🩺', '🔬', '🧪', '🧬', '🩸', '🌡️', '🩻', '🩼', '🧑‍⚕️', '👩‍⚕️', '👨‍⚕️', '🤒', '🤕', '😷', '🤧', '🧠', '🫀', '🫁', '🦷', '🦴', '👀', '👅', '👂', '👃', '🦶', '🦵', '💪', '🦾'
-            ],
-            esportes: [
-                '⚽', '🏀', '🏈', '⚾', '🥎', '🎾', '🏐', '🏉', '🏓', '🏸', '🏒', '🏑', '🏏', '🥍', '🪃', '🥅', '⛳', '🎯', '🥌', '🛷', '⛸️', '🎿', '🏂', '🪂', '🛹', '🛼', '🤿', '🎽', '🎽', '🏅', '🥇', '🥈', '🥉', '🏆', '🏆', '🎉', '🎊', '🎇', '🎆', '🎁', '🎀', '🎈', '🎊'
-            ],
-            profissoes: [
-                '🧑‍💼', '👨‍💼', '👩‍💼', '🧑‍⚖️', '👨‍⚖️', '👩‍⚖️', '🧑‍⚕️', '👨‍⚕️', '👩‍⚕️', '🧑‍🎓', '👨‍🎓', '👩‍🎓', '🧑‍🏫', '👨‍🏫', '👩‍🏫', '🧑‍🌾', '👨‍🌾', '👩‍🌾', '🧑‍🍳', '👨‍🍳', '👩‍🍳', '🧑‍🔧', '👨‍🔧', '👩‍🔧', '🧑‍🏭', '👨‍🏭', '👩‍🏭', '🧑‍💻', '👨‍💻', '👩‍💻', '🧑‍🎤', '👨‍🎤', '👩‍🎤', '🧑‍🎨', '👨‍🎨', '👩‍🎨', '🧑‍🚀', '👨‍🚀', '👩‍🚀', '🧑‍🚒', '👨‍🚒', '👩‍🚒', '👮', '🕵️', '💂', '👷', '🧑‍✈️', '👨‍✈️', '👩‍✈️'
-            ]
-        };
-
-        // Mapeia os elementos do DOM isolado
-        const usernameInput = shadowRoot.querySelector('#username-input');
-        const messageInput = shadowRoot.querySelector('#message-input');
-        const sendButton = shadowRoot.querySelector('#send-button');
-        const chatMessages = shadowRoot.querySelector('#chat-messages');
-        const usersListPanel = shadowRoot.querySelector('#users-list-panel');
-        const settingsPanel = shadowRoot.querySelector('#settings-panel');
-        const emojiPanel = shadowRoot.querySelector('#emoji-panel');
-        const userListElement = shadowRoot.querySelector('#users-list');
-
-        const usernameColorInput = shadowRoot.querySelector('#username-color');
-        const textColorInput = shadowRoot.querySelector('#text-color');
-        const fontSelect = shadowRoot.querySelector('#font-select');
-        const shadowToggleButton = shadowRoot.querySelector('#shadow-toggle-button');
-        const backgroundToggleButton = shadowRoot.querySelector('#background-toggle-btn');
-        const usersListButton = shadowRoot.querySelector('#users-list-button');
-        const settingsButton = shadowRoot.querySelector('.settings-button');
-        const emojiButton = shadowRoot.querySelector('#emoji-button');
-
-        // Adiciona event listeners aos botões
-        usernameInput.addEventListener('keydown', function(event) {
-            if (event.key === 'Enter') {
-                const username = this.value.trim();
-                if (username) {
-                    currentUser = username;
-                    this.disabled = true;
-                    messageInput.disabled = false;
-                    sendButton.disabled = false;
-                    messageInput.focus();
-                    socket.emit('user connected', { name: currentUser, color: currentUsernameColor, status: 'online' });
-                }
-            }
-        });
-        messageInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') { sendMessageOnline(); } });
-        sendButton.addEventListener('click', sendMessageOnline);
-        usernameColorInput.addEventListener('input', function() { currentUsernameColor = this.value; updateUserNameColor(currentUser, currentUsernameColor); });
-        textColorInput.addEventListener('input', function() { currentTextColor = this.value; });
-        settingsButton.addEventListener('click', toggleSettingsPanel);
-        usersListButton.addEventListener('click', toggleUsersList);
-        emojiButton.addEventListener('click', toggleEmojiPanel);
-        shadowToggleButton.addEventListener('click', toggleTextShadow);
-        backgroundToggleButton.addEventListener('click', toggleBackground);
-        fontSelect.addEventListener('change', changeFont);
-
-        shadowRoot.querySelectorAll('.emoji-tabs button').forEach(button => {
-            button.addEventListener('click', () => {
-                const category = button.getAttribute('onclick').match(/showEmojiCategory\('(.*?)'\)/)[1];
-                showEmojiCategory(category);
-            });
+        // Ativa campos quando nome é digitado
+        usernameInput.addEventListener("input", () => {
+            const nameOk = usernameInput.value.trim().length > 0;
+            messageInput.disabled = !nameOk;
+            sendButton.disabled = !nameOk;
         });
 
-        // Adaptação para os botões de status
-        shadowRoot.querySelectorAll('.status-icons button').forEach(button => {
-            button.addEventListener('click', () => {
-                const status = button.getAttribute('onclick').match(/setStatus\('(.*?)'\)/)[1];
-                setStatus(status);
-            });
+        // Envia msg
+        sendButton.addEventListener("click", sendMessage);
+        messageInput.addEventListener("keypress", (e) => {
+            if (e.key === "Enter") sendMessage();
         });
 
-        // Funções do chat (ajustadas para o Shadow DOM)
-        function changeFont() {
-            // Lógica para mudar a fonte (pode ser re-implementada aqui se necessário)
-        }
-        function addUserToList(username, color, status) {
-            const newUser = document.createElement('li');
-            newUser.id = `user-${username}`;
-            newUser.innerHTML = `<span class="status-indicator ${status}"></span><span class="chat-user-name" style="color:${color}">${username}</span>`;
-            userListElement.appendChild(newUser);
-        }
-        function updateUserNameColor(username, color) {
-            const userItem = shadowRoot.querySelector(`#user-${username}`);
-            if (userItem) {
-                userItem.querySelector('.chat-user-name').style.color = color;
+        function sendMessage() {
+            const user = usernameInput.value.trim();
+            const msg = messageInput.value.trim();
+            if (user && msg) {
+                socket.emit("chatMessage", { user, msg });
+                messageInput.value = "";
             }
-        }
-        function setStatus(status) {
-            const userItem = shadowRoot.querySelector(`#user-${currentUser}`);
-            if (userItem) {
-                const indicator = userItem.querySelector('.status-indicator');
-                indicator.classList.remove('online', 'busy', 'away');
-                indicator.classList.add(status);
-            }
-        }
-        function toggleTextShadow() {
-            isTextShadowActive = !isTextShadowActive;
-            const chatBox = shadowRoot.querySelector('#chat-messages');
-            const button = shadowRoot.querySelector('#shadow-toggle-button');
-            if (isTextShadowActive) {
-                chatBox.classList.remove('no-shadow');
-                button.textContent = 'S';
-            } else {
-                chatBox.classList.add('no-shadow');
-                button.textContent = 'S';
-            }
-        }
-        function toggleSettingsPanel() {
-            if (settingsPanel.style.display === 'flex') { settingsPanel.style.display = 'none'; } else { settingsPanel.style.display = 'flex'; usersListPanel.style.display = 'none'; emojiPanel.style.display = 'none'; }
-        }
-        function toggleBackground() {
-            const container = shadowRoot.querySelector('.chat-container');
-            isBackgroundActive = !isBackgroundActive;
-            if (isBackgroundActive) {
-                container.style.backgroundImage = `url('https://i.imgur.com/qkWxt2w.png')`;
-                container.classList.add('background-animated');
-            } else {
-                container.style.backgroundImage = 'none';
-                container.style.backgroundColor = '#222';
-                container.classList.remove('background-animated');
-            }
-        }
-        function formatText(command) {
-            const input = messageInput;
-            const start = input.selectionStart;
-            const end = input.selectionEnd;
-            const selectedText = input.value.substring(start, end);
-            if (!selectedText) return;
-            let newText = selectedText;
-            switch (command) {
-                case 'bold': newText = `<b>${selectedText}</b>`; break;
-                case 'italic': newText = `<i>${selectedText}</i>`; break;
-                case 'underline': newText = `<u>${selectedText}</u>`; break;
-                case 'strike': newText = `<s>${selectedText}</s>`; break;
-            }
-            input.value = input.value.slice(0, start) + newText + input.value.slice(end);
-        }
-        function insertEmoji(emoji) {
-            const input = messageInput;
-            const cursorPosition = input.selectionStart;
-            const currentValue = input.value;
-            input.value = currentValue.slice(0, cursorPosition) + emoji + currentValue.slice(cursorPosition);
-            input.focus();
-        }
-        function toggleEmojiPanel() {
-            if (emojiPanel.style.display === 'flex') { emojiPanel.style.display = 'none'; } else { emojiPanel.style.display = 'flex'; usersListPanel.style.display = 'none'; settingsPanel.style.display = 'none'; }
-        }
-        function toggleUsersList() {
-            if (usersListPanel.style.display === 'flex') { usersListPanel.style.display = 'none'; } else { usersListPanel.style.display = 'flex'; settingsPanel.style.display = 'none'; emojiPanel.style.display = 'none'; }
-        }
-        function renderEmojis(categoryName) {
-            const container = shadowRoot.querySelector(`#${categoryName}`);
-            if (container.children.length === 0) {
-                const emojis = emojiCategories[categoryName];
-                let buttonsHtml = '';
-                const triplicatedEmojis = emojis.concat(emojis, emojis);
-                triplicatedEmojis.forEach(emoji => {
-                    buttonsHtml += `<button onclick="insertEmoji('${emoji}')">${emoji}</button>`;
-                });
-                container.innerHTML = buttonsHtml;
-            }
-        }
-        function showEmojiCategory(category) {
-            shadowRoot.querySelectorAll('.emoji-category').forEach(el => el.classList.remove('active'));
-            shadowRoot.querySelectorAll('.emoji-tabs button').forEach(el => el.classList.remove('active'));
-            shadowRoot.querySelector(`#${category}`).classList.add('active');
-            shadowRoot.querySelector(`.emoji-tabs button[onclick*="'${category}'"]`).classList.add('active');
-            renderEmojis(category);
-        }
-        shadowRoot.querySelector('#close-users-btn').addEventListener('click', toggleUsersList);
-        shadowRoot.querySelector('#close-settings-btn').addEventListener('click', toggleSettingsPanel);
-        shadowRoot.querySelector('#close-emoji-btn').addEventListener('click', toggleEmojiPanel);
-    
-    
-    // Conectando o socket para envio e recebimento de mensagens
-    function sendMessageOnline() {
-        const message = messageInput.value.trim();
-        const username = usernameInput.value.trim();
-        const usernameColor = usernameColorInput.value;
-        const textColor = textColorInput.value;
-        const fontFamily = fontSelect.value;
-        const isShadowActive = isTextShadowActive;
-
-        if (message && username) {
-            const formattedMessage = {
-                username,
-                message,
-                usernameColor,
-                textColor,
-                fontFamily,
-                isShadowActive
-            };
-            socket.emit('chat message', formattedMessage);
-            messageInput.value = '';
-        }
-    }
-
-    socket.on('chat message', (msg) => {
-        const newMessage = document.createElement('p');
-        
-        let usernameStyle = `color:${msg.usernameColor};`;
-        let messageStyle = `color:${msg.textColor}; font-family: ${msg.fontFamily};`;
-        
-        if (msg.isShadowActive) {
-            usernameStyle += ` text-shadow: 0 0 5px ${msg.usernameColor};`;
-            messageStyle += ` text-shadow: 0 0 5px ${msg.textColor};`;
         }
 
-        const usernameSpan = `<b style="${usernameStyle}">${msg.username}:</b>`;
-        const messageSpan = `<span style="${messageStyle}">${msg.message}</span>`;
-        newMessage.innerHTML = `${usernameSpan} ${messageSpan}`;
-        
-        chatMessages.appendChild(newMessage);
-        chatMessages.scrollTop = chatMessages.scrollHeight;
-    });
-
-    socket.on('user list update', (users) => {
-        userListElement.innerHTML = '';
-        users.forEach(user => {
-            const newUser = document.createElement('li');
-            newUser.id = `user-${user.name}`;
-            newUser.innerHTML = `<span class="status-indicator ${user.status}"></span><span class="chat-user-name" style="color:${user.color}">${user.name}</span>`;
-            userListElement.appendChild(newUser);
+        // Recebe msg
+        socket.on("chatMessage", (data) => {
+            const p = document.createElement("p");
+            p.textContent = `${data.user}: ${data.msg}`;
+            chatBox.appendChild(p);
+            chatBox.scrollTop = chatBox.scrollHeight;
         });
-    });
-
-    showEmojiCategory('smileys');
-  })();
-</script>
+    </script>
+</body>
+</html>
