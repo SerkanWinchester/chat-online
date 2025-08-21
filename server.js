@@ -1,42 +1,32 @@
-const express = require('express');
-const http = require('http');
-const { Server } = require('socket.io');
+const express = require("express");
+const http = require("http");
+const { Server } = require("socket.io");
 
 const app = express();
 const server = http.createServer(app);
-const io = new Server(server, {
-  cors: { origin: '*' }
-});
+const io = new Server(server);
 
-const PORT = process.env.PORT || 10000;
+app.use(express.static(__dirname));
 
-let users = {};
+io.on("connection", (socket) => {
+  console.log("Novo usuário conectado");
 
-app.use(express.static('public'));
-
-io.on('connection', (socket) => {
-  console.log('Novo usuário conectado: ' + socket.id);
-
-  socket.on('login', ({ username }) => {
-    users[socket.id] = { name: username, status: 'online' };
-    io.emit('user list update', users);
+  socket.on("login", (user) => {
+    socket.username = user;
+    io.emit("message", { user: "Sistema", text: `${user} entrou no chat.` });
   });
 
-  socket.on('chat message', (msg) => {
-    io.emit('chat message', msg);
+  socket.on("message", (data) => {
+    io.emit("message", data);
   });
 
-  socket.on('user status update', ({ status }) => {
-    if (users[socket.id]) users[socket.id].status = status;
-    io.emit('user list update', users);
-  });
-
-  socket.on('disconnect', () => {
-    delete users[socket.id];
-    io.emit('user list update', users);
+  socket.on("disconnect", () => {
+    if (socket.username) {
+      io.emit("message", { user: "Sistema", text: `${socket.username} saiu do chat.` });
+    }
   });
 });
 
-server.listen(PORT, () => {
-  console.log(`Servidor rodando na porta ${PORT}`);
+server.listen(3000, () => {
+  console.log("Servidor rodando em http://localhost:3000");
 });
