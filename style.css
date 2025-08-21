@@ -1,0 +1,85 @@
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #111;
+  overflow: hidden;
+}
+
+/* Botão flutuante */
+#openChatBtn {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background: linear-gradient(45deg, #0ff, #f0f, #ff0);
+  border: none;
+  border-radius: 50%;
+  padding: 15px;
+  font-size: 20px;
+  cursor: pointer;
+  color: white;
+  box-shadow: 0 0 20px #0ff;
+  z-index: 999;
+}
+
+/* Popups e Chat */
+.popup, .chat {
+  display: none;
+  position: fixed;
+  width: 540px;
+  height: 430px;
+  bottom: 80px;
+  right: 20px;
+  background: rgba(20, 20, 20, 0.95);
+  border: 2px solid #0ff;
+  border-radius: 15px;
+  box-shadow: 0 0 25px #0ff, 0 0 35px #f0f, 0 0 45px #ff0;
+  color: white;
+  overflow: hidden;
+  z-index: 1000;
+}
+
+.chat-header, .popup-header {
+  display: flex;
+  justify-content: space-between;
+  padding: 5px 10px;
+  background: #222;
+  border-bottom: 2px solid #0ff;
+}
+
+.chat-controls button,
+.popup-controls button {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 18px;
+  cursor: pointer;
+}
+
+.chat-messages {
+  height: calc(100% - 90px);
+  overflow-y: auto;
+  padding: 10px;
+}
+
+.chat-input {
+  display: flex;
+  gap: 5px;
+  padding: 10px;
+}
+
+.chat-input textarea {
+  flex: 1;
+  resize: none;
+}
+
+.chat-input button {
+  padding: 5px 10px;
+  cursor: pointer;
+}
+
+.popup-body {
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
