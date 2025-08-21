@@ -3,272 +3,19 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Chat SL V.2.3.4</title>
+<title>Chat SL V.3.0</title>
+<script src="https://cdn.socket.io/4.8.1/socket.io.min.js"></script>
+<link rel="stylesheet" href="chat.css">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Roboto&family=Press+Start+2P&display=swap" rel="stylesheet">
-<style>
-:root {
-  --neon-blue: #00f0ff;
-  --neon-purple: #b300ff;
-  --neon-pink: #ff00d4;
-}
-body {
-  margin: 0;
-  padding: 0;
-  font-family: 'Roboto', sans-serif;
-  background: #111;
-  overflow: hidden;
-  transition: 0.3s;
-  color: #fff;
-}
-button {
-  cursor: pointer;
-}
-
-/* BOTÃO FLUTUANTE */
-#chatBtnFloat {
-  position: fixed;
-  bottom: 20px;
-  right: 20px;
-  z-index: 1000;
-  width: 60px;
-  height: 60px;
-  border-radius: 50%;
-  background: linear-gradient(45deg, var(--neon-blue), var(--neon-purple), var(--neon-pink));
-  color: #fff;
-  font-weight: bold;
-  border: none;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.2rem;
-  box-shadow: 0 0 10px #000;
-  transition: 0.3s;
-  font-family: 'Roboto', sans-serif;
-}
-#chatBtnFloat:hover {
-  transform: scale(1.1);
-}
-
-/* POPUPS FLUTUANTES */
-.popup {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  background: rgba(0, 0, 0, 0.95);
-  color: #fff;
-  padding: 15px;
-  border-radius: 12px;
-  border: 2px solid var(--neon-blue);
-  z-index: 999;
-  display: none;
-}
-.popup h3 {
-  margin-top: 0;
-}
-.popup input {
-  display: block;
-  width: 200px;
-  margin: 5px 0;
-  padding: 5px;
-  border-radius: 5px;
-  border: 1px solid #888;
-  background: #333;
-  color: #fff;
-  font-family: 'Roboto', sans-serif;
-}
-.popup button {
-  padding: 5px 10px;
-  margin-top: 5px;
-  font-family: 'Roboto', sans-serif;
-}
-.popup .topBar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  cursor: grab;
-}
-.popup .topBar span {
-  cursor: pointer;
-  font-weight: bold;
-  font-size: 1rem;
-}
-
-/* CHAT FLUTUANTE PRINCIPAL */
-#chatContainer {
-  width: 540px;
-  height: 430px;
-  background: rgba(0, 0, 0, 0.9);
-  border: 2px solid var(--neon-blue);
-  border-radius: 10px;
-  display: flex;
-  flex-direction: column;
-  position: fixed;
-  bottom: 100px;
-  right: 20px;
-  z-index: 998;
-  overflow: hidden;
-  display: none;
-}
-#chatHeader {
-  background: rgba(20, 20, 20, 0.95);
-  padding: 5px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  border-bottom: 1px solid #555;
-  cursor: grab;
-  font-family: 'Roboto', sans-serif;
-}
-#chatMessages {
-  flex: 1;
-  overflow-y: auto;
-  padding: 5px;
-  color: #fff;
-  display: flex;
-  flex-direction: column;
-}
-#chatMessages > div {
-  margin-bottom: 5px;
-  word-wrap: break-word;
-  font-family: 'Roboto', sans-serif;
-}
-#chatInputContainer {
-  display: flex;
-  padding: 5px;
-  border-top: 1px solid #555;
-}
-#chatInput {
-  flex: 1;
-  padding: 5px;
-  border-radius: 5px;
-  border: 1px solid #555;
-  background: #333;
-  color: #fff;
-  font-family: 'Roboto', sans-serif;
-}
-#chatInputContainer button {
-  padding: 5px 10px;
-  margin-left: 5px;
-  background-color: #555;
-  color: #fff;
-  border: 1px solid #777;
-  border-radius: 5px;
-  font-family: 'Roboto', sans-serif;
-}
-#settingsPanel button {
-    background-color: #555;
-    color: #fff;
-    border: 1px solid #777;
-    border-radius: 5px;
-    font-family: 'Roboto', sans-serif;
-}
-
-/* FRIENDS PANEL DESLIZANTE */
-#friendsPanel {
-  position: fixed;
-  left: -220px;
-  top: 0;
-  width: 200px;
-  height: 100%;
-  background: rgba(20, 20, 20, 0.95);
-  border-right: 2px solid var(--neon-blue);
-  padding: 10px;
-  overflow-y: auto;
-  transition: 0.3s;
-  z-index: 999;
-}
-#friendsPanel.active {
-  left: 0;
-}
-.friend {
-  padding: 5px;
-  margin: 3px 0;
-  border-radius: 5px;
-  cursor: pointer;
-  display: flex;
-  justify-content: space-between;
-  font-family: 'Roboto', sans-serif;
-}
-.friend.online {
-  background: rgba(0, 255, 0, 0.2);
-}
-.friend.ausente {
-  background: rgba(255, 255, 0, 0.2);
-}
-.friend.ocupado {
-  background: rgba(255, 0, 0, 0.2);
-}
-.friend .blockBtn {
-  color: red;
-  cursor: pointer;
-}
-
-/* EMOJI PANEL */
-#emojiPanel {
-  width: 250px;
-  max-height: 200px;
-  overflow-y: auto;
-  position: fixed;
-  bottom: 50px;
-  right: 50px;
-  background: rgba(0, 0, 0, 0.95);
-  padding: 10px;
-  border-radius: 12px;
-  border: 2px solid var(--neon-blue);
-  z-index: 999;
-  display: none;
-}
-#emojiPanel div {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 5px;
-}
-#emojiPanel span {
-  cursor: pointer;
-  font-size: 1.5rem;
-}
-
-/* SETTINGS PANEL */
-#settingsPanel {
-    width: 250px;
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background: rgba(0,0,0,0.95);
-    color: #fff;
-    padding: 15px;
-    border-radius: 12px;
-    border: 2px solid var(--neon-blue);
-    z-index: 999;
-    display: none;
-    font-family: 'Roboto', sans-serif;
-}
-
-/* Neon piscando */
-.neonBlink {
-  animation: neonBlinkAnim 1s infinite;
-}
-@keyframes neonBlinkAnim {
-  0%, 100% {
-    text-shadow: 0 0 5px #fff;
-  }
-  50% {
-    text-shadow: 0 0 20px var(--neon-pink), 0 0 30px var(--neon-purple);
-  }
-}
-</style>
+<link href="https://fonts.googleapis.com/css2?family=Roboto&family=Press+Start+2P&family=Pacifico&family=Montserrat&display=swap" rel="stylesheet">
 </head>
 <body>
-
-<button id="chatBtnFloat" onclick="toggleChat()">💬</button>
+<button id="chatBtnFloat">💬</button>
 
 <div id="loginPopup" class="popup">
-  <div class="topBar"><span>Entrar</span><span onclick="closePopup('loginPopup')">X</span></div>
-  <input type="text" id="usernameInput" placeholder="Digite seu nome...">
+  <div class="topBar"><span>Login</span><span onclick="closePopup('loginPopup')">X</span></div>
+  <input type="text" id="usernameInput" placeholder="Nome de usuário">
   <button onclick="login()">Entrar</button>
 </div>
 
@@ -276,246 +23,40 @@ button {
   <div id="chatHeader">
     Chat SL
     <div style="display:flex; gap:5px;">
-      <div id="settingsGear" onclick="toggleSettings()">⚙</div>
-      <span style="cursor:pointer;" onclick="minimizeChat()">_</span>
-      <span style="cursor:pointer;" onclick="closePopup('chatContainer')">X</span>
+      <span onclick="toggleSettings()">⚙</span>
+      <span onclick="minimizeChat()">_</span>
+      <span onclick="closePopup('chatContainer')">X</span>
     </div>
   </div>
   <div id="chatMessages"></div>
   <div id="chatInputContainer">
     <input id="chatInput" placeholder="Digite sua mensagem...">
     <button onclick="sendMessage()">Enviar</button>
-    <button onclick="scrollToBottom(document.getElementById('chatMessages'))">🔽</button>
+    <button onclick="scrollToBottom()">🔽</button>
     <button onclick="toggleEmojiPanel()">😊</button>
   </div>
 </div>
 
 <div id="friendsPanel">
-    <div class="topBar">
-        <span>Amigos Online</span>
-        <div onclick="toggleFriendsPanel()" style="cursor:pointer;">_</div>
-    </div>
-    <ul id="friendsList"></ul>
+  <div class="topBar"><span>Amigos</span><span onclick="toggleFriendsPanel()">_</span></div>
+  <ul id="friendsList"></ul>
 </div>
 
-<div id="emojiPanel" class="popup">
-    <div style="display:flex; flex-wrap:wrap; gap:5px;">
-        <span onclick="addEmoji('😀')">😀</span>
-        <span onclick="addEmoji('😂')">😂</span>
-        <span onclick="addEmoji('😎')">😎</span>
-        <span onclick="addEmoji('😍')">😍</span>
-        <span onclick="addEmoji('🤯')">🤯</span>
-        <span onclick="addEmoji('🥳')">🥳</span>
-        <span onclick="addEmoji('😢')">😢</span>
-        <span onclick="addEmoji('😡')">😡</span>
-        <span onclick="addEmoji('👍')">👍</span>
-        <span onclick="addEmoji('👎')">👎</span>
-    </div>
-</div>
-
+<div id="emojiPanel" class="popup"></div>
 <div id="settingsPanel" class="popup">
-    <div class="topBar"><span>Configurações</span><span onclick="closePopup('settingsPanel')">X</span></div>
-    <p>Fundo: <button onclick="setBgImage('https://i.imgur.com/qkWxt2w.png')">Padrão</button> <button onclick="setBgColor('#111')">Cor Sólida</button></p>
-    <p>Fonte: <select id="fontSelect"></select></p>
-    <p>Status: 
-        <button onclick="setStatus('online')">🟢</button>
-        <button onclick="setStatus('ausente')">🟡</button>
-        <button onclick="setStatus('ocupado')">🔴</button>
-    </p>
-    <p>Neon: <input type="checkbox" id="neonToggle"><label for="neonToggle">Ativar</label></p>
-    <p>Cor Neon: <input type="color" id="neonColor" value="#ff00d4"></p>
+  <div class="topBar"><span>Configurações</span><span onclick="closePopup('settingsPanel')">X</span></div>
+  <p>Fundo: <button onclick="setBgImage('https://xatframe.github.io/xatframes/RobFerrari_Balloons.html')">Balloon</button>
+     <button onclick="setBgImage('https://xatframe.github.io/xatframes/lafleur_sea.html')">Sea</button>
+     <button onclick="setBgImage('https://xatframe.github.io/xatframes/robferrari_xneon.html')">Neon</button>
+     <button onclick="setBgColor('#111')">Cor sólida</button></p>
+  <p>Fonte: <select id="fontSelect"></select></p>
+  <p>Status: <button onclick="setStatus('online')">🟢</button>
+             <button onclick="setStatus('ausente')">🟡</button>
+             <button onclick="setStatus('ocupado')">🔴</button></p>
+  <p>Neon: <input type="checkbox" id="neonToggle"> Ativar</p>
+  <p>Cor Neon: <input type="color" id="neonColor" value="#ff00d4"></p>
 </div>
 
-<script>
-const socket = io('https://meu-chat-lin7.onrender.com');
-
-let currentUser = null;
-let neonActive = false;
-let userSettings = {};
-
-// Funções de UI
-function toggleChat() {
-  const chatContainer = document.getElementById('chatContainer');
-  const loginPopup = document.getElementById('loginPopup');
-  if (chatContainer.style.display === 'flex') {
-    chatContainer.style.display = 'none';
-  } else {
-    if (currentUser) {
-      chatContainer.style.display = 'flex';
-    } else {
-      loginPopup.style.display = 'block';
-    }
-  }
-}
-function minimizeChat() { document.getElementById('chatContainer').style.display = 'none'; }
-function closePopup(id) { document.getElementById(id).style.display = 'none'; }
-function toggleFriendsPanel() { document.getElementById('friendsPanel').classList.toggle('active'); }
-function toggleEmojiPanel() {
-  const panel = document.getElementById('emojiPanel');
-  panel.style.display = (panel.style.display === 'block') ? 'none' : 'block';
-}
-function toggleSettings() {
-  const panel = document.getElementById('settingsPanel');
-  panel.style.display = (panel.style.display === 'block') ? 'none' : 'block';
-}
-
-// Lógica de Login (simplificada para o servidor)
-function login() {
-  const username = document.getElementById('usernameInput').value;
-  if (!username) { alert("Por favor, digite seu nome."); return; }
-  currentUser = username;
-  document.getElementById('loginPopup').style.display = 'none';
-  document.getElementById('chatContainer').style.display = 'flex';
-  document.getElementById('chatInput').focus();
-  socket.emit('user connected', {
-    name: currentUser,
-    color: '#FFFFFF',
-    status: 'online'
-  });
-}
-function logout() {
-  currentUser = null;
-  document.getElementById('chatContainer').style.display = 'none';
-  document.getElementById('loginPopup').style.display = 'block';
-}
-
-// Mensagens
-function sendMessage() {
-  const input = document.getElementById('chatInput');
-  if (input.value.trim() === '') return;
-  const message = input.value;
-  socket.emit('chat message', {
-    username: currentUser,
-    message: message,
-    settings: userSettings
-  });
-  input.value = '';
-}
-
-function scrollToBottom(el) {
-  if (el) el.scrollTop = el.scrollHeight;
-}
-function addEmoji(emoji) {
-  const input = document.getElementById('chatInput');
-  input.value += emoji;
-  input.focus();
-}
-
-// Friends
-socket.on('user list update', (users) => {
-  const friendsList = document.getElementById('friendsList');
-  friendsList.innerHTML = '';
-  Object.values(users).forEach(user => {
-    if (user.name !== currentUser) {
-      const friendItem = document.createElement('li');
-      friendItem.className = 'friend ' + user.status;
-      friendItem.innerHTML = `<span onclick="alert('Funcionalidade de chat privado ainda não implementada.')">${user.name} (${user.status})</span>`;
-      friendsList.appendChild(friendItem);
-    }
-  });
-});
-
-// Configurações
-document.getElementById('neonToggle').addEventListener('change', (e) => {
-    neonActive = e.target.checked;
-});
-
-document.getElementById('neonColor').addEventListener('change', (e) => {
-    userSettings.neonColor = e.target.value;
-});
-
-document.getElementById('fontSelect').addEventListener('change', (e) => {
-    userSettings.font = e.target.value;
-    document.getElementById('chatMessages').style.fontFamily = userSettings.font;
-    document.getElementById('chatInput').style.fontFamily = userSettings.font;
-});
-
-function setBgImage(url) {
-    document.body.style.backgroundImage = `url('${url}')`;
-    document.body.style.backgroundColor = 'transparent';
-    userSettings.bg = url;
-}
-function setBgColor(color) {
-    document.body.style.backgroundColor = color;
-    document.body.style.backgroundImage = 'none';
-    userSettings.bg = color;
-}
-function setStatus(status) {
-    if (!currentUser) return;
-    userSettings.status = status;
-    socket.emit('user status update', { name: currentUser, status: status });
-}
-
-// Eventos de input para o chat principal
-document.getElementById('chatInput').addEventListener('keydown', (e) => {
-    if (e.key === 'Enter') {
-        sendMessage();
-    }
-});
-
-// Inicialização
-document.addEventListener('DOMContentLoaded', () => {
-  document.getElementById('loginPopup').style.display = 'block';
-
-  const fontSelect = document.getElementById('fontSelect');
-  const fonts = ['Roboto', 'Press Start 2P', 'Montserrat', 'Pacifico', 'Oswald', 'Raleway'];
-  fonts.forEach(font => {
-    const opt = document.createElement('option');
-    opt.value = font;
-    opt.textContent = font;
-    fontSelect.appendChild(opt);
-  });
-
-  const dragElement = (element, header) => {
-    let isDragging = false;
-    let offsetX, offsetY;
-    header.addEventListener('mousedown', (e) => {
-      isDragging = true;
-      offsetX = e.clientX - element.getBoundingClientRect().left;
-      offsetY = e.clientY - element.getBoundingClientRect().top;
-      element.style.cursor = 'grabbing';
-    });
-    document.addEventListener('mousemove', (e) => {
-      if (!isDragging) return;
-      element.style.left = `${e.clientX - offsetX}px`;
-      element.style.top = `${e.clientY - offsetY}px`;
-    });
-    document.addEventListener('mouseup', () => {
-      isDragging = false;
-      element.style.cursor = 'grab';
-    });
-  };
-
-  dragElement(document.getElementById('chatContainer'), document.getElementById('chatHeader'));
-  dragElement(document.getElementById('loginPopup'), document.getElementById('loginPopup').querySelector('.topBar'));
-  dragElement(document.getElementById('settingsPanel'), document.getElementById('settingsPanel').querySelector('.topBar'));
-});
-
-// Comunicação com o servidor
-socket.on('chat message', (msg) => {
-    const chatMessages = document.getElementById('chatMessages');
-    const msgDiv = document.createElement('div');
-    const userFont = msg.settings && msg.settings.font ? msg.settings.font : 'Roboto';
-    const msgContent = msg.settings && msg.settings.neonActive ? 
-        `<span class="neonBlink" style="color:${msg.settings.neonColor}">${msg.message}</span>` : 
-        msg.message;
-    msgDiv.innerHTML = `<b style="font-family:'${userFont}'">${msg.username}:</b> <span style="font-family:'${userFont}'">${msgContent}</span>`;
-    chatMessages.appendChild(msgDiv);
-    scrollToBottom(chatMessages);
-});
-
-socket.on('user list update', (updatedUsers) => {
-  const friendsList = document.getElementById('friendsList');
-  friendsList.innerHTML = '';
-  Object.values(updatedUsers).forEach(user => {
-    if (user.name !== currentUser) {
-      const friendItem = document.createElement('li');
-      friendItem.className = 'friend ' + user.status;
-      friendItem.innerHTML = `<span onclick="alert('Funcionalidade de chat privado ainda não implementada.')">${user.name} (${user.status})</span>`;
-      friendsList.appendChild(friendItem);
-    }
-  });
-});
-</script>
+<script src="chat.js"></script>
 </body>
 </html>
