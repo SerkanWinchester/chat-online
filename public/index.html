@@ -1,13 +1,42 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <title>Página de Teste do Widget de Chat</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <h1>Página de Teste</h1>
-    <p>Se o ícone do chat aparecer no canto inferior direito, o widget está funcionando corretamente.</p>
 
-    <script src="/widget.js"></script>
+<div id="chat-container">
+    <div id="chat-icon">
+        <img src="https://cdn-icons-png.flaticon.com/512/134/134914.png" alt="Ícone de Chat" />
+    </div>
+    <div id="chat-window">
+        <div class="screen login-screen active">
+            <h3>Bem-vindo!</h3>
+            <p>Digite seu nome de usuário para entrar.</p>
+            <input type="text" id="login-username" placeholder="@usuário" />
+            <button id="login-btn">Entrar</button>
+        </div>
+        <div class="screen chat-screen">
+            <div class="chat-header">
+                <h3>Chat Geral</h3>
+                <div class="header-right">
+                    <button id="users-btn">👥</button>
+                    <a href="#" id="logout-btn" class="logout-link">Sair</a>
+                </div>
+            </div>
+            <div id="main-chat-body" class="chat-body"></div>
+            <div id="users-list" class="users-list-panel"><h4>Usuários Online</h4><ul></ul></div>
+            <div class="chat-footer">
+                <input type="text" class="message-input" placeholder="Digite sua mensagem...">
+            </div>
+        </div>
+    </div>
+</div>
+
+<audio id="notification-sound" src="https://www.myinstants.com/media/sounds/blip_1.mp3" preload="auto"></audio>
+
+<script src="/socket.io/socket.io.js"></script>
+<script src="client.js"></script>
 </body>
 </html>
