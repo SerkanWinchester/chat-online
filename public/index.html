@@ -2,39 +2,97 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
+    <title>Chat</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
 <div id="chat-container">
-    <div id="chat-icon">
-        <img src="https://cdn-icons-png.flaticon.com/512/134/134914.png" alt="Ícone de Chat" />
-    </div>
-    <div id="chat-window">
+    <div id="chat-icon"><img src="https://cdn-icons-png.flaticon.com/512/134/134914.png" alt="Ícone de Chat" /></div>
+    <div id="chat-window" class="color-1">
         <div class="screen login-screen active">
-            <h3>Bem-vindo!</h3>
-            <p>Digite seu nome de usuário para entrar.</p>
-            <input type="text" id="login-username" placeholder="@usuário" />
-            <button id="login-btn">Entrar</button>
+            <h3>Login</h3><p>Entre com seu @username e senha.</p>
+            <input type="text" id="login-username" placeholder="@username" /><input type="password" id="login-password" placeholder="Senha" />
+            <div><input type="checkbox" id="remember-me" /><label for="remember-me"> Lembrar-me</label></div>
+            <button id="login-btn">Entrar</button><a href="#" id="switch-to-register" class="switch-link">Não tem uma conta? Cadastre-se.</a>
+        </div>
+        <div class="screen register-screen">
+            <h3>Cadastro</h3><p>Crie seu novo @username e senha.</p>
+            <input type="text" id="register-username" placeholder="@username" /><input type="password" id="register-password" placeholder="Senha" />
+            <button id="register-btn">Cadastrar</button><a href="#" id="switch-to-login" class="switch-link">Já tem uma conta? Faça login.</a>
+        </div>
+        <div class="screen settings-screen">
+            <div class="chat-header">
+                <div class="header-left"><button id="back-to-chat-btn"><svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24"><path d="M15.41 16.59L10.83 12l4.58-4.59L14 6l-6 6 6 6 1.41-1.41z"/></path></svg></button></div>
+                <h3>Configurações</h3>
+            </div>
+            <div style="padding: 20px; text-align: left; overflow-y: auto;">
+                <div class="settings-container">
+                    <div class="setting-item">
+                        <h4>Aparência do Chat</h4>
+                        <label><input type="checkbox" id="night-mode-toggle" /> Modo Noturno</label>
+                    </div>
+                    <div class="setting-item">
+                        <h4>Papel de Parede</h4>
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <input type="text" id="wallpaper-url" placeholder="Cole o link da imagem aqui" style="flex-grow: 1;" />
+                            <label for="wallpaper-upload" class="tool-button" style="cursor: pointer;" title="Carregar do computador">
+                                <svg xmlns="http://www.w3.org/2000/svg" height="20" viewBox="0 0 24 24" width="20"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M9 16h6v-6h4l-7-7-7 7h4v6zm-4 2h14v2H5v-2z"/></svg>
+                            </label>
+                            <input type="file" id="wallpaper-upload" accept="image/*" style="display: none;" />
+                            <button id="apply-wallpaper-btn" style="width: auto; padding: 5px 10px;">Aplicar</button>
+                        </div>
+                        <label><input type="checkbox" id="scrolling-bg-toggle" /> Mover papel de parede</label>
+                    </div>
+                     <div class="setting-item">
+                        <h4>Cor de Fundo Customizada</h4>
+                        <label>Escolha uma cor: <input type="color" id="bg-color-picker" value="#ffffff" /></label>
+                        <button id="apply-bg-color-btn" style="width: auto; padding: 5px 10px;">Aplicar Cor</button>
+                        <button id="remove-bg-color-btn" style="width: auto; padding: 5px 10px;">Remover Cor</button>
+                    </div>
+                    <div class="setting-item">
+                        <h4>Ajustes de Mensagem</h4>
+                        <label>Cor de Fundo: <input type="color" id="bubble-bg-color-picker" value="#000000" /></label>
+                        <label>Transparência: <input type="range" id="bubble-opacity-slider" min="0" max="100" value="25" /> <span id="bubble-opacity-value">25%</span></label>
+                        <label>Cor do Texto: <input type="color" id="bubble-text-color-picker" value="#FFFFFF" /></label>
+                        <button id="apply-message-styles-btn" style="width: auto; padding: 5px 10px;">Aplicar Estilos</button>
+                    </div>
+                    <div class="setting-item">
+                        <h4>Tamanho da Fonte</h4>
+                        <input type="range" id="font-size-slider" min="10" max="22" value="14" />
+                        <div id="font-size-preview" style="font-size: 14px;">Este é um exemplo de texto para você ver o tamanho.</div>
+                    </div>
+                </div>
+            </div>
         </div>
         <div class="screen chat-screen">
             <div class="chat-header">
+                <div class="header-left">
+                    <button id="friend-list-toggle-btn"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="currentColor" d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-6 0c1.66 0 2.99-1.34 2.99-3S11.66 5 10 5C8.34 5 7 6.34 7 8s1.34 3 3 3zm-6 0c1.66 0 2.99-1.34 2.99-3S5.66 5 4 5C2.34 5 1 6.34 1 8s1.34 3 3 3zm6 3c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></path></svg></button>
+                    <span id="my-username"></span>
+                </div>
                 <h3>Chat Geral</h3>
-                <div class="header-right">
-                    <button id="users-btn">👥</button>
-                    <a href="#" id="logout-btn" class="logout-link">Sair</a>
+                <div class="header-right header-controls">
+                    <button id="private-chat-btn" title="Chat Privado">🔒</button>
+                    <button id="sound-toggle-btn" title="Silenciar notificações">🔔</button>
+                    <button id="minimize-btn" title="Minimizar"><svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px"><path d="M19 13H5v-2h14v2z"/></path></svg></button>
+                    <button id="settings-btn" title="Configurações"><svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px"><path d="M19.43 12.98c.04-.32.07-.64.07-.98s-.03-.66-.07-.98l2.11-1.65c.19-.15.24-.42.12-.64l-2-3.46c-.12-.22-.39-.3-.61-.22l-2.49 1c-.52-.4-1.09-.75-1.7-.92L15 2H9l-.31 2.5c-.61-.17-1.18-.52-1.7-.92l-2.49-1c-.23-.09-.49 0-.61.22l-2 3.46c-.12.22-.07.49.12.64l2.11 1.65c-.04.32-.07.65-.07.98s.03.66.07.98l-2.11 1.65c-.19-.15-.24-.42-.12-.64l2 3.46c.12.22.39.3.61.22l2.49-1c.52.4 1.09.75 1.7.92L9 22h6l.31-2.5c.61-.17 1.18-.52-1.7-.92l2.49 1c.23.09.49 0 .61.22l2-3.46c.12-.22.07-.49-.12-.64l-2.11-1.65zM12 18c-3.31 0-6-2.69-6-6s2.69-6 6-6 6 2.69 6 6-2.69 6-6 6z"/></path></svg></button>
+                    <a href="#" id="logout-btn" class="logout-link">Logout</a>
                 </div>
             </div>
             <div id="main-chat-body" class="chat-body"></div>
-            <div id="users-list" class="users-list-panel"><h4>Usuários Online</h4><ul></ul></div>
-            <div class="chat-footer">
-                <input type="text" class="message-input" placeholder="Digite sua mensagem...">
+            <div id="main-chat-footer" class="chat-footer">
+                <span id="typing-indicator"></span>
             </div>
+            <div id="private-user-list-modal" style="display:none;"><p><strong>Iniciar chat privado com:</strong></p><ul id="private-user-list"></ul></div>
         </div>
     </div>
 </div>
 
+<div id="private-chats-container"></div>
+
 <audio id="notification-sound" src="https://www.myinstants.com/media/sounds/blip_1.mp3" preload="auto"></audio>
+<audio id="scream-sound" src="https://www.myinstants.com/media/sounds/movie_1.mp3" preload="auto"></audio>
 
 <script src="/socket.io/socket.io.js"></script>
 <script src="client.js"></script>
