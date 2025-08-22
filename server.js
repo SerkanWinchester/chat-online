@@ -1,101 +1,80 @@
+// server.js
+
+// 1. Configuração do Servidor
 const express = require('express');
 const http = require('http');
 const socketIo = require('socket.io');
-const path = require('path');
-const fs = require('fs');
-const cors = require('cors');
 
 const app = express();
 const server = http.createServer(app);
-const io = socketIo(server, {
-  cors: {
-    origin: "*",
-    methods: ["GET", "POST"]
-  }
-});
+const io = socketIo(server);
 
 const PORT = process.env.PORT || 3000;
-const USERS_FILE = path.join(__dirname, 'users.json');
 
-let users = {};
+// Informa ao servidor que os arquivos estáticos (HTML, CSS, JS do cliente) estão na pasta 'public'
+app.use(express.static('public'));
 
-// Função para salvar usuários em um arquivo
-const saveUsers = () => {
-    fs.writeFile(USERS_FILE, JSON.stringify(users, null, 2), (err) => {
-        if (err) {
-            console.error('Erro ao salvar usuários:', err);
-        } else {
-            console.log('Usuários salvos com sucesso.');
+let users = {}; // Armazena os usuários conectados: { "username": "socket.id" }
+
+// 2. Lógica do Chat em Tempo Real com Socket.IO
+io.on('connection', (socket) => {
+    console.log(`Novo usuário conectado: ${socket.id}`);
+
+    // Quando um usuário entra no chat
+    socket.on('user_joined', (username) => {
+        socket.username = username;
+        users[username] = socket.id;
+        // Avisa a todos que um novo usuário entrou
+        io.emit('system_message', `${username} entrou no chat.`);
+        // Atualiza a lista de usuários para todos
+        io.emit('update_user_list', Object.keys(users));
+    });
+
+    // Quando uma mensagem geral é enviada
+    socket.on('send_message', (data) => {
+        // Envia a mensagem para todos os usuários conectados
+        io.emit('message_received', data);
+    });
+    
+    // Quando uma mensagem privada é enviada
+    socket.on('send_private_message', (data) => {
+        const recipientSocketId = users[data.to];
+        if (recipientSocketId) {
+            // Envia para o destinatário
+            io.to(recipientSocketId).emit('private_message_received', data);
+        }
+        // Envia de volta para o remetente também, para que ele veja sua própria mensagem
+        socket.emit('private_message_received', data);
+    });
+
+    // Quando uma reação é enviada
+    socket.on('send_reaction', (data) => {
+        io.emit('reaction_received', data);
+    });
+    
+    // Quando um puxão é enviado
+    socket.on('send_nudge', (data) => {
+        const recipientSocketId = users[data.to];
+        if (recipientSocketId) {
+            io.to(recipientSocketId).emit('nudge_received', { from: data.from });
         }
     });
-};
 
-// Carrega usuários do arquivo ao iniciar
-const loadUsers = () => {
-    if (fs.existsSync(USERS_FILE)) {
-        fs.readFile(USERS_FILE, 'utf8', (err, data) => {
-            if (err) {
-                console.error('Erro ao ler usuários:', err);
-            } else {
-                users = JSON.parse(data);
-                console.log('Usuários carregados:', Object.keys(users));
-            }
-        });
-    }
-};
-
-loadUsers();
-
-// Middleware para JSON e CORS
-app.use(express.json());
-app.use(cors());
-
-// Serve os arquivos estáticos
-app.use(express.static(path.join(__dirname)));
-
-// Endpoint de registro
-app.post('/register', (req, res) => {
-    const { username, password } = req.body;
-    if (users[username]) {
-        return res.status(409).json({ success: false, message: 'Usuário já existe.' });
-    }
-    users[username] = { password: password };
-    saveUsers();
-    res.json({ success: true, message: 'Usuário registrado com sucesso.' });
-});
-
-// Endpoint de login
-app.post('/login', (req, res) => {
-    const { username, password } = req.body;
-    if (users[username] && users[username].password === password) {
-        res.json({ success: true, message: 'Login bem-sucedido.' });
-    } else {
-        res.status(401).json({ success: false, message: 'Usuário ou senha incorretos.' });
-    }
-});
-
-// Lógica de WebSocket para o chat
-let onlineUsers = {};
-
-io.on('connection', (socket) => {
-    console.log('Novo usuário conectado:', socket.id);
-
-    socket.on('user connected', (user) => {
-        onlineUsers[socket.id] = user;
-        io.emit('user list update', Object.values(onlineUsers));
-    });
-
-    socket.on('chat message', (msg) => {
-        io.emit('chat message', msg);
-    });
-
+    // Quando um usuário se desconecta
     socket.on('disconnect', () => {
-        console.log('Usuário desconectado:', socket.id);
-        delete onlineUsers[socket.id];
-        io.emit('user list update', Object.values(onlineUsers));
+        if (socket.username) {
+            console.log(`Usuário desconectado: ${socket.username}`);
+            delete users[socket.username];
+            // Avisa a todos que o usuário saiu
+            io.emit('system_message', `${socket.username} saiu do chat.`);
+            // Atualiza a lista de usuários para todos
+            io.emit('update_user_list', Object.keys(users));
+        }
     });
 });
 
+
+// 3. Inicia o servidor
 server.listen(PORT, () => {
     console.log(`Servidor rodando na porta ${PORT}`);
 });
