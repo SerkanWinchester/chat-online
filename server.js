@@ -8,33 +8,28 @@ const path = require('path');
 const app = express();
 const server = http.createServer(app);
 
-// ATUALIZAÇÃO IMPORTANTE: Configuração do CORS
-// Isso permite que o seu blog se conecte ao servidor do Render
 const io = socketIo(server, {
     cors: {
-        origin: "*", // Permite conexão de qualquer site
+        origin: "*", // Permite que seu blog se conecte
         methods: ["GET", "POST"]
     }
 });
 
 const PORT = process.env.PORT || 3000;
 
-// O servidor agora serve o script do widget e o CSS
-app.use(express.static(path.join(__dirname)));
+// Configura o servidor para servir os arquivos da pasta 'public'
+app.use(express.static('public'));
 
-// Lógica do chat (permanece a mesma)
+// Lógica do chat (não muda)
 let users = {};
 
 io.on('connection', (socket) => {
-    console.log(`Novo usuário conectado: ${socket.id}`);
-
     socket.on('user_joined', (username) => {
         socket.username = username;
         users[username] = socket.id;
         io.emit('system_message', `${username} entrou no chat.`);
         io.emit('update_user_list', Object.keys(users));
     });
-
     socket.on('send_message', (data) => { io.emit('message_received', data); });
     socket.on('send_private_message', (data) => {
         const recipientSocketId = users[data.to];
