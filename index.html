@@ -1,3 +1,236 @@
-# .gitignore
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chat Flutuante</title>
+  <!-- Feather Icons -->
+  <script src="https://unpkg.com/feather-icons"></script>
+  <style>
+    body {
+      margin: 0;
+      background: #f2f3f5; /* branco gelo */
+      font-family: Arial, sans-serif;
+    }
 
-node_modules
+    /* Bolinha flutuante */
+    .chat-float {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      width: 60px;
+      height: 60px;
+      background: #0ff; /* neon azul */
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 0 10px #0ff, 0 0 20px #0ff;
+      z-index: 1000;
+    }
+
+    .chat-float::before {
+      content: "";
+      position: absolute;
+      width: 80px;
+      height: 80px;
+      border: 1px solid transparent;
+      border-top: 1px solid violet;
+      border-right: 1px solid blue;
+      border-bottom: 1px solid green;
+      border-left: 1px solid red;
+      border-radius: 50%;
+      animation: spin 6s linear infinite;
+      filter: drop-shadow(0 0 4px rgba(0,0,0,0.2));
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .chat-float i {
+      color: white;
+      font-size: 26px;
+    }
+
+    /* Janela do chat */
+    .chat-window {
+      position: fixed;
+      top: 100px;
+      right: 20px;
+      width: 590px;
+      height: 470px;
+      background: #fff;
+      border-radius: 15px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.2);
+      display: none;
+      flex-direction: column;
+      overflow: hidden;
+      z-index: 999;
+    }
+
+    .chat-header {
+      background: #e3e5e8;
+      padding: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .chat-header h2 {
+      margin: 0;
+      font-size: 18px;
+    }
+
+    .chat-header button {
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 20px;
+    }
+
+    /* Telas internas */
+    .screen {
+      display: none;
+      flex: 1;
+      padding: 20px;
+      overflow-y: auto;
+    }
+
+    .screen.active {
+      display: block;
+    }
+
+    .form-group {
+      margin-bottom: 15px;
+      display: flex;
+      align-items: center;
+      border-bottom: 1px solid #ccc;
+      padding: 5px;
+    }
+
+    .form-group i {
+      margin-right: 10px;
+      font-size: 18px;
+      color: #000;
+    }
+
+    input {
+      border: none;
+      outline: none;
+      flex: 1;
+      padding: 8px;
+      background: transparent;
+    }
+
+    button {
+      padding: 10px 20px;
+      background: #0ff;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-weight: bold;
+      margin-top: 10px;
+    }
+
+    button:hover {
+      background: #0cc;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Bolinha flutuante -->
+  <div class="chat-float" id="chatToggle">
+    <i data-feather="message-circle"></i>
+  </div>
+
+  <!-- Janela do chat -->
+  <div class="chat-window" id="chatWindow">
+    <div class="chat-header">
+      <h2 id="screenTitle">Login</h2>
+      <button id="configBtn"><i data-feather="settings"></i></button>
+    </div>
+
+    <!-- Tela Login -->
+    <div class="screen active" id="loginScreen">
+      <div class="form-group">
+        <i data-feather="user"></i>
+        <input type="text" placeholder="Usuário">
+      </div>
+      <div class="form-group">
+        <i data-feather="lock"></i>
+        <input type="password" placeholder="Senha">
+      </div>
+      <button onclick="showScreen('chatScreen')">Entrar</button>
+      <button onclick="showScreen('registerScreen')">Cadastrar</button>
+    </div>
+
+    <!-- Tela Cadastro -->
+    <div class="screen" id="registerScreen">
+      <div class="form-group">
+        <i data-feather="user-plus"></i>
+        <input type="text" placeholder="Usuário">
+      </div>
+      <div class="form-group">
+        <i data-feather="mail"></i>
+        <input type="email" placeholder="Email">
+      </div>
+      <div class="form-group">
+        <i data-feather="lock"></i>
+        <input type="password" placeholder="Senha">
+      </div>
+      <button onclick="showScreen('loginScreen')">Voltar</button>
+      <button onclick="showScreen('chatScreen')">Registrar</button>
+    </div>
+
+    <!-- Tela Chat -->
+    <div class="screen" id="chatScreen">
+      <p>Bem-vindo ao Chat! (mensagens aparecerão aqui)</p>
+      <button onclick="showScreen('loginScreen')">Sair</button>
+    </div>
+
+    <!-- Tela Configurações -->
+    <div class="screen" id="configScreen">
+      <h3>Configurações</h3>
+      <p>Ajustes do usuário aqui...</p>
+      <button onclick="showScreen('loginScreen')">Voltar</button>
+    </div>
+  </div>
+
+  <script>
+    const chatToggle = document.getElementById("chatToggle");
+    const chatWindow = document.getElementById("chatWindow");
+    const screenTitle = document.getElementById("screenTitle");
+    const configBtn = document.getElementById("configBtn");
+
+    chatToggle.addEventListener("click", () => {
+      chatWindow.style.display = 
+        chatWindow.style.display === "flex" ? "none" : "flex";
+      chatWindow.style.flexDirection = "column";
+    });
+
+    function showScreen(screenId) {
+      document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
+      document.getElementById(screenId).classList.add("active");
+
+      let titles = {
+        loginScreen: "Login",
+        registerScreen: "Cadastro",
+        chatScreen: "Chat",
+        configScreen: "Configurações"
+      };
+      screenTitle.innerText = titles[screenId];
+    }
+
+    configBtn.addEventListener("click", () => {
+      showScreen("configScreen");
+    });
+
+    // Ativa Feather Icons
+    feather.replace();
+  </script>
+</body>
+</html>
