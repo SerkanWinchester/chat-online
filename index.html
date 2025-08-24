@@ -1,23 +1,16 @@
-<!doctype html>
-
-
-    
-    
-    <head>
-    <title>Floating Chat</title>
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Chat com Chamada de Áudio</title>
     <script src="https://unpkg.com/feather-icons"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Roboto&family=Open+Sans&family=Lato&family=Montserrat&family=Oswald&family=Raleway&family=Poppins&family=Nunito&family=Playfair+Display&family=Merriweather&family=Indie+Flower&family=Dancing+Script&family=Pacifico&family=Lobster&family=Source+Code+Pro&family=Nunito+Sans&family=Inter&family=Work+Sans&family=Fira+Sans&family=Source+Sans+Pro&family=PT+Sans&family=Ubuntu&family=Lora&family=Quicksand&family=Comfortaa&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&family=Bebas+Neue&family=Kanit&family=Permanent+Marker&family=Anton&family=Archivo+Black&family=Abril+Fatface&family=Josefin+Sans&family=Satisfy&family=Courgette&family=Noto+Sans&family=Dosis&family=Merriweather+Sans&family=Concert+One&family=Passion+One&family=Barlow&family=Caveat&family=Alfa+Slab+One&family=Exo+2&family=Secular+One&display=swap" rel="stylesheet" />
-    
     <style>
         body { margin: 0; font-family: Arial, sans-serif; background: #f0f2f5; overflow: hidden; }
-
         #chatIcon { position: fixed; bottom: 20px; right: 20px; width: 60px; height: 60px; border-radius: 50%; background: black; display: flex; justify-content: center; align-items: center; cursor: pointer; box-shadow: 0 0 20px rgba(255,0,255,0.5), 0 0 20px rgba(0,255,255,0.5); z-index: 1000; }
-        
-        /* Efeito de vidro fosco para a janela de login/chat */
         .chat-window { 
             position: fixed; 
             bottom: 90px; 
@@ -42,9 +35,6 @@
         .chat-window.open { display: flex; opacity: 1; transform: translateY(0); pointer-events: auto; }
         .chat-window.maximized { width: 100vw; height: 100vh; bottom: 0; right: 0; border-radius: 0; }
         .chat-window.minimized { height: 40px; }
-
-
-        /* Estilo do cabeçalho do chat, também com vidro fosco */
         .chat-header { 
             background: rgba(255, 255, 255, 0.3); 
             padding: 10px 15px; 
@@ -57,13 +47,9 @@
         }
         .header-icons-left, .header-icons-right { display: flex; align-items: center; gap: 15px; }
         .chat-header h2 { margin: 0; font-size: 18px; color: #111; position: absolute; left: 50%; transform: translateX(-50%); white-space: nowrap; }
-
         .screen { display: none; flex: 1; padding: 20px; overflow-y: auto; flex-direction: column; justify-content: center; align-items: center; gap: 15px; }
         #chatScreen { justify-content: flex-start; align-items: stretch; }
         #chatScreen[style*="background-color"] { background-color: var(--chat-wallpaper-color, #fff); }
-
-
-        /* Balões de mensagens com vidro fosco branco */
         .chat-message { 
             background-color: rgba(255, 255, 255, 0.4) !important; 
             backdrop-filter: blur(8px);
@@ -82,8 +68,6 @@
         .system-message { text-align: center; font-size: 12px; color: #888; margin: 8px 0; font-style: italic; }
         .admin-star { margin-right: 5px; color: #ffc107; }
         .room-lock-icon { margin-left: auto; color: #dc3545; }
-
-
         .invite-message { background-color: #e9f5ff; border-left: 4px solid #007bff; padding: 10px; margin: 10px 5%; border-radius: 4px; font-size: 14px; }
         .invite-message p { margin: 0 0 10px 0; }
         .invite-message button { background-color: #007bff; color: white; border: none; padding: 5px 10px; margin-right: 10px; border-radius: 4px; cursor: pointer; font-size: 12px; width: auto; }
@@ -96,7 +80,6 @@
         .tool-button i { width: 16px; height: 16px; }
         #font-select { border-radius: 4px; border: 1px solid #ccc; background: white; max-width: 100%; font-size: 12px; }
         
-        /* Foco cinza na caixa de input de username com texto preto */
         input[type="text"]#usernameInput {
             background: rgba(0, 0, 0, 0.1);
             color: #000;
@@ -106,7 +89,6 @@
             padding: 8px;
             border-radius: 8px;
         }
-
         #messageInput { flex: 1; border: 1px solid #ccc; padding: 8px; border-radius: 15px; color: #111; max-height: 80px; overflow-y: auto; background: white; }
         #sendBtn { background: transparent; border: none; padding: 4px; cursor: pointer; width: auto; color: black; display: flex; }
         #sendBtn i { width: 20px; height: 20px; }
@@ -114,8 +96,6 @@
         .emoji-picker-container { display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; max-height: 150px; overflow-y: auto; padding: 5px; }
         .emoji-category-tabs { display: flex; justify-content: center; margin-bottom: 10px; }
         .emoji-category-tabs button { padding: 5px 10px; border: none; background: #eee; cursor: pointer; }
-
-
         #formatting-popup {
             position: absolute;
             bottom: calc(100% + 5px);
@@ -133,7 +113,6 @@
             z-index: 1003;
         }
         #formatting-popup.open { display: flex; }
-
         #reaction-popup, #emoji-modal { position: fixed; display: none; background: #fff; border-radius: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.25); padding: 8px; z-index: 1001; top: 50%; left: 50%; transform: translate(-50%, -50%); flex-direction: column; }
         #emoji-modal .modal-content { padding: 0; }
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); display: none; justify-content: center; align-items: center; z-index: 1002; }
@@ -155,8 +134,6 @@
             max-width: calc(100% / 7);
             box-sizing: border-box;
         }
-
-        /* ADMIN PANEL STYLES */
         #admin-panel-modal .modal-content {
             overflow-y: auto;
             max-height: 80vh;
@@ -210,8 +187,6 @@
             border: 2px solid;
             border-image: linear-gradient(45deg, #007bff, #dc3545, #28a745) 1;
         }
-
-        /* OUTROS ESTILOS JÁ EXISTENTES */
         #admin-stats { margin-bottom: 20px; text-align: center; font-size: 14px; }
         #admin-room-list { margin-top: 15px; width: 90%; text-align: left; font-size: 14px; }
         #admin-room-list ul { list-style: none; padding: 0; margin: 0; }
@@ -243,11 +218,33 @@
             30%, 50%, 70% { transform: translate3d(-4px, 0, 0); }
             40%, 60% { transform: translate3d(4px, 0, 0); }
         }
+        #audio-call-modal .modal-content {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        #audio-call-modal h3 {
+            margin: 0;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+            width: 100%;
+            text-align: center;
+        }
+        #audio-call-modal button {
+            width: 100%;
+            margin: 0;
+            padding: 8px;
+            text-align: left;
+            background: #f1f1f1;
+            color: #333;
+            border: 1px solid #ddd;
+        }
+        #audio-call-modal button:hover {
+            background: #e9e9e9;
+        }
     </style>
-    </head>
-
-
-    <body>
+</head>
+<body>
     <div id="chatIcon"><i data-feather="message-square"></i></div>
     <audio id="messageSound" src="https://www.soundjay.com/buttons/button-10.mp3" preload="auto"></audio>
     <audio id="applauseSound" src="https://assets.mixkit.co/sfx/preview/mixkit-small-group-of-people-applauding-511.mp3" preload="auto"></audio>
@@ -255,13 +252,12 @@
     <audio id="attentionSound" src="https://assets.mixkit.co/sfx/preview/mixkit-attention-bell-2759.mp3" preload="auto"></audio>
     <audio id="thumbsUpSound" src="https://www.soundjay.com/buttons/sounds/button-36.mp3" preload="auto"></audio>
     <audio id="heartSound" src="https://www.soundjay.com/buttons/sounds/button-18.mp3" preload="auto"></audio>
-    <audio id="smileSound" src="https://www.soundjay.com/buttons/sounds/button-3.mpd3" preload="auto"></audio>
+    <audio id="smileSound" src="https://www.soundjay.com/buttons/sounds/button-3.mp3" preload="auto"></audio>
     <audio id="starSound" src="https://www.soundjay.com/buttons/sounds/button-2.mp3" preload="auto"></audio>
     <audio id="frownSound" src="https://www.soundjay.com/buttons/sounds/button-37.mp3" preload="auto"></audio>
     <audio id="thumbsDownSound" src="https://www.soundjay.com/buttons/sounds/button-1.mp3" preload="auto"></audio>
     <audio id="helpCircleSound" src="https://www.soundjay.com/buttons/sounds/button-7.mp3" preload="auto"></audio>
     <audio id="checkCircleSound" src="https://www.soundjay.com/buttons/sounds/button-23.mp3" preload="auto"></audio>
-
 
     <div class="chat-window" id="chatWindow">
         <div class="chat-header">
@@ -309,6 +305,7 @@
                 <button id="attachFileBtn" class="tool-button" title="Attach file"><i data-feather="paperclip"></i></button>
                 <input type="file" id="fileUpload" accept="image/*" style="display: none;" />
                 <button id="emojiBtn" class="tool-button" title="Emojis"><span class="material-symbols-outlined">sentiment_satisfied</span></button>
+                <button id="audioCallBtn" class="tool-button" title="Audio Call" style="display: none;"><i data-feather="phone"></i></button>
             </div>
             <div id="messageInput" contenteditable="true" spellcheck="false"></div>
             <button id="sendBtn" title="Send message"><i data-feather="send"></i></button>
@@ -346,6 +343,14 @@
             <button id="sendInviteBtn">Invite</button>
         </div>
     </div>
+    <div class="modal-overlay" id="audio-call-modal">
+        <div class="modal-content">
+            <div class="modal-header"><h2>Audio Call</h2></div>
+            <div id="audio-call-users-list"></div>
+            <audio id="localAudio" autoplay muted></audio>
+            <audio id="remoteAudio" autoplay></audio>
+        </div>
+    </div>
     
     <div class="modal-overlay" id="admin-panel-modal">
         <div class="modal-content">
@@ -361,23 +366,23 @@
             </div>
             <div id="admin-room-list"></div>
             <div class="admin-icon-toggles">
-              <label><input type="checkbox" id="toggleRoomsBtn" checked> Rooms</label>
-              <label><input type="checkbox" id="toggleUsersOnlineBtn" checked> Users Online</label>
-              <label><input type="checkbox" id="toggleAudioToggleBtn" checked> Audio</label>
-              <label><input type="checkbox" id="toggleMinimizeChatBtn" checked> Minimize</label>
-              <label><input type="checkbox" id="toggleMaximizeChatBtn" checked> Maximize</label>
-              <label><input type="checkbox" id="toggleInviteUserBtn" checked> Invite User</label>
-              <label><input type="checkbox" id="toggleAdminPanelBtn" checked> Admin Panel</label>
-              <label><input type="checkbox" id="toggleRoomLockBtn" checked> Room Lock</label>
-              <label><input type="checkbox" id="toggleAlarmBtn" checked> Alarm</label>
-              <label><input type="checkbox" id="toggleColorPaletteBtn" checked> Color Palette</label>
-              <label><input type="checkbox" id="toggleSaveChatBtn" checked> Save Chat</label>
-              <label><input type="checkbox" id="toggleLogoutBtn" checked> Logout</label>
-              <label><input type="checkbox" id="toggleFormattingBtn" checked> Formatting</label>
-              <label><input type="checkbox" id="toggleMentionBtn" checked> Mention</label>
-              <label><input type="checkbox" id="toggleAttachFileBtn" checked> Attach File</label>
-              <label><input type="checkbox" id="toggleEmojiBtn" checked> Emoji</label>
-              <label><input type="checkbox" id="toggleSendBtn" checked> Send Button</label>
+              <label><input type="checkbox" id="toggleRoomsBtn" checked /> Rooms</label>
+              <label><input type="checkbox" id="toggleUsersOnlineBtn" checked /> Users Online</label>
+              <label><input type="checkbox" id="toggleAudioToggleBtn" checked /> Audio</label>
+              <label><input type="checkbox" id="toggleMinimizeChatBtn" checked /> Minimize</label>
+              <label><input type="checkbox" id="toggleMaximizeChatBtn" checked /> Maximize</label>
+              <label><input type="checkbox" id="toggleInviteUserBtn" checked /> Invite User</label>
+              <label><input type="checkbox" id="toggleAdminPanelBtn" checked /> Admin Panel</label>
+              <label><input type="checkbox" id="toggleRoomLockBtn" checked /> Room Lock</label>
+              <label><input type="checkbox" id="toggleAlarmBtn" checked /> Alarm</label>
+              <label><input type="checkbox" id="toggleColorPaletteBtn" checked /> Color Palette</label>
+              <label><input type="checkbox" id="toggleSaveChatBtn" checked /> Save Chat</label>
+              <label><input type="checkbox" id="toggleLogoutBtn" checked /> Logout</label>
+              <label><input type="checkbox" id="toggleFormattingBtn" checked /> Formatting</label>
+              <label><input type="checkbox" id="toggleMentionBtn" checked /> Mention</label>
+              <label><input type="checkbox" id="toggleAttachFileBtn" checked /> Attach File</label>
+              <label><input type="checkbox" id="toggleEmojiBtn" checked /> Emoji</label>
+              <label><input type="checkbox" id="toggleSendBtn" checked /> Send Button</label>
             </div>
             <div id="admin-search-results"></div>
             <h3>Room Control</h3>
@@ -411,11 +416,9 @@
             </div>
         </div>
     </div>
-
-
-    <script src="https://meu-chat-lin7.onrender.com/socket.io/socket.io.js"></script>
+    
+    <script src="/socket.io/socket.io.js"></script>
     <script>
-    const socket = io("https://meu-chat-lin7.onrender.com");
     document.addEventListener('DOMContentLoaded', () => {
         // --- Selectors ---
         const chatWindow = document.getElementById('chatWindow');
@@ -479,6 +482,9 @@
         const toggleAttachFileBtn = document.getElementById('toggleAttachFileBtn');
         const toggleEmojiBtn = document.getElementById('toggleEmojiBtn');
         const toggleSendBtn = document.getElementById('toggleSendBtn');
+        const audioCallBtn = document.getElementById('audioCallBtn');
+        const audioCallModal = document.getElementById('audio-call-modal');
+        const audioCallUsersList = document.getElementById('audio-call-users-list');
         
         // --- State Variables ---
         let currentRoom = 0;
@@ -490,7 +496,6 @@
         let adminGlobalSound = 'none';
         let isEditing = false;
         let messageToEditId = null;
-
         const googleFonts = ['Roboto','Open Sans','Lato','Montserrat','Oswald','Raleway','Poppins','Nunito','Playfair Display','Merriweather','Indie Flower','Dancing Script','Pacifico','Lobster','Source Code Pro','Nunito Sans','Inter','Work Sans','Fira Sans','Source Sans Pro','PT Sans','Ubuntu','Lora','Quicksand','Comfortaa', 'Bebas Neue', 'Kanit', 'Permanent Marker', 'Anton', 'Archivo Black', 'Abril Fatface', 'Josefin Sans', 'Satisfy', 'Courgette', 'Noto Sans', 'Dosis', 'Merriweather Sans', 'Concert One', 'Passion One', 'Barlow', 'Caveat', 'Alfa Slab One', 'Exo 2', 'Secular One'];
         const messageReactions = {};
         const availableReactions = [{type:'icon',id:'thumbs-up',label:'Like'},{type:'icon',id:'heart',label:'Love'},{type:'icon',id:'smile',label:'Haha'},{type:'icon',id:'star',label:'Wow'},{type:'icon',id:'frown',label:'Sad'},{type:'icon',id:'thumbs-down',label:'No'},{type:'icon',id:'help-circle',label:'Thinking'},{type:'icon',id:'check-circle',label:'Approve'}];
@@ -518,18 +523,20 @@
             '🇧🇷': ['🇧🇷', '🇺🇸', '🇪🇸', '🇫🇷', '🇩🇪', '🇮🇹', '🇯🇵', '🇨🇳', '🇷🇺', '🇮🇳', '🇦🇷', '🇨🇦', '🇲🇽', '🇵🇹', '🇬🇧', '🇰🇷', '🇦🇺', '🇿🇦', '🇪🇬', '🇸🇦', '🇹🇷', '🇵🇱', '🇮🇩', '🇹🇭', '🇻🇳', '🇳🇬', '🇨🇴', '🇵🇰', '🇩🇿', '🇮🇶', '🇺🇦', '🇨🇭', '🇳🇱', '🇧🇪', '🇸🇪', '🇳🇴', '🇫🇮', '🇩🇰', '🇮🇪', '🇬🇷', '🇨🇱', '🇵🇪', '🇪🇨', '🇻🇪', '🇺🇾', '🇵🇾', '🇧🇴', '🇦🇪', '🇶🇦', '🇰🇼', '🇮🇱', '🇹🇼', '🇸🇬', '🇲🇾', '🇵🇭', '🇮🇨', '🇭🇷', '🇷🇴', '🇨🇿', '🇭🇺', '🇧🇬', '🇦🇹', '🇸🇰', '🇸🇮', '🇱🇻', '🇪🇪', '🇱🇹', '🇲🇹', '🇨🇾', '🇦🇱', '🇧🇦', '🇲🇪', '🇲🇰', '🇽🇰', '🇷🇸', '🇨🇿', '🇬🇪', '🇦🇲', '🇦🇿', '🇰🇿', '🇺🇿', '🇹🇲', '🇹🇯', '🇰🇬', '🇱🇰', '🇧🇩', '🇳🇵', '🇲🇲', '🇰🇭', '🇱🇦', '🇵🇬', '🇫🇯', '🇳🇿', '🇼🇸', '🇹🇴', '🇹🇻', '🇰🇮', '🇲🇭', '🇫🇲', '🇵🇼', '🇸🇧', '🇻🇺', '🇦🇮', '🇦🇶', '🇦🇸', '🇦🇼', '🇦🇽', '🇧🇧', '🇧🇲', '🇧🇼', '🇨🇩', '🇨🇫', '🇨🇬', '🇨🇮', '🇨🇰', '🇨🇽', '🇨🇿', '🇪🇭', '🇪🇷', '🇪🇹', '🇫🇴', '🇬🇦', '🇬🇩', '🇬🇫', '🇬🇬', '🇬🇭', '🇬🇮', '🇬🇱', '🇬🇲', '🇬🇼', '🇬🇾', '🇭🇰', '🇮🇴', '🇯🇪', '🇰🇪', '🇰🇲', '🇱🇨', '🇱🇮', '🇲🇬', '🇲🇷', '🇲🇺', '🇲🇼', '🇲🇽', '🇲🇾', '🇲🇿', '🇳🇦', '🇳🇨', '🇳🇪', '🇳🇫', '🇳🇬', '🇳🇱', '🇳🇴', '🇳🇵', '🇳🇷', '🇳🇺', '🇳🇿', '🇴🇲', '🇵🇦', '🇵🇪', '🇵🇫', '🇵🇬', '🇵🇭', '🇵🇰', '🇵🇱', '🇵🇲', '🇵🇳', '🇵🇷', '🇵🇸', '🇵🇹', '🇵🇼', '🇵🇾', '🇶🇦', '🇷🇪', '🇷🇴', '🇷🇸', '🇷🇺', '🇷🇼', '🇸🇦', '🇸🇧', '🇸🇨', '🇸🇩', '🇸🇪', '🇸🇬', '🇸🇭', '🇸🇮', '🇸🇰', '🇸🇱', '🇸🇲', '🇸🇳', '🇸🇴', '🇸🇷', '🇸🇸', '🇸🇹', '🇸🇻', '🇸🇽', '🇸🇾', '🇸🇿', '🇹🇨', '🇹🇩', '🇹🇫', '🇹🇬', '🇹🇭', '🇹🇯', '🇹🇰', '🇹🇱', '🇹🇲', '🇹🇳', '🇹🇴', '🇹🇷', '🇹🇹', '🇹🇻', '🇹🇼', '🇹🇿', '🇺🇦', '🇺🇬', '🇺🇲', '🇺🇳', '🇺🇸', '🇺🇾', '🇺🇿', '🇻🇦', '🇻🇨', '🇻🇪', '🇻🇬', '🇻🇮', '🇻🇳', '🇻🇺', '🇼🇫', '🇼🇸', '🇽🇰', '🇾🇪', '🇾🇹', '🇿🇦', '🇿🇲', '🇿🇼']
         };
         let chatState = { mode: 'main', withUser: null };
+        let isAudioCallActive = false;
+        let localStream = null;
+        let peerConnection = null;
+        const configuration = { iceServers: [{ urls: 'stun:stun.l.google.com:19302' }] };
         
-        // --- Simulated Server Data ---
         let simulatedServerState = {
-            users: {}, // Nomes de usuário removidos
+            users: {},
             roomLocks: {1: false, 2: false}
         };
         
         let userReactions = {};
         let userAlarmCounts = {};
         
-        // Sons do chat com URLs corrigidas
-        const messageSound = new Audio('https://www.soundjay.com/buttons/sounds/button-10.mp3');
+        const messageSound = new Audio('https://www.soundjay.com/buttons/button-10.mp3');
         const applauseSound = new Audio('https://assets.mixkit.co/sfx/preview/mixkit-small-group-of-people-applauding-511.mp3');
         const screamSound = new Audio('https://assets.mixkit.co/sfx/preview/mixkit-scream-of-a-man-in-fear-1279.mp3');
         const attentionSound = new Audio('https://assets.mixkit.co/sfx/preview/mixkit-attention-bell-2759.mp3');
@@ -541,8 +548,78 @@
         const thumbsDownSound = new Audio('https://www.soundjay.com/buttons/sounds/button-1.mp3');
         const helpCircleSound = new Audio('https://www.soundjay.com/buttons/sounds/button-7.mp3');
         const checkCircleSound = new Audio('https://www.soundjay.com/buttons/sounds/button-23.mp3');
+        
+        const socket = io();
 
+        socket.on('connect', () => {
+            console.log('Connected to server');
+        });
+        
+        socket.on('update users', (users) => {
+             simulatedServerState.users = users;
+             updateAdminStats();
+             updateAdminRoomUsers();
+        });
 
+        socket.on('system message', (message) => {
+            displaySystemMessage(message);
+        });
+
+        socket.on('chat message', (msg) => {
+            createMessageElement(msg.content, msg.username === currentUser);
+        });
+
+        socket.on('room lock status', (isLocked) => {
+            const icon = roomLockBtn.querySelector('i');
+            icon.setAttribute('data-feather', isLocked ? 'lock' : 'unlock');
+            feather.replace();
+        });
+
+        socket.on('room invite', ({ inviter, room }) => {
+            displayInviteMessage(inviter, room);
+        });
+
+        // WebRTC Signaling
+        socket.on('audio call offer', async (offer) => {
+            if (isAudioCallActive) return;
+            isAudioCallActive = true;
+            audioCallBtn.querySelector('i').setAttribute('data-feather', 'phone-off');
+            feather.replace();
+            displaySystemMessage('Incoming audio call...');
+
+            await getLocalStream();
+            peerConnection = new RTCPeerConnection(configuration);
+            localStream.getTracks().forEach(track => peerConnection.addTrack(track, localStream));
+
+            peerConnection.ontrack = (event) => {
+                document.getElementById('remoteAudio').srcObject = event.streams[0];
+            };
+
+            await peerConnection.setRemoteDescription(new RTCSessionDescription(offer));
+            const answer = await peerConnection.createAnswer();
+            await peerConnection.setLocalDescription(answer);
+            socket.emit('audio call answer', { answer: peerConnection.localDescription });
+        });
+
+        socket.on('audio call answer', async (answer) => {
+            await peerConnection.setRemoteDescription(new RTCSessionDescription(answer));
+        });
+
+        socket.on('ice candidate', async (candidate) => {
+            try {
+                if (peerConnection) {
+                    await peerConnection.addIceCandidate(new RTCIceCandidate(candidate));
+                }
+            } catch (e) {
+                console.error('Error adding received ice candidate', e);
+            }
+        });
+
+        socket.on('call ended', () => {
+            endAudioCall();
+            displaySystemMessage('Audio call ended.');
+        });
+        
         // Reset alarm count every hour
         setInterval(() => {
             userAlarmCounts = {};
@@ -568,14 +645,9 @@
             }
             adminRoomUsersDiv.innerHTML = usersHtml;
         }
-
         function kickUser(username) {
-            delete simulatedServerState.users[username];
-            displaySystemMessage(`${username} was kicked from Room ${currentRoom} by the Admin.`);
-            updateAdminRoomUsers();
-            updateAdminStats();
+            socket.emit('kick user', username);
         }
-
         adminRoomUsersDiv.addEventListener('click', e => {
             const button = e.target.closest('button');
             if (button && button.dataset.userToKick) {
@@ -589,50 +661,20 @@
         function searchUserByName() {
             const userToFind = adminUserInput.value.trim();
             if (!userToFind) return;
-            let found = false;
-            for (const user in simulatedServerState.users) {
-                if (user.toLowerCase().startsWith(userToFind.toLowerCase())) {
-                    const room = simulatedServerState.users[user];
-                    adminSearchResults.innerHTML = `User <b>${user}</b> is in Room <b>${room}</b>.`;
-                    found = true;
-                    break;
-                }
-            }
-            if (!found) {
-                adminSearchResults.textContent = `User "${userToFind}" not found.`;
-            }
+            socket.emit('admin search user', userToFind);
         }
-
+        
         function searchRoomContents() {
             const roomToFind = parseInt(adminRoomInput.value);
             if (isNaN(roomToFind)) return;
-            const usersInRoom = [];
-            for (const user in simulatedServerState.users) {
-                if (simulatedServerState.users[user] === roomToFind) {
-                    usersInRoom.push(user);
-                }
-            }
-            if (usersInRoom.length > 0) {
-                adminSearchResults.innerHTML = `Users in Room <b>${roomToFind}</b>: ${usersInRoom.join(', ')}.`;
-            } else {
-                adminSearchResults.textContent = `Nobody in Room ${roomToFind}.`;
-            }
+            socket.emit('admin search room', roomToFind);
         }
         
         function toggleRoomLock() {
-            const isLocked = simulatedServerState.roomLocks[currentRoom];
-            simulatedServerState.roomLocks[currentRoom] = !isLocked;
-            const icon = roomLockBtn.querySelector('i');
-            icon.setAttribute('data-feather', isLocked ? 'unlock' : 'lock');
-            feather.replace();
-            displaySystemMessage(`Room ${currentRoom} was ${isLocked ? 'unlocked' : 'locked'} by the Admin.`);
+            socket.emit('toggle room lock', currentRoom);
         }
-
-        // --- Server Prep ---
-        function onUserJoined(username) { displaySystemMessage(`${username} entered the room.`); }
-        function onUserLeft(username) { displaySystemMessage(`${username} left the room.`); }
+        
         function onInviteReceived(inviterName, roomNumber) { displayInviteMessage(inviterName, roomNumber); }
-
         // --- Main Functions ---
         function displaySystemMessage(message) {const e=document.createElement('div');e.className='system-message';e.textContent=message;chatScreen.appendChild(e);chatScreen.scrollTop=chatScreen.scrollHeight; if (isAudioEnabled) messageSound.play();}
         function displayInviteMessage(inviterName, roomNumber) {
@@ -642,7 +684,6 @@
             chatScreen.appendChild(inviteDiv);
             chatScreen.scrollTop = chatScreen.scrollHeight;
         }
-
         function displayGlobalMessage(message) {
             const e = document.createElement('div');
             e.className = 'global-message';
@@ -658,7 +699,6 @@
                  }
             }
         }
-
         function applyFormatting(text) {
             let s = text;
             if (activeStyles.bold) s = `<b>${s}</b>`;
@@ -670,7 +710,6 @@
             if (activeStyles.shadow) style += ' text-shadow: 1px 1px 1px rgba(0,0,0,0.4);';
             return `<span style="${style}">${s}</span>`;
         }
-
         function applyGlobalFormatting(text) {
              let s = text;
             if (adminGlobalStyles.bold) s = `<b>${s}</b>`;
@@ -682,7 +721,6 @@
             if (adminGlobalStyles.shadow) style += ' text-shadow: 1px 1px 1px rgba(0,0,0,0.4);';
             return `<span style="${style}">${s}</span>`;
         }
-
         function getCurrentTime() {
             const now = new Date();
             const options = {
@@ -699,18 +737,17 @@
             const formattedTime = formatter.format(now).replace(',', '');
             return `[${formattedTime} SLT]`;
         }
-
-        function createMessageElement(content, isMyMessage = false) {
-            const id = `msg-${messageIdCounter++}`;
+        function createMessageElement(msg, isMyMessage) {
+            const { id, content, username, isAdmin, timestamp } = msg;
             const messageDiv = document.createElement('div');
             messageDiv.id = id;
             messageDiv.className = 'chat-message';
             if (isMyMessage) messageDiv.classList.add('my-message');
             
-            let displayName = currentUser;
+            let displayName = username;
             let adminStar = '';
-            if (currentUser.includes('(Admin)')) {
-                const usernameOnly = currentUser.replace(' (Admin)', '');
+            if (isAdmin) {
+                const usernameOnly = username.replace(' (Admin)', '');
                 displayName = `<b>${usernameOnly}</b>`;
                 adminStar = '<i data-feather="star" class="admin-star"></i>';
             }
@@ -719,14 +756,12 @@
             headerDiv.style.display = 'flex';
             headerDiv.style.alignItems = 'center';
             headerDiv.innerHTML = `${adminStar}<b>${displayName}:</b>`;
-
             const contentDiv = document.createElement('div');
             contentDiv.innerHTML = content;
             
             const timestampSpan = document.createElement('span');
             timestampSpan.className = 'timestamp';
-            timestampSpan.textContent = getCurrentTime();
-
+            timestampSpan.textContent = `[${timestamp}]`;
             const reactionsWrapper = document.createElement('div');
             reactionsWrapper.className = 'reactions-display';
             
@@ -738,7 +773,7 @@
             messageReactions[id] = {};
             userReactions[id] = {};
             chatScreen.appendChild(messageDiv);
-            chatScreen.scrollTop = chatScreen.scrollHeight;
+            chatScreen.scrollTop=chatScreen.scrollHeight;
             feather.replace();
             if (isAudioEnabled) {
                 messageSound.currentTime = 0;
@@ -750,22 +785,27 @@
             const urlRegex = /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])|(\bwww\.[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig;
             return text.replace(urlRegex, url => `<a href="${url.startsWith('http')?url:'https://'+url}" target="_blank">${url}</a>`);
         }
-
+        
         function sendMessage() {
             if (messageInput.textContent.trim() === "") return;
-            const formattedText = applyFormatting(linkify(messageInput.innerHTML));
+            const formattedContent = applyFormatting(linkify(messageInput.innerHTML));
+            
+            const msg = {
+                content: formattedContent,
+                id: `msg-${messageIdCounter++}`,
+                username: currentUser,
+                isAdmin: currentUser.includes('(Admin)'),
+                timestamp: getCurrentTime()
+            };
 
             if (isEditing) {
-                const messageElement = document.getElementById(messageToEditId);
-                messageElement.querySelector('div:nth-child(2)').innerHTML = formattedText;
+                socket.emit('edit message', { id: messageToEditId, content: formattedContent });
                 isEditing = false;
                 messageToEditId = null;
                 sendBtn.innerHTML = '<i data-feather="send"></i>';
             } else {
-                // Envia a mensagem para o servidor
-                socket.emit('chat message', { user: currentUser, text: formattedText, isMyMessage: true, timestamp: getCurrentTime() });
+                socket.emit('chat message', msg);
             }
-
             messageInput.innerHTML = '';
             messageInput.focus();
             feather.replace();
@@ -798,7 +838,8 @@
             minimizeChatBtn.style.display = !loginScreenActive ? 'flex' : 'none';
             maximizeChatBtn.style.display = !chatWindow.classList.contains('maximized') && !loginScreenActive ? 'flex' : 'none';
             restoreChatBtn.style.display = chatWindow.classList.contains('maximized') && !loginScreenActive ? 'flex' : 'none';
-
+            audioCallBtn.style.display = !loginScreenActive ? 'flex' : 'none';
+            
             if(loginScreenActive){
                 screenTitle.innerText='Login';
             } else if (chatState.mode==='private'){
@@ -815,12 +856,10 @@
             document.getElementById('chatFooter').style.display=screenId==='chatScreen'?'flex':'none';
             updateHeaderUI();
         }
-
         function login() {
             let username = usernameInput.value.trim();
             if (username === "") return void alert("Please enter a username.");
             
-            // Username validation and uniqueness
             const allowedCharsRegex = /^[a-zA-Z0-9.\-]+$/;
             if (!allowedCharsRegex.test(username)) {
                 return void alert("The username can only contain letters, numbers, one period, or one hyphen, without accents.");
@@ -833,19 +872,13 @@
                 return void alert("The username can only contain one period or one hyphen, not both.");
             }
             
-            let originalUsername = username;
-            let counter = 1;
-            while (simulatedServerState.users.hasOwnProperty(username)) {
-                username = `${originalUsername}-${counter}`;
-                counter++;
-            }
-            
             const adminNames = ['serkan', 'elieser'];
             const adminPassword = '51995429192';
             if (adminNames.includes(username.toLowerCase())) {
                 const enteredPassword = prompt("Restricted access. Please enter the Admin password:");
                 if (enteredPassword === adminPassword) {
                     currentUser = `${username} (Admin)`;
+                    socket.emit('login', { username: currentUser, room: currentRoom });
                     startMainChat();
                 } else {
                     alert("Incorrect password. Access denied.");
@@ -853,18 +886,14 @@
                 }
             } else {
                 currentUser = username;
+                socket.emit('login', { username: currentUser, room: currentRoom });
                 startMainChat();
             }
         }
-
         function startMainChat(){
             currentRoom=0;
             chatState={mode:'main',withUser:null};
             chatScreen.innerHTML='';
-            
-            // Envia o evento para o servidor quando um usuário se junta
-            socket.emit('user joined', currentUser);
-
             displaySystemMessage(`Welcome, ${currentUser}!`);
             displaySystemMessage(`You have entered Room ${currentRoom} (General).`);
             updateHeaderUI();
@@ -875,28 +904,75 @@
             const newRoom = parseInt(newRoomStr);
             if (isNaN(newRoom) || newRoom < 0) return alert("Invalid room number.");
             if (newRoom === currentRoom) return;
-            
-            if (simulatedServerState.roomLocks[newRoom] && !currentUser.includes('(Admin)')) {
-                alert("Room temporarily locked, please find another room.");
-                return;
-            }
-            
-            currentRoom = newRoom;
-            
-            // Notifica o servidor sobre a mudança de sala
-            socket.emit('user changed room', { username: currentUser, newRoom: currentRoom });
 
+            socket.emit('change room', { oldRoom: currentRoom, newRoom, username: currentUser });
+            currentRoom = newRoom;
             chatScreen.innerHTML = '';
             displaySystemMessage(`You have entered Room ${currentRoom}.`);
             updateHeaderUI();
         }
         
+        // --- WebRTC Functions ---
+        async function getLocalStream() {
+            if (localStream) return;
+            try {
+                localStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                document.getElementById('localAudio').srcObject = localStream;
+            } catch (err) {
+                console.error("Error accessing audio devices: ", err);
+            }
+        }
+        
+        async function startAudioCall() {
+            await getLocalStream();
+            if (!localStream) return;
+
+            isAudioCallActive = true;
+            audioCallBtn.querySelector('i').setAttribute('data-feather', 'phone-off');
+            feather.replace();
+            
+            peerConnection = new RTCPeerConnection(configuration);
+
+            peerConnection.ontrack = (event) => {
+                document.getElementById('remoteAudio').srcObject = event.streams[0];
+            };
+
+            peerConnection.onicecandidate = (event) => {
+                if (event.candidate) {
+                    socket.emit('ice candidate', { candidate: event.candidate, to: 'other' });
+                }
+            };
+
+            localStream.getTracks().forEach(track => peerConnection.addTrack(track, localStream));
+
+            const offer = await peerConnection.createOffer();
+            await peerConnection.setLocalDescription(offer);
+            socket.emit('audio call offer', { offer: offer });
+
+            displaySystemMessage('Starting audio call...');
+        }
+        
+        function endAudioCall() {
+            if (localStream) {
+                localStream.getTracks().forEach(track => track.stop());
+                localStream = null;
+            }
+            if (peerConnection) {
+                peerConnection.close();
+                peerConnection = null;
+            }
+            isAudioCallActive = false;
+            audioCallBtn.querySelector('i').setAttribute('data-feather', 'phone');
+            feather.replace();
+            document.getElementById('localAudio').srcObject = null;
+            document.getElementById('remoteAudio').srcObject = null;
+        }
+
         // --- Event Listeners ---
         loginBtn.addEventListener("click", login);
         usernameInput.addEventListener('keydown', e => { if (e.key === 'Enter') login(); });
         logoutBtn.addEventListener("click", () => {
-            // Notifica o servidor que o usuário está saindo
-            socket.emit('user disconnected', currentUser);
+            socket.emit('logout', currentUser);
             showScreen('loginScreen');
         });
         
@@ -905,25 +981,21 @@
             updateAdminStats();
             updateAdminRoomUsers();
             
-            // Selectors for admin panel formatting and message
             const adminGlobalMessageInput = document.getElementById('adminGlobalMessage');
             const sendGlobalMessageBtn = document.getElementById('sendGlobalMessageBtn');
             const adminGlobalFormattingToolbar = document.querySelector('.admin-global-formatting-toolbar');
             const adminColorPicker = document.getElementById('admin-colorPicker');
             const adminHighlightPicker = document.getElementById('admin-highlightPicker');
             const adminGlobalSoundSelect = document.getElementById('admin-global-sound-select');
-
-            // Add event listener for the Send Global Message button
+            
             sendGlobalMessageBtn.addEventListener('click', () => {
                 const message = adminGlobalMessageInput.innerHTML.trim();
                 if (message) {
                     const formattedMessage = applyGlobalFormatting(message);
-                    displayGlobalMessage(formattedMessage);
+                    socket.emit('global message', { content: formattedMessage, sound: adminGlobalSound });
                     adminGlobalMessageInput.innerHTML = '';
                 }
             });
-
-            // Add event listener for formatting buttons within the admin toolbar
             adminGlobalFormattingToolbar.addEventListener('click', e => {
                 const button = e.target.closest('.tool-button');
                 if (!button) return;
@@ -948,8 +1020,6 @@
                     adminColorPicker.click();
                 }
             });
-
-            // Add event listeners for color pickers and sound selector
             adminColorPicker.addEventListener('input', e => { adminGlobalStyles.color = e.target.value; });
             adminHighlightPicker.addEventListener('input', e => { adminGlobalStyles.highlight = e.target.value; });
             adminGlobalSoundSelect.addEventListener('change', (e) => {
@@ -961,7 +1031,6 @@
         adminUserSearchBtn.addEventListener('click', searchUserByName);
         adminRoomSearchBtn.addEventListener('click', searchRoomContents);
         roomLockBtn.addEventListener('click', toggleRoomLock);
-
         chatIcon.addEventListener("click",()=>chatWindow.classList.toggle('open'));
         backToChatBtn.addEventListener("click",()=>changeRoom('0'));
         roomsBtn.addEventListener("click", () => roomsModal.style.display = 'flex');
@@ -1001,65 +1070,29 @@
                 const messageId = button.dataset.messageId;
                 const messageElement = document.getElementById(messageId);
                 const messageContent = messageElement ? messageElement.querySelector('div:nth-child(2)').innerHTML : '';
-
                 if (button.classList.contains('reaction-button')) {
                     const reaction = button.dataset.reaction;
-
-                    if (!userReactions[messageId]) {
-                        userReactions[messageId] = {};
-                    }
-                    if (!messageReactions[messageId]) {
-                        messageReactions[messageId] = {};
-                    }
-
-                    const previousReaction = userReactions[messageId][currentUser];
-                    if (previousReaction === reaction) {
-                        messageReactions[messageId][reaction]--;
-                        if (messageReactions[messageId][reaction] <= 0) {
-                            delete messageReactions[messageId][reaction];
-                        }
-                        delete userReactions[messageId][currentUser];
-                    } else {
-                        if (previousReaction) {
-                            messageReactions[messageId][previousReaction]--;
-                            if (messageReactions[messageId][previousReaction] <= 0) {
-                                delete messageReactions[messageId][previousReaction];
-                            }
-                        }
-                        if (!messageReactions[messageId][reaction]) {
-                            messageReactions[messageId][reaction] = 0;
-                        }
-                        messageReactions[messageId][reaction]++;
-                        userReactions[messageId][currentUser] = reaction;
-                        if(isAudioEnabled && reactionSounds[reaction]) {
-                            reactionSounds[reaction].currentTime = 0;
-                            reactionSounds[reaction].play();
-                        }
-                    }
-                    
-                    updateReactionsDisplay(messageId);
+                    socket.emit('react to message', { messageId, reaction });
                 }  else if (button.classList.contains('edit-post')) {
                     const messageContentDiv = messageElement.querySelector('div:nth-child(2)');
                     messageInput.innerHTML = messageContentDiv.innerHTML;
                     isEditing = true;
                     messageToEditId = messageId;
-                    sendBtn.innerHTML = '<i data-feather="check"></i>'; // Muda o ícone para "salvar"
+                    sendBtn.innerHTML = '<i data-feather="check"></i>';
                     messageInput.focus();
                 } else if (button.classList.contains('delete-post')) {
                     if (confirm("Are you sure you want to delete this message?")) {
-                        messageElement.remove();
+                        socket.emit('delete message', messageId);
                     }
                 }
                  reactionPopup.style.display = 'none';
             }
         });
-
-
-        function updateReactionsDisplay(messageId) {
+        function updateReactionsDisplay(messageId, reactions) {
             const reactionsWrapper = document.getElementById(messageId).querySelector('.reactions-display');
             reactionsWrapper.innerHTML = '';
-            for (const reaction in messageReactions[messageId]) {
-                const count = messageReactions[messageId][reaction];
+            for (const reaction in reactions) {
+                const count = reactions[reaction];
                 if (count > 0) {
                     const reactionSpan = document.createElement('span');
                     reactionSpan.className = 'reaction-count';
@@ -1069,7 +1102,7 @@
             }
             feather.replace();
         }
-
+        
         // Formatting events
         toggleFormattingBtn.addEventListener('click', () => { formattingPopup.classList.toggle('open'); });
         
@@ -1081,30 +1114,23 @@
                 button.classList.toggle('active', activeStyles[command]);
             }
         });
-
         fontSelect.addEventListener('change', e => { activeStyles.fontFamily = e.target.value; });
-
         colorBtn.addEventListener('click', () => { colorPicker.click(); });
         colorPicker.addEventListener('input', e => { activeStyles.color = e.target.value; });
-
         fontSizePlusBtn.addEventListener('click', () => {
             if (activeFontSize < 24) {
                 activeFontSize += 2;
                 messageInput.style.fontSize = `${activeFontSize}px`;
             }
         });
-
         fontSizeMinusBtn.addEventListener('click', () => {
             if (activeFontSize > 12) {
                 activeFontSize -= 2;
                 messageInput.style.fontSize = `${activeFontSize}px`;
             }
         });
-
         highlightBtn.addEventListener('click', () => { highlightPicker.click(); });
         highlightPicker.addEventListener('input', e => { activeStyles.highlight = e.target.value; });
-
-
         mentionBtn.addEventListener('click', () => {
             const usernameToMention = prompt("Enter the username you want to mention:");
             if (usernameToMention) {
@@ -1112,27 +1138,24 @@
                 messageInput.focus();
             }
         });
-
         attachFileBtn.addEventListener('click', () => {
             fileUpload.click();
         });
-
         fileUpload.addEventListener('change', (e) => {
             const file = e.target.files[0];
             if (file) {
-                if (file.type.startsWith('image/')) {
-                    const reader = new FileReader();
-                    reader.onload = function(e) {
-                        const img = `<img src="${e.target.result}" style="max-width: 100%; max-height: 200px; display: block; margin-top: 10px; cursor: pointer;" onclick="window.open(this.src)" />`;
-                        createMessageElement(`${img}`, true);
-                        displaySystemMessage(`Image "${file.name}" sent.`);
-                    };
-                    reader.readAsDataURL(file);
-                } else {
-                    displaySystemMessage(`File "${file.name}" attached.`);
-                }
-                fileUpload.value = '';
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    socket.emit('file upload', { name: file.name, type: file.type, data: e.target.result });
+                };
+                reader.readAsDataURL(file);
             }
+        });
+        
+        socket.on('file uploaded', (file) => {
+             const img = `<img src="${file.data}" style="max-width: 100%; max-height: 200px; display: block; margin-top: 10px; cursor: pointer;" onclick="window.open(this.src)" />`;
+             createMessageElement({ content: img, username: file.username, isAdmin: file.isAdmin, timestamp: file.timestamp });
+             displaySystemMessage(`Image "${file.name}" sent.`);
         });
 
         emojiBtn.addEventListener('click', () => {
@@ -1146,7 +1169,6 @@
                 '💡': 'Objects & Symbols',
                 '🇧🇷': 'Flags'
             };
-
             let emojiHtml = `<div class="emoji-category-tabs">`;
             for (const emojiKey in emojis) {
                 emojiHtml += `<button data-category-key="${emojiKey}">${emojiKey}</button>`;
@@ -1164,17 +1186,15 @@
             };
             
             renderEmojis(initialCategoryKey);
-
             const categoryTabs = document.querySelector('.emoji-category-tabs');
             categoryTabs.addEventListener('click', e => {
                 const button = e.target.closest('button');
                 if (button) {
-                    const categoryKey = button.dataset.categoryKey;
+                    const categoryKey = button.dataset.category-key;
                     renderEmojis(categoryKey);
                 }
             });
         });
-
         emojiPicker.addEventListener('click', e => {
             const button = e.target.closest('.emoji-button');
             if (button) {
@@ -1199,15 +1219,17 @@
         // --- Online Users and Alarm Functions ---
         usersOnlineBtn.addEventListener('click', () => {
             usersOnlineModal.style.display = 'flex';
-            const usersInCurrentRoom = Object.entries(simulatedServerState.users).filter(([user, room]) => room === currentRoom).map(([user]) => user);
-            
+            socket.emit('request users online');
+        });
+
+        socket.on('users online list', (users) => {
+            const usersInCurrentRoom = Object.entries(users).filter(([user, room]) => room === currentRoom).map(([user]) => user);
             let usersHtml = '<h3>Users in Room:</h3>';
             if (usersInCurrentRoom.length > 0) {
                 usersHtml += `<ul>${usersInCurrentRoom.map(user => `<li>${user}</li>`).join('')}</ul>`;
             } else {
                 usersHtml += '<p>No other users in this room.</p>';
             }
-
             usersListDiv.innerHTML = usersHtml;
         });
 
@@ -1219,7 +1241,6 @@
                 alert('You can only call for attention 3 times per hour. Please wait to try again.');
                 return;
             }
-
             alarmModal.style.display = 'flex';
             const usersInRoom = Object.entries(simulatedServerState.users).filter(([user, room]) => room === currentRoom).map(([user]) => user);
             const userListHtml = usersInRoom.map(user => `<button data-user="${user}">${user}</button>`).join('');
@@ -1236,26 +1257,14 @@
                 userAlarmCounts[currentUser]++;
                 
                 if (user === 'all') {
-                    displaySystemMessage(`Attention! Alarm message for everyone in the room!`);
-                    chatWindow.classList.add('shake-animation');
-                    if (isAudioEnabled) {
-                        applauseSound.currentTime = 0;
-                        applauseSound.play();
-                    }
-                    setTimeout(() => chatWindow.classList.remove('shake-animation'), 500);
+                    socket.emit('alarm', { type: 'all', room: currentRoom });
                 } else {
-                    displaySystemMessage(`Attention! Alarm message for ${user}!`);
+                    socket.emit('alarm', { type: 'user', user, room: currentRoom });
                 }
                 alarmModal.style.display = 'none';
             }
         });
         
-        // Close modals on overlay click
-        usersOnlineModal.addEventListener('click', e => { if(e.target === usersOnlineModal) usersOnlineModal.style.display = 'none'; });
-        alarmModal.addEventListener('click', e => { if(e.target === alarmModal) alarmModal.style.display = 'none'; });
-        emojiModal.addEventListener('click', e => { if(e.target === emojiModal) emojiModal.style.display = 'none'; });
-
-
         // Audio and Window control events
         audioToggleBtn.addEventListener('click', () => {
             isAudioEnabled = !isAudioEnabled;
@@ -1263,7 +1272,6 @@
             icon.setAttribute('data-feather', isAudioEnabled ? 'volume-2' : 'volume-x');
             feather.replace();
         });
-
         minimizeChatBtn.addEventListener('click', () => {
             chatWindow.classList.add('minimized');
             chatWindow.classList.remove('maximized');
@@ -1279,7 +1287,6 @@
             restoreChatBtn.style.display = 'flex';
             minimizeChatBtn.style.display = 'flex';
         });
-
         restoreChatBtn.addEventListener('click', () => {
             chatWindow.classList.remove('maximized');
             chatWindow.classList.remove('minimized');
@@ -1287,15 +1294,50 @@
             maximizeChatBtn.style.display = 'flex';
             minimizeChatBtn.style.display = 'flex';
         });
-
         colorPaletteBtn.addEventListener('click', () => {
             chatWallpaperColor.click();
         });
-
         chatWallpaperColor.addEventListener('input', (e) => {
             chatScreen.style.backgroundColor = e.target.value;
         });
         
+        // New WebRTC related events
+        audioCallBtn.addEventListener('click', () => {
+            if (isAudioCallActive) {
+                socket.emit('end call');
+                endAudioCall();
+                audioCallModal.style.display = 'none';
+            } else {
+                audioCallModal.style.display = 'flex';
+                socket.emit('request users online');
+            }
+        });
+
+        socket.on('users online for call', (users) => {
+             const usersHtml = Object.entries(users)
+                .filter(([user, room]) => room === currentRoom && user !== currentUser)
+                .map(([user]) => `<button data-user="${user}">${user}</button>`)
+                .join('');
+
+            audioCallUsersList.innerHTML = `
+                <h3>Start a Call:</h3>
+                <button data-user="all">Call Room</button>
+                ${usersHtml}
+            `;
+        });
+
+        audioCallUsersList.addEventListener('click', (e) => {
+            const userToCall = e.target.closest('button').dataset.user;
+            if (userToCall === 'all') {
+                // Notifica o servidor para iniciar uma chamada de grupo
+                socket.emit('start group call', { room: currentRoom });
+            } else {
+                // Notifica o servidor para iniciar uma chamada individual
+                socket.emit('start peer call', { to: userToCall });
+            }
+            audioCallModal.style.display = 'none';
+        });
+
         // --- Initialization ---
         googleFonts.forEach(fontName=>{const option=document.createElement('option');option.value=fontName;option.textContent=fontName;option.style.fontFamily=fontName;fontSelect.appendChild(option);});
         
@@ -1303,4 +1345,5 @@
         showScreen('loginScreen');
     });
     </script>
+</body>
 </html>
