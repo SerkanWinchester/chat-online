@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>Chat</title>
+    <title>Chat com Chamada de Áudio</title>
     <script src="https://unpkg.com/feather-icons"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -242,6 +242,26 @@
         #audio-call-modal button:hover {
             background: #e9e9e9;
         }
+        .modal-header-with-close {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        .modal-header-with-close h2 {
+            margin: 0;
+            font-size: 18px;
+        }
+        .close-modal-btn {
+            background: none;
+            border: none;
+            padding: 0;
+            cursor: pointer;
+            color: #333;
+        }
     </style>
 </head>
 <body>
@@ -345,7 +365,10 @@
     </div>
     <div class="modal-overlay" id="audio-call-modal">
         <div class="modal-content">
-            <div class="modal-header"><h2>Audio Call</h2></div>
+            <div class="modal-header-with-close">
+                <h2>Audio Call</h2>
+                <button class="close-modal-btn" data-modal="audio-call-modal"><i data-feather="x"></i></button>
+            </div>
             <div id="audio-call-users-list"></div>
             <audio id="localAudio" autoplay muted></audio>
             <audio id="remoteAudio" autoplay></audio>
@@ -507,7 +530,7 @@
             'frown': new Audio('https://www.soundjay.com/buttons/sounds/button-37.mp3'),
             'thumbs-down': new Audio('https://www.soundjay.com/buttons/sounds/button-1.mp3'),
             'help-circle': new Audio('https://www.soundjay.com/buttons/sounds/button-7.mp3'),
-            'check-circle': new Audio('https://www.soundjay.com/buttons/sounds/button-23.mp3')
+            'check-circle': new new Audio('https://www.soundjay.com/buttons/sounds/button-23.mp3')
         };
         const globalSounds = {
             'screamSound': new Audio('https://assets.mixkit.co/sfx/preview/mixkit-scream-of-a-man-in-fear-1279.mp3'),
@@ -530,7 +553,7 @@
         
         let simulatedServerState = {
             users: {},
-            roomLocks: {1: false, 2: false}
+            roomLocks: { 1: false, 2: false }
         };
         
         let userReactions = {};
@@ -566,7 +589,7 @@
         });
 
         socket.on('chat message', (msg) => {
-            createMessageElement(msg.content, msg.username === currentUser);
+            createMessageElement(msg, msg.username === currentUser);
         });
 
         socket.on('room lock status', (isLocked) => {
@@ -1300,7 +1323,15 @@
         chatWallpaperColor.addEventListener('input', (e) => {
             chatScreen.style.backgroundColor = e.target.value;
         });
-        
+
+        // Evento para fechar modais ao clicar no 'X'
+        document.querySelectorAll('.close-modal-btn').forEach(button => {
+            button.addEventListener('click', () => {
+                const modalId = button.dataset.modal;
+                document.getElementById(modalId).style.display = 'none';
+            });
+        });
+
         // New WebRTC related events
         audioCallBtn.addEventListener('click', () => {
             if (isAudioCallActive) {
@@ -1337,7 +1368,7 @@
             }
             audioCallModal.style.display = 'none';
         });
-
+        
         // --- Initialization ---
         googleFonts.forEach(fontName=>{const option=document.createElement('option');option.value=fontName;option.textContent=fontName;option.style.fontFamily=fontName;fontSelect.appendChild(option);});
         
