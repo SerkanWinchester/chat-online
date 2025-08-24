@@ -4,7 +4,7 @@
     
     
     <head>
-    <title>Floating Chat</title>
+    <title>Chat</title>
     <script src="https://unpkg.com/feather-icons"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
@@ -255,7 +255,7 @@
     <audio id="attentionSound" src="https://assets.mixkit.co/sfx/preview/mixkit-attention-bell-2759.mp3" preload="auto"></audio>
     <audio id="thumbsUpSound" src="https://www.soundjay.com/buttons/sounds/button-36.mp3" preload="auto"></audio>
     <audio id="heartSound" src="https://www.soundjay.com/buttons/sounds/button-18.mp3" preload="auto"></audio>
-    <audio id="smileSound" src="https://www.soundjay.com/buttons/sounds/button-3.mp3" preload="auto"></audio>
+    <audio id="smileSound" src="https://www.soundjay.com/buttons/sounds/button-3.mpd3" preload="auto"></audio>
     <audio id="starSound" src="https://www.soundjay.com/buttons/sounds/button-2.mp3" preload="auto"></audio>
     <audio id="frownSound" src="https://www.soundjay.com/buttons/sounds/button-37.mp3" preload="auto"></audio>
     <audio id="thumbsDownSound" src="https://www.soundjay.com/buttons/sounds/button-1.mp3" preload="auto"></audio>
@@ -415,6 +415,7 @@
 
     <script src="https://meu-chat-lin7.onrender.com/socket.io/socket.io.js"></script>
     <script>
+    const socket = io("https://meu-chat-lin7.onrender.com");
     document.addEventListener('DOMContentLoaded', () => {
         // --- Selectors ---
         const chatWindow = document.getElementById('chatWindow');
@@ -527,7 +528,8 @@
         let userReactions = {};
         let userAlarmCounts = {};
         
-        const messageSound = new Audio('https://www.soundjay.com/buttons/button-10.mp3');
+        // Sons do chat com URLs corrigidas
+        const messageSound = new Audio('https://www.soundjay.com/buttons/sounds/button-10.mp3');
         const applauseSound = new Audio('https://assets.mixkit.co/sfx/preview/mixkit-small-group-of-people-applauding-511.mp3');
         const screamSound = new Audio('https://assets.mixkit.co/sfx/preview/mixkit-scream-of-a-man-in-fear-1279.mp3');
         const attentionSound = new Audio('https://assets.mixkit.co/sfx/preview/mixkit-attention-bell-2759.mp3');
@@ -760,7 +762,8 @@
                 messageToEditId = null;
                 sendBtn.innerHTML = '<i data-feather="send"></i>';
             } else {
-                createMessageElement(formattedText, true);
+                // Envia a mensagem para o servidor
+                socket.emit('chat message', { user: currentUser, text: formattedText, timestamp: getCurrentTime() });
             }
 
             messageInput.innerHTML = '';
@@ -858,7 +861,10 @@
             currentRoom=0;
             chatState={mode:'main',withUser:null};
             chatScreen.innerHTML='';
-            simulatedServerState.users[currentUser] = 0;
+            
+            // Envia o evento para o servidor quando um usuário se junta
+            socket.emit('user joined', currentUser);
+
             displaySystemMessage(`Welcome, ${currentUser}!`);
             displaySystemMessage(`You have entered Room ${currentRoom} (General).`);
             updateHeaderUI();
@@ -876,7 +882,10 @@
             }
             
             currentRoom = newRoom;
-            simulatedServerState.users[currentUser] = newRoom;
+            
+            // Notifica o servidor sobre a mudança de sala
+            socket.emit('user changed room', { username: currentUser, newRoom: currentRoom });
+
             chatScreen.innerHTML = '';
             displaySystemMessage(`You have entered Room ${currentRoom}.`);
             updateHeaderUI();
@@ -886,7 +895,8 @@
         loginBtn.addEventListener("click", login);
         usernameInput.addEventListener('keydown', e => { if (e.key === 'Enter') login(); });
         logoutBtn.addEventListener("click", () => {
-            delete simulatedServerState.users[currentUser];
+            // Notifica o servidor que o usuário está saindo
+            socket.emit('user disconnected', currentUser);
             showScreen('loginScreen');
         });
         
