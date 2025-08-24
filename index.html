@@ -530,7 +530,7 @@
             'frown': new Audio('https://www.soundjay.com/buttons/sounds/button-37.mp3'),
             'thumbs-down': new Audio('https://www.soundjay.com/buttons/sounds/button-1.mp3'),
             'help-circle': new Audio('https://www.soundjay.com/buttons/sounds/button-7.mp3'),
-            'check-circle': new new Audio('https://www.soundjay.com/buttons/sounds/button-23.mp3')
+            'check-circle': new Audio('https://www.soundjay.com/buttons/sounds/button-23.mp3')
         };
         const globalSounds = {
             'screamSound': new Audio('https://assets.mixkit.co/sfx/preview/mixkit-scream-of-a-man-in-fear-1279.mp3'),
@@ -761,7 +761,7 @@
             return `[${formattedTime} SLT]`;
         }
         function createMessageElement(msg, isMyMessage) {
-            const { id, content, username, isAdmin, timestamp } = msg;
+            const { id, content, username, isAdmin, timestamp, reactions } = msg;
             const messageDiv = document.createElement('div');
             messageDiv.id = id;
             messageDiv.className = 'chat-message';
@@ -793,8 +793,7 @@
             messageDiv.appendChild(timestampSpan);
             messageDiv.appendChild(reactionsWrapper);
             
-            messageReactions[id] = {};
-            userReactions[id] = {};
+            updateReactionsDisplay(id, reactions);
             chatScreen.appendChild(messageDiv);
             chatScreen.scrollTop=chatScreen.scrollHeight;
             feather.replace();
@@ -818,7 +817,8 @@
                 id: `msg-${messageIdCounter++}`,
                 username: currentUser,
                 isAdmin: currentUser.includes('(Admin)'),
-                timestamp: getCurrentTime()
+                timestamp: getCurrentTime(),
+                reactions: {}
             };
 
             if (isEditing) {
@@ -1111,6 +1111,14 @@
                  reactionPopup.style.display = 'none';
             }
         });
+        socket.on('message reacted', (data) => {
+            const { messageId, reactions } = data;
+            const messageElement = document.getElementById(messageId);
+            if (messageElement) {
+                updateReactionsDisplay(messageId, reactions);
+            }
+        });
+
         function updateReactionsDisplay(messageId, reactions) {
             const reactionsWrapper = document.getElementById(messageId).querySelector('.reactions-display');
             reactionsWrapper.innerHTML = '';
