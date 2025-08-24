@@ -3,8 +3,8 @@
 
     
     
-    
-    Floating Chat
+    <head>
+    <title>Floating Chat</title>
     <script src="https://unpkg.com/feather-icons"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
@@ -244,23 +244,23 @@
             40%, 60% { transform: translate3d(4px, 0, 0); }
         }
     </style>
-    
+    </head>
 
 
-    
+    <body>
     <div id="chatIcon"><i data-feather="message-square"></i></div>
     <audio id="messageSound" src="https://www.soundjay.com/buttons/button-10.mp3" preload="auto"></audio>
     <audio id="applauseSound" src="https://assets.mixkit.co/sfx/preview/mixkit-small-group-of-people-applauding-511.mp3" preload="auto"></audio>
     <audio id="screamSound" src="https://assets.mixkit.co/sfx/preview/mixkit-scream-of-a-man-in-fear-1279.mp3" preload="auto"></audio>
     <audio id="attentionSound" src="https://assets.mixkit.co/sfx/preview/mixkit-attention-bell-2759.mp3" preload="auto"></audio>
-    <audio id="thumbsUpSound" src="https://www.soundjay.com/button/sounds/button-36.mp3" preload="auto"></audio>
-    <audio id="heartSound" src="https://www.soundjay.com/button/sounds/button-18.mp3" preload="auto"></audio>
-    <audio id="smileSound" src="https://www.soundjay.com/button/sounds/button-3.mp3" preload="auto"></audio>
-    <audio id="starSound" src="https://www.soundjay.com/button/sounds/button-2.mp3" preload="auto"></audio>
-    <audio id="frownSound" src="https://www.soundjay.com/button/sounds/button-37.mp3" preload="auto"></audio>
-    <audio id="thumbsDownSound" src="https://www.soundjay.com/button/sounds/button-1.mp3" preload="auto"></audio>
-    <audio id="helpCircleSound" src="https://www.soundjay.com/button/sounds/button-7.mp3" preload="auto"></audio>
-    <audio id="checkCircleSound" src="https://www.soundjay.com/button/sounds/button-23.mp3" preload="auto"></audio>
+    <audio id="thumbsUpSound" src="https://www.soundjay.com/buttons/sounds/button-36.mp3" preload="auto"></audio>
+    <audio id="heartSound" src="https://www.soundjay.com/buttons/sounds/button-18.mp3" preload="auto"></audio>
+    <audio id="smileSound" src="https://www.soundjay.com/buttons/sounds/button-3.mp3" preload="auto"></audio>
+    <audio id="starSound" src="https://www.soundjay.com/buttons/sounds/button-2.mp3" preload="auto"></audio>
+    <audio id="frownSound" src="https://www.soundjay.com/buttons/sounds/button-37.mp3" preload="auto"></audio>
+    <audio id="thumbsDownSound" src="https://www.soundjay.com/buttons/sounds/button-1.mp3" preload="auto"></audio>
+    <audio id="helpCircleSound" src="https://www.soundjay.com/buttons/sounds/button-7.mp3" preload="auto"></audio>
+    <audio id="checkCircleSound" src="https://www.soundjay.com/buttons/sounds/button-23.mp3" preload="auto"></audio>
 
 
     <div class="chat-window" id="chatWindow">
@@ -286,7 +286,7 @@
                 <button id="logoutBtn" class="header-button"><i data-feather="power"></i></button>
             </div>
         </div>
-        <div class="screen active" id="loginScreen"><div class="form-group"><i data-feather="user"></i><input type="text" id="usernameInput" placeholder="Username" /></div><button id="loginBtn">Login</button></div>
+        <div class="screen active" id="loginScreen"><div class="form-group"><i data-feather="user"></i><input type="text" id="usernameInput" placeholder="Create username" /></div><button id="loginBtn">Enter</button></div>
         <div class="screen" id="chatScreen"></div>
         <div class="chat-footer" id="chatFooter">
             <div id="formatting-popup">
@@ -329,7 +329,7 @@
         <div class="post-actions-buttons">
             
              <button class="action-button edit-post" title="Edit"><i data-feather="edit-2"></i></button>
-             <button class="action-button delete-post" title="Delete"><i data-feather="trash-2"></i></button>
+             <button class="action-button delete-post" data-message-id="${messageId}" title="Delete"><i data-feather="trash-2"></i></button>
         </div>
     </div>
     <div class="modal-overlay" id="emoji-modal"><div class="modal-content"><div class="modal-header"><h2>Choose Emoji</h2></div><div id="emoji-picker"></div></div></div>
@@ -361,23 +361,23 @@
             </div>
             <div id="admin-room-list"></div>
             <div class="admin-icon-toggles">
-              <label><input type="checkbox" id="toggleRoomsBtn" checked /> Rooms</label>
-              <label><input type="checkbox" id="toggleUsersOnlineBtn" checked /> Users Online</label>
-              <label><input type="checkbox" id="toggleAudioToggleBtn" checked /> Audio</label>
-              <label><input type="checkbox" id="toggleMinimizeChatBtn" checked /> Minimize</label>
-              <label><input type="checkbox" id="toggleMaximizeChatBtn" checked /> Maximize</label>
-              <label><input type="checkbox" id="toggleInviteUserBtn" checked /> Invite User</label>
-              <label><input type="checkbox" id="toggleAdminPanelBtn" checked /> Admin Panel</label>
-              <label><input type="checkbox" id="toggleRoomLockBtn" checked /> Room Lock</label>
-              <label><input type="checkbox" id="toggleAlarmBtn" checked /> Alarm</label>
-              <label><input type="checkbox" id="toggleColorPaletteBtn" checked /> Color Palette</label>
-              <label><input type="checkbox" id="toggleSaveChatBtn" checked /> Save Chat</label>
-              <label><input type="checkbox" id="toggleLogoutBtn" checked /> Logout</label>
-              <label><input type="checkbox" id="toggleFormattingBtn" checked /> Formatting</label>
-              <label><input type="checkbox" id="toggleMentionBtn" checked /> Mention</label>
-              <label><input type="checkbox" id="toggleAttachFileBtn" checked /> Attach File</label>
-              <label><input type="checkbox" id="toggleEmojiBtn" checked /> Emoji</label>
-              <label><input type="checkbox" id="toggleSendBtn" checked /> Send Button</label>
+              <label><input type="checkbox" id="toggleRoomsBtn" checked> Rooms</label>
+              <label><input type="checkbox" id="toggleUsersOnlineBtn" checked> Users Online</label>
+              <label><input type="checkbox" id="toggleAudioToggleBtn" checked> Audio</label>
+              <label><input type="checkbox" id="toggleMinimizeChatBtn" checked> Minimize</label>
+              <label><input type="checkbox" id="toggleMaximizeChatBtn" checked> Maximize</label>
+              <label><input type="checkbox" id="toggleInviteUserBtn" checked> Invite User</label>
+              <label><input type="checkbox" id="toggleAdminPanelBtn" checked> Admin Panel</label>
+              <label><input type="checkbox" id="toggleRoomLockBtn" checked> Room Lock</label>
+              <label><input type="checkbox" id="toggleAlarmBtn" checked> Alarm</label>
+              <label><input type="checkbox" id="toggleColorPaletteBtn" checked> Color Palette</label>
+              <label><input type="checkbox" id="toggleSaveChatBtn" checked> Save Chat</label>
+              <label><input type="checkbox" id="toggleLogoutBtn" checked> Logout</label>
+              <label><input type="checkbox" id="toggleFormattingBtn" checked> Formatting</label>
+              <label><input type="checkbox" id="toggleMentionBtn" checked> Mention</label>
+              <label><input type="checkbox" id="toggleAttachFileBtn" checked> Attach File</label>
+              <label><input type="checkbox" id="toggleEmojiBtn" checked> Emoji</label>
+              <label><input type="checkbox" id="toggleSendBtn" checked> Send Button</label>
             </div>
             <div id="admin-search-results"></div>
             <h3>Room Control</h3>
@@ -413,6 +413,7 @@
     </div>
 
 
+    <script src="https://meu-chat-lin7.onrender.com/socket.io/socket.io.js"></script>
     <script>
     document.addEventListener('DOMContentLoaded', () => {
         // --- Selectors ---
@@ -494,13 +495,13 @@
         const availableReactions = [{type:'icon',id:'thumbs-up',label:'Like'},{type:'icon',id:'heart',label:'Love'},{type:'icon',id:'smile',label:'Haha'},{type:'icon',id:'star',label:'Wow'},{type:'icon',id:'frown',label:'Sad'},{type:'icon',id:'thumbs-down',label:'No'},{type:'icon',id:'help-circle',label:'Thinking'},{type:'icon',id:'check-circle',label:'Approve'}];
         const reactionSounds = {
             'thumbs-up': new Audio('https://www.soundjay.com/buttons/sounds/button-36.mp3'),
-            'heart': new Audio('https://www.soundjay.com/button/sounds/button-18.mp3'),
-            'smile': new Audio('https://www.soundjay.com/button/sounds/button-3.mp3'),
-            'star': new Audio('https://www.soundjay.com/button/sounds/button-2.mp3'),
-            'frown': new Audio('https://www.soundjay.com/button/sounds/button-37.mp3'),
-            'thumbs-down': new Audio('https://www.soundjay.com/button/sounds/button-1.mp3'),
-            'help-circle': new Audio('https://www.soundjay.com/button/sounds/button-7.mp3'),
-            'check-circle': new Audio('https://www.soundjay.com/button/sounds/button-23.mp3')
+            'heart': new Audio('https://www.soundjay.com/buttons/sounds/button-18.mp3'),
+            'smile': new Audio('https://www.soundjay.com/buttons/sounds/button-3.mp3'),
+            'star': new Audio('https://www.soundjay.com/buttons/sounds/button-2.mp3'),
+            'frown': new Audio('https://www.soundjay.com/buttons/sounds/button-37.mp3'),
+            'thumbs-down': new Audio('https://www.soundjay.com/buttons/sounds/button-1.mp3'),
+            'help-circle': new Audio('https://www.soundjay.com/buttons/sounds/button-7.mp3'),
+            'check-circle': new Audio('https://www.soundjay.com/buttons/sounds/button-23.mp3')
         };
         const globalSounds = {
             'screamSound': new Audio('https://assets.mixkit.co/sfx/preview/mixkit-scream-of-a-man-in-fear-1279.mp3'),
@@ -519,17 +520,26 @@
         
         // --- Simulated Server Data ---
         let simulatedServerState = {
-            users: { 'Maria': 0, 'João': 1, 'Ana': 1 },
+            users: {}, // Nomes de usuário removidos
             roomLocks: {1: false, 2: false}
         };
         
         let userReactions = {};
         let userAlarmCounts = {};
         
-        const messageSound = document.getElementById('messageSound');
-        const applauseSound = document.getElementById('applauseSound');
-        const screamSound = document.getElementById('screamSound');
-        const attentionSound = document.getElementById('attentionSound');
+        const messageSound = new Audio('https://www.soundjay.com/buttons/button-10.mp3');
+        const applauseSound = new Audio('https://assets.mixkit.co/sfx/preview/mixkit-small-group-of-people-applauding-511.mp3');
+        const screamSound = new Audio('https://assets.mixkit.co/sfx/preview/mixkit-scream-of-a-man-in-fear-1279.mp3');
+        const attentionSound = new Audio('https://assets.mixkit.co/sfx/preview/mixkit-attention-bell-2759.mp3');
+        const thumbsUpSound = new Audio('https://www.soundjay.com/buttons/sounds/button-36.mp3');
+        const heartSound = new Audio('https://www.soundjay.com/buttons/sounds/button-18.mp3');
+        const smileSound = new Audio('https://www.soundjay.com/buttons/sounds/button-3.mp3');
+        const starSound = new Audio('https://www.soundjay.com/buttons/sounds/button-2.mp3');
+        const frownSound = new Audio('https://www.soundjay.com/buttons/sounds/button-37.mp3');
+        const thumbsDownSound = new Audio('https://www.soundjay.com/buttons/sounds/button-1.mp3');
+        const helpCircleSound = new Audio('https://www.soundjay.com/buttons/sounds/button-7.mp3');
+        const checkCircleSound = new Audio('https://www.soundjay.com/buttons/sounds/button-23.mp3');
+
 
         // Reset alarm count every hour
         setInterval(() => {
@@ -1283,4 +1293,4 @@
         showScreen('loginScreen');
     });
     </script>
-</!doctype>
+</html>
