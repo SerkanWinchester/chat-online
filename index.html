@@ -1,23 +1,19 @@
-<!doctype html>
-
-
-    
-    
-    
-
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat Online</title>
     <script src="https://unpkg.com/feather-icons"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Roboto&family=Open+Sans&family=Lato&family=Montserrat&family=Oswald&family=Raleway&family=Poppins&family=Nunito&family=Playfair+Display&family=Merriweather&family=Indie+Flower&family=Dancing+Script&family=Pacifico&family=Lobster&family=Source+Code+Pro&family=Nunito+Sans&family=Inter&family=Work+Sans&family=Fira+Sans&family=Source+Sans+Pro&family=PT+Sans&family=Ubuntu&family=Lora&family=Quicksand&family=Comfortaa&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&family=Bebas+Neue&family=Kanit&family=Permanent+Marker&family=Anton&family=Archivo+Black&family=Abril+Fatface&family=Josefin+Sans&family=Satisfy&family=Courgette&family=Noto+Sans&family=Dosis&family=Merriweather+Sans&family=Concert+One&family=Passion+One&family=Barlow&family=Caveat&family=Alfa+Slab+One&family=Exo+2&family=Secular+One&display=swap" rel="stylesheet" />
-    
     <style>
         body { margin: 0; font-family: Arial, sans-serif; background: #f0f2f5; overflow: hidden; }
 
         #chatIcon { position: fixed; bottom: 20px; right: 20px; width: 60px; height: 60px; border-radius: 50%; background: black; display: flex; justify-content: center; align-items: center; cursor: pointer; box-shadow: 0 0 20px rgba(255,0,255,0.5), 0 0 20px rgba(0,255,255,0.5); z-index: 1000; }
         
-        /* Efeito de vidro fosco para a janela de login/chat */
         .chat-window { 
             position: fixed; 
             bottom: 90px; 
@@ -44,7 +40,6 @@
         .chat-window.minimized { height: 40px; }
 
 
-        /* Estilo do cabeçalho do chat, também com vidro fosco */
         .chat-header { 
             background: rgba(255, 255, 255, 0.3); 
             padding: 10px 15px; 
@@ -63,7 +58,6 @@
         #chatScreen[style*="background-color"] { background-color: var(--chat-wallpaper-color, #fff); }
 
 
-        /* Balões de mensagens com vidro fosco branco */
         .chat-message { 
             background-color: rgba(255, 255, 255, 0.4) !important; 
             backdrop-filter: blur(8px);
@@ -96,7 +90,6 @@
         .tool-button i { width: 16px; height: 16px; }
         #font-select { border-radius: 4px; border: 1px solid #ccc; background: white; max-width: 100%; font-size: 12px; }
         
-        /* Foco cinza na caixa de input de username com texto preto */
         input[type="text"]#usernameInput {
             background: rgba(0, 0, 0, 0.1);
             color: #000;
@@ -244,10 +237,8 @@
             40%, 60% { transform: translate3d(4px, 0, 0); }
         }
     </style>
-    
-
-
-    
+</head>
+<body>
     <div id="chatIcon"><i data-feather="message-square"></i></div>
     <audio id="messageSound" src="https://www.soundjay.com/buttons/button-10.mp3" preload="auto"></audio>
     <audio id="applauseSound" src="https://assets.mixkit.co/sfx/preview/mixkit-small-group-of-people-applauding-511.mp3" preload="auto"></audio>
@@ -361,23 +352,23 @@
             </div>
             <div id="admin-room-list"></div>
             <div class="admin-icon-toggles">
-              <label><input type="checkbox" id="toggleRoomsBtn" checked /> Rooms</label>
-              <label><input type="checkbox" id="toggleUsersOnlineBtn" checked /> Users Online</label>
-              <label><input type="checkbox" id="toggleAudioToggleBtn" checked /> Audio</label>
-              <label><input type="checkbox" id="toggleMinimizeChatBtn" checked /> Minimize</label>
-              <label><input type="checkbox" id="toggleMaximizeChatBtn" checked /> Maximize</label>
-              <label><input type="checkbox" id="toggleInviteUserBtn" checked /> Invite User</label>
-              <label><input type="checkbox" id="toggleAdminPanelBtn" checked /> Admin Panel</label>
-              <label><input type="checkbox" id="toggleRoomLockBtn" checked /> Room Lock</label>
-              <label><input type="checkbox" id="toggleAlarmBtn" checked /> Alarm</label>
-              <label><input type="checkbox" id="toggleColorPaletteBtn" checked /> Color Palette</label>
-              <label><input type="checkbox" id="toggleSaveChatBtn" checked /> Save Chat</label>
-              <label><input type="checkbox" id="toggleLogoutBtn" checked /> Logout</label>
-              <label><input type="checkbox" id="toggleFormattingBtn" checked /> Formatting</label>
-              <label><input type="checkbox" id="toggleMentionBtn" checked /> Mention</label>
-              <label><input type="checkbox" id="toggleAttachFileBtn" checked /> Attach File</label>
-              <label><input type="checkbox" id="toggleEmojiBtn" checked /> Emoji</label>
-              <label><input type="checkbox" id="toggleSendBtn" checked /> Send Button</label>
+                <label><input type="checkbox" id="toggleRoomsBtn" checked /> Rooms</label>
+                <label><input type="checkbox" id="toggleUsersOnlineBtn" checked /> Users Online</label>
+                <label><input type="checkbox" id="toggleAudioToggleBtn" checked /> Audio</label>
+                <label><input type="checkbox" id="toggleMinimizeChatBtn" checked /> Minimize</label>
+                <label><input type="checkbox" id="toggleMaximizeChatBtn" checked /> Maximize</label>
+                <label><input type="checkbox" id="toggleInviteUserBtn" checked /> Invite User</label>
+                <label><input type="checkbox" id="toggleAdminPanelBtn" checked /> Admin Panel</label>
+                <label><input type="checkbox" id="toggleRoomLockBtn" checked /> Room Lock</label>
+                <label><input type="checkbox" id="toggleAlarmBtn" checked /> Alarm</label>
+                <label><input type="checkbox" id="toggleColorPaletteBtn" checked /> Color Palette</label>
+                <label><input type="checkbox" id="toggleSaveChatBtn" checked /> Save Chat</label>
+                <label><input type="checkbox" id="toggleLogoutBtn" checked /> Logout</label>
+                <label><input type="checkbox" id="toggleFormattingBtn" checked /> Formatting</label>
+                <label><input type="checkbox" id="toggleMentionBtn" checked /> Mention</label>
+                <label><input type="checkbox" id="toggleAttachFileBtn" checked /> Attach File</label>
+                <label><input type="checkbox" id="toggleEmojiBtn" checked /> Emoji</label>
+                <label><input type="checkbox" id="toggleSendBtn" checked /> Send Button</label>
             </div>
             <div id="admin-search-results"></div>
             <h3>Room Control</h3>
@@ -412,885 +403,862 @@
         </div>
     </div>
 
-
     <script src="https://meu-chat-lin7.onrender.com/socket.io/socket.io.js"></script>
     <script>
-    document.addEventListener('DOMContentLoaded', () => {
-        // --- Selectors ---
-        const chatWindow = document.getElementById('chatWindow');
-        const toggleFormattingBtn = document.getElementById('toggleFormattingBtn');
-        const formattingPopup = document.getElementById('formatting-popup');
-        const roomsBtn = document.getElementById('roomsBtn');
-        const roomsModal = document.getElementById('rooms-modal');
-        const roomNumberInput = document.getElementById('roomNumberInput');
-        const joinRoomBtn = document.getElementById('joinRoomBtn');
-        const inviteUserBtn = document.getElementById('inviteUserBtn');
-        const inviteModal = document.getElementById('invite-modal');
-        const usernameToInviteInput = document.getElementById('usernameToInviteInput');
-        const sendInviteBtn = document.getElementById('sendInviteBtn');
-        const chatIcon=document.getElementById('chatIcon'),chatScreen=document.getElementById('chatScreen'),screenTitle=document.getElementById('screenTitle'),logoutBtn=document.getElementById('logoutBtn'),backToChatBtn=document.getElementById('backToChatBtn'),messageInput=document.getElementById('messageInput'),sendBtn=document.getElementById('sendBtn'),attachFileBtn=document.getElementById('attachFileBtn'),fileUpload=document.getElementById('fileUpload'),saveChatBtn=document.getElementById('saveChatBtn'),fontSelect=document.getElementById('font-select'),colorBtn=document.getElementById('colorBtn'),colorPicker=document.getElementById('colorPicker'),usernameInput=document.getElementById('usernameInput'),loginBtn=document.getElementById('loginBtn'),reactionPopup=document.getElementById('reaction-popup'),mentionBtn=document.getElementById('mentionBtn');
-        
-        // --- Admin Panel Selectors ---
-        const adminPanelBtn = document.getElementById('adminPanelBtn');
-        const adminPanelModal = document.getElementById('admin-panel-modal');
-        const adminStatsDiv = document.getElementById('admin-stats');
-        const adminUserInput = document.getElementById('adminUserInput');
-        const adminUserSearchBtn = document.getElementById('adminUserSearchBtn');
-        const adminRoomInput = document.getElementById('adminRoomInput');
-        const adminRoomSearchBtn = document.getElementById('adminRoomSearchBtn');
-        const adminSearchResults = document.getElementById('admin-search-results');
-        const adminRoomList = document.getElementById('admin-room-list');
-        const roomLockBtn = document.getElementById('roomLockBtn');
-        const usersOnlineBtn = document.getElementById('usersOnlineBtn');
-        const usersOnlineModal = document.getElementById('users-online-modal');
-        const usersListDiv = document.getElementById('users-list');
-        const alarmBtn = document.getElementById('alarmBtn');
-        const alarmModal = document.getElementById('alarm-modal');
-        const alarmOptionsDiv = document.getElementById('alarm-options');
-        const fontSizePlusBtn = document.getElementById('fontSizePlusBtn');
-        const fontSizeMinusBtn = document.getElementById('fontSizeMinusBtn');
-        const highlightBtn = document.getElementById('highlightBtn');
-        const highlightPicker = document.getElementById('highlightPicker');
-        const adminRoomUsersDiv = document.getElementById('admin-room-users');
-        const emojiBtn = document.getElementById('emojiBtn');
-        const emojiModal = document.getElementById('emoji-modal');
-        const emojiPicker = document.getElementById('emoji-picker');
-        const audioToggleBtn = document.getElementById('audioToggleBtn');
-        const minimizeChatBtn = document.getElementById('minimizeChatBtn');
-        const maximizeChatBtn = document.getElementById('maximizeChatBtn');
-        const restoreChatBtn = document.getElementById('restoreChatBtn');
-        const colorPaletteBtn = document.getElementById('colorPaletteBtn');
-        const chatWallpaperColor = document.getElementById('chatWallpaperColor');
-        const toggleRoomsBtn = document.getElementById('toggleRoomsBtn');
-        const toggleUsersOnlineBtn = document.getElementById('toggleUsersOnlineBtn');
-        const toggleAudioToggleBtn = document.getElementById('toggleAudioToggleBtn');
-        const toggleMinimizeChatBtn = document.getElementById('toggleMinimizeChatBtn');
-        const toggleMaximizeChatBtn = document.getElementById('toggleMaximizeChatBtn');
-        const toggleInviteUserBtn = document.getElementById('toggleInviteUserBtn');
-        const toggleAdminPanelBtn = document.getElementById('toggleAdminPanelBtn');
-        const toggleRoomLockBtn = document.getElementById('toggleRoomLockBtn');
-        const toggleAlarmBtn = document.getElementById('toggleAlarmBtn');
-        const toggleColorPaletteBtn = document.getElementById('toggleColorPaletteBtn');
-        const toggleSaveChatBtn = document.getElementById('toggleSaveChatBtn');
-        const toggleLogoutBtn = document.getElementById('toggleLogoutBtn');
-        const toggleFormattingBtnAdmin = document.getElementById('toggleFormattingBtn');
-        const toggleMentionBtn = document.getElementById('toggleMentionBtn');
-        const toggleAttachFileBtn = document.getElementById('toggleAttachFileBtn');
-        const toggleEmojiBtn = document.getElementById('toggleEmojiBtn');
-        const toggleSendBtn = document.getElementById('toggleSendBtn');
-        
-        // --- State Variables ---
-        let currentRoom = 0;
-        let currentUser = "Guest", isAudioEnabled = true, messageIdCounter = 0;
-        let activeStyles = { bold: false, italic: false, underline: false, strikethrough: false, shadow: false, color: '#000000', fontFamily: 'Roboto', highlight: '' };
-        let activeFontSize = 16;
-        let adminGlobalStyles = { bold: false, italic: false, underline: false, strikethrough: false, shadow: false, color: '#000000', fontFamily: 'Roboto', highlight: '' };
-        let adminGlobalFontSize = 16;
-        let adminGlobalSound = 'none';
-        let isEditing = false;
-        let messageToEditId = null;
+        document.addEventListener('DOMContentLoaded', () => {
+            const socket = io('https://meu-chat-lin7.onrender.com');
 
-        const googleFonts = ['Roboto','Open Sans','Lato','Montserrat','Oswald','Raleway','Poppins','Nunito','Playfair Display','Merriweather','Indie Flower','Dancing Script','Pacifico','Lobster','Source Code Pro','Nunito Sans','Inter','Work Sans','Fira Sans','Source Sans Pro','PT Sans','Ubuntu','Lora','Quicksand','Comfortaa', 'Bebas Neue', 'Kanit', 'Permanent Marker', 'Anton', 'Archivo Black', 'Abril Fatface', 'Josefin Sans', 'Satisfy', 'Courgette', 'Noto Sans', 'Dosis', 'Merriweather Sans', 'Concert One', 'Passion One', 'Barlow', 'Caveat', 'Alfa Slab One', 'Exo 2', 'Secular One'];
-        const messageReactions = {};
-        const availableReactions = [{type:'icon',id:'thumbs-up',label:'Like'},{type:'icon',id:'heart',label:'Love'},{type:'icon',id:'smile',label:'Haha'},{type:'icon',id:'star',label:'Wow'},{type:'icon',id:'frown',label:'Sad'},{type:'icon',id:'thumbs-down',label:'No'},{type:'icon',id:'help-circle',label:'Thinking'},{type:'icon',id:'check-circle',label:'Approve'}];
-        const reactionSounds = {
-            'thumbs-up': new Audio('https://www.soundjay.com/buttons/sounds/button-36.mp3'),
-            'heart': new Audio('https://www.soundjay.com/buttons/sounds/button-18.mp3'),
-            'smile': new Audio('https://www.soundjay.com/buttons/sounds/button-3.mp3'),
-            'star': new Audio('https://www.soundjay.com/buttons/sounds/button-2.mp3'),
-            'frown': new Audio('https://www.soundjay.com/buttons/sounds/button-37.mp3'),
-            'thumbs-down': new Audio('https://www.soundjay.com/buttons/sounds/button-1.mp3'),
-            'help-circle': new Audio('https://www.soundjay.com/buttons/sounds/button-7.mp3'),
-            'check-circle': new Audio('https://www.soundjay.com/buttons/sounds/button-23.mp3')
-        };
-        const globalSounds = {
-            'screamSound': new Audio('https://assets.mixkit.co/sfx/preview/mixkit-scream-of-a-man-in-fear-1279.mp3'),
-            'applauseSound': new Audio('https://assets.mixkit.co/sfx/preview/mixkit-small-group-of-people-applauding-511.mp3'),
-            'attentionSound': new Audio('https://assets.mixkit.co/sfx/preview/mixkit-attention-bell-2759.mp3'),
-        };
-        const emojis = {
-            '😀': ['😀', '😃', '😄', '😁', '😆', '😅', '🤣', '😂', '🙂', '🙃', '😉', '😊', '😇', '🥰', '😍', '🤩', '😘', '😗', '😚', '😙', '😋', '😛', '😜', '🤪', '😝', '🤗', '🤭', '🤫', '🤔', '🤐', '🤨', '😐', '😑', '😶', '😏', '😒', '🙄', '😬', '🤥', '😌', '😔', '😪', '🤤', '😴', '😷', '🤒', '🤕', '🤢', '🤮', '🤧', '🥵', '🥶', '🥴', '😵', '🤯', '🤠', '🥳', '😎', '🤓', '🧐', '😕', '😟', '🙁', '😮', '😯', '😲', '😳', '🥺', '😦', '😧', '😨', '😰', '😥', '😢', '😭', '😱', '😖', '😣', '😩', '😫', '😡', '😠', '😤', '🤬', '😈', '👿', '💀', '👻', '💩', '🤡'],
-            '🍔': ['🍇', '🍈', '🍉', '🍊', '🍋', '🍌', '🍍', '🥭', '🍎', '🍏', '🍐', '🍑', '🍒', '🍓', '🥝', '🍅', '🥥', '🥑', '🍆', '🥔', '🥕', '🌽', '🌶️', '🥒', '🥬', '🥦', '🍄', '🥜', '🌰', '🍞', '🥐', '🥖', '🥨', '🥞', '🧇', '🧀', '🍗', '🍖', '🥩', '🥓', '🍔', '🍟', '🍕', '🌭', '🥪', '🌮', '🌯', '🥙', '🍳', '🥚', '🥘', '🍲', '🍜', '🍝', '🍣', '🍤', '🍚', '🍙', '🍘', '🍥', '🍡', '🍢', '🍧', '🍨', '🍦', '🥧', '🍰', '🎂', '🍮', '🍬', '🍭', '🍫', '🍿', '🍩', '🍪', '🥛', '☕', '🍵', '🍶', '🍾', '🍷', '🍸', '🍹', '🍺', '🍻', '🥂', '🥃', '🥤', '🧃'],
-            '🐶': ['🐶', '🐱', '🐭', '🐹', '🐰', '🦊', '🐻', '🐼', '🐨', '🐯', '🦁', '🐮', '🐷', '🐸', '🐵', '🐔', '🐧', '🐦', '🦉', '🦆', '🦅', '🦋', '🐛', '🐝', '🐞', '🐢', '🐍', '🦕', '🦖', '🐙', '🦑', '🦀', '🦞', '🦐', '🐠', '🐟', '🐡', '🐬', '🐳', '🦈', '🐊', '🐅', '🐆', '🦓', '🦒', '🐘', '🦏', '🐪', '🐫', '🦘', '🐃', '🐂', '🐄', '🐖', '🐏', '🐑', '🐐', '🦌', '🐎', '🐴', '🦄', '🕊️', '🐾', '🌳', '🌲', '🌴', '🌵', '🌷', '🌸', '🌹', '🌻', '🌼', '🌺', '🌾', '🍁', '🍂', '🍄'],
-            '🚗': ['⚽', '🏀', '🏈', '⚾', '🎾', '🏐', '🏉', '🎱', '🏓', '🏸', '🏒', '🥍', '🏑', '🏹', '🎣', '🥊', '🥋', '🎿', '🏂', '🛷', '⛸️', '🥌', '🎽', '🤸', '🏋️', '⛹️', '🤺', '🏌️', '🏄', '🏊', '🤽', '🚣', '🏇', '🚴', '🚵', '🛣️', '🛤️', '🚢', '🛳️', '⛵', '🚤', '🛥️', '🚀', '🚁', '✈️', '🛫', '🛬', '🚊', '🚂', '🚃', '🚄', '🚅', '🚆', '🚇', '🚈', '🚉', '🚏', '🚌', '🚐', '🚑', '🚒', '🚓', '🚕', '🚖', '🚗', '🚙', '🚚', '🚛', '🚜', '🛵', '🚲', '🛴', '🗺️', '📍', '🧭'],
-            '💡': ['⌚', '📱', '📲', '💻', '🖥️', '⌨️', '🖱️', '💽', '💾', '💿', '📀', '🧮', '📹', '📷', '📸', '📽️', '🎥', '🎬', '📞', '☎️', '📟', '📠', '🔌', '🔋', '🗑️', '🛢️', '🔦', '💡', '🔦', '📖', '📚', '📜', '📰', '🗞️', '🔖', '🏷️', '💰', '💵', '💳', '💎', '🔑', '🔓', '🔏', '🔒', '🔐', '🔑', '🔨', '⚒️', '⛏️', '🔩', '⚙️', '🔧', '⛓️', '🧰', '🧱', '🚪', '🪑', '🛋️', '🛏️', '🛁', '🚿', '🚽', '🪠', '🔔', '🔕', '📢', '📣', '📯', '🎶', '🎼', '🎵', '🎙️', '🎤', '🎧', '📻', '📺', '📻', '🎁', '🎀', '🎉', '🎊', '🎈', '📧', '✉️', '📦', '📤', '📥', '📫', '📪', '📬', '📭', '📮'],
-            '🇧🇷': ['🇧🇷', '🇺🇸', '🇪🇸', '🇫🇷', '🇩🇪', '🇮🇹', '🇯🇵', '🇨🇳', '🇷🇺', '🇮🇳', '🇦🇷', '🇨🇦', '🇲🇽', '🇵🇹', '🇬🇧', '🇰🇷', '🇦🇺', '🇿🇦', '🇪🇬', '🇸🇦', '🇹🇷', '🇵🇱', '🇮🇩', '🇹🇭', '🇻🇳', '🇳🇬', '🇨🇴', '🇵🇰', '🇩🇿', '🇮🇶', '🇺🇦', '🇨🇭', '🇳🇱', '🇧🇪', '🇸🇪', '🇳🇴', '🇫🇮', '🇩🇰', '🇮🇪', '🇬🇷', '🇨🇱', '🇵🇪', '🇪🇨', '🇻🇪', '🇺🇾', '🇵🇾', '🇧🇴', '🇦🇪', '🇶🇦', '🇰🇼', '🇮🇱', '🇹🇼', '🇸🇬', '🇲🇾', '🇵🇭', '🇮🇨', '🇭🇷', '🇷🇴', '🇨🇿', '🇭🇺', '🇧🇬', '🇦🇹', '🇸🇰', '🇸🇮', '🇱🇻', '🇪🇪', '🇱🇹', '🇲🇹', '🇨🇾', '🇦🇱', '🇧🇦', '🇲🇪', '🇲🇰', '🇽🇰', '🇷🇸', '🇨🇿', '🇬🇪', '🇦🇲', '🇦🇿', '🇰🇿', '🇺🇿', '🇹🇲', '🇹🇯', '🇰🇬', '🇱🇰', '🇧🇩', '🇳🇵', '🇲🇲', '🇰🇭', '🇱🇦', '🇵🇬', '🇫🇯', '🇳🇿', '🇼🇸', '🇹🇴', '🇹🇻', '🇰🇮', '🇲🇭', '🇫🇲', '🇵🇼', '🇸🇧', '🇻🇺', '🇦🇮', '🇦🇶', '🇦🇸', '🇦🇼', '🇦🇽', '🇧🇧', '🇧🇲', '🇧🇼', '🇨🇩', '🇨🇫', '🇨🇬', '🇨🇮', '🇨🇰', '🇨🇽', '🇨🇿', '🇪🇭', '🇪🇷', '🇪🇹', '🇫🇴', '🇬🇦', '🇬🇩', '🇬🇫', '🇬🇬', '🇬🇭', '🇬🇮', '🇬🇱', '🇬🇲', '🇬🇼', '🇬🇾', '🇭🇰', '🇮🇴', '🇯🇪', '🇰🇪', '🇰🇲', '🇱🇨', '🇱🇮', '🇲🇬', '🇲🇷', '🇲🇺', '🇲🇼', '🇲🇽', '🇲🇾', '🇲🇿', '🇳🇦', '🇳🇨', '🇳🇪', '🇳🇫', '🇳🇬', '🇳🇱', '🇳🇴', '🇳🇵', '🇳🇷', '🇳🇺', '🇳🇿', '🇴🇲', '🇵🇦', '🇵🇪', '🇵🇫', '🇵🇬', '🇵🇭', '🇵🇰', '🇵🇱', '🇵🇲', '🇵🇳', '🇵🇷', '🇵🇸', '🇵🇹', '🇵🇼', '🇵🇾', '🇶🇦', '🇷🇪', '🇷🇴', '🇷🇸', '🇷🇺', '🇷🇼', '🇸🇦', '🇸🇧', '🇸🇨', '🇸🇩', '🇸🇪', '🇸🇬', '🇸🇭', '🇸🇮', '🇸🇰', '🇸🇱', '🇸🇲', '🇸🇳', '🇸🇴', '🇸🇷', '🇸🇸', '🇸🇹', '🇸🇻', '🇸🇽', '🇸🇾', '🇸🇿', '🇹🇨', '🇹🇩', '🇹🇫', '🇹🇬', '🇹🇭', '🇹🇯', '🇹🇰', '🇹🇱', '🇹🇲', '🇹🇳', '🇹🇴', '🇹🇷', '🇹🇹', '🇹🇻', '🇹🇼', '🇹🇿', '🇺🇦', '🇺🇬', '🇺🇲', '🇺🇳', '🇺🇸', '🇺🇾', '🇺🇿', '🇻🇦', '🇻🇨', '🇻🇪', '🇻🇬', '🇻🇮', '🇻🇳', '🇻🇺', '🇼🇫', '🇼🇸', '🇽🇰', '🇾🇪', '🇾🇹', '🇿🇦', '🇿🇲', '🇿🇼']
-        };
-        let chatState = { mode: 'main', withUser: null };
-        
-        // --- Simulated Server Data ---
-        let simulatedServerState = {
-            users: {}, // Nomes de usuário removidos
-            roomLocks: {1: false, 2: false}
-        };
-        
-        let userReactions = {};
-        let userAlarmCounts = {};
-        
-        const messageSound = new Audio('https://www.soundjay.com/buttons/button-10.mp3');
-        const applauseSound = new Audio('https://assets.mixkit.co/sfx/preview/mixkit-small-group-of-people-applauding-511.mp3');
-        const screamSound = new Audio('https://assets.mixkit.co/sfx/preview/mixkit-scream-of-a-man-in-fear-1279.mp3');
-        const attentionSound = new Audio('https://assets.mixkit.co/sfx/preview/mixkit-attention-bell-2759.mp3');
-        const thumbsUpSound = new Audio('https://www.soundjay.com/buttons/sounds/button-36.mp3');
-        const heartSound = new Audio('https://www.soundjay.com/buttons/sounds/button-18.mp3');
-        const smileSound = new Audio('https://www.soundjay.com/buttons/sounds/button-3.mp3');
-        const starSound = new Audio('https://www.soundjay.com/buttons/sounds/button-2.mp3');
-        const frownSound = new Audio('https://www.soundjay.com/buttons/sounds/button-37.mp3');
-        const thumbsDownSound = new Audio('https://www.soundjay.com/buttons/sounds/button-1.mp3');
-        const helpCircleSound = new Audio('https://www.soundjay.com/buttons/sounds/button-7.mp3');
-        const checkCircleSound = new Audio('https://www.soundjay.com/buttons/sounds/button-23.mp3');
-
-
-        // Reset alarm count every hour
-        setInterval(() => {
-            userAlarmCounts = {};
-        }, 3600000);
-
-        // --- Admin Panel Functions ---
-        function updateAdminStats() {
-            const totalUsers = Object.keys(simulatedServerState.users).length;
-            const activeRooms = new Set(Object.values(simulatedServerState.users));
-            adminStatsDiv.innerHTML = `<b>Online Users:</b> ${totalUsers}`;
+            // --- Selectors ---
+            const chatWindow = document.getElementById('chatWindow');
+            const toggleFormattingBtn = document.getElementById('toggleFormattingBtn');
+            const formattingPopup = document.getElementById('formatting-popup');
+            const roomsBtn = document.getElementById('roomsBtn');
+            const roomsModal = document.getElementById('rooms-modal');
+            const roomNumberInput = document.getElementById('roomNumberInput');
+            const joinRoomBtn = document.getElementById('joinRoomBtn');
+            const inviteUserBtn = document.getElementById('inviteUserBtn');
+            const inviteModal = document.getElementById('invite-modal');
+            const usernameToInviteInput = document.getElementById('usernameToInviteInput');
+            const sendInviteBtn = document.getElementById('sendInviteBtn');
+            const chatIcon=document.getElementById('chatIcon'),chatScreen=document.getElementById('chatScreen'),screenTitle=document.getElementById('screenTitle'),logoutBtn=document.getElementById('logoutBtn'),backToChatBtn=document.getElementById('backToChatBtn'),messageInput=document.getElementById('messageInput'),sendBtn=document.getElementById('sendBtn'),attachFileBtn=document.getElementById('attachFileBtn'),fileUpload=document.getElementById('fileUpload'),saveChatBtn=document.getElementById('saveChatBtn'),fontSelect=document.getElementById('font-select'),colorBtn=document.getElementById('colorBtn'),colorPicker=document.getElementById('colorPicker'),usernameInput=document.getElementById('usernameInput'),loginBtn=document.getElementById('loginBtn'),reactionPopup=document.getElementById('reaction-popup'),mentionBtn=document.getElementById('mentionBtn');
             
-            adminRoomList.innerHTML = `<h3>Active Rooms:</h3><ul>${Array.from(activeRooms).map(room => `<li>Room ${room} ${simulatedServerState.roomLocks[room] ? '(Locked)' : ''}</li>`).join('')}</ul>`;
-        }
-        
-        function updateAdminRoomUsers() {
-            const usersInCurrentRoom = Object.entries(simulatedServerState.users).filter(([user, room]) => room === currentRoom).map(([user]) => user);
+            // --- Admin Panel Selectors ---
+            const adminPanelBtn = document.getElementById('adminPanelBtn');
+            const adminPanelModal = document.getElementById('admin-panel-modal');
+            const adminStatsDiv = document.getElementById('admin-stats');
+            const adminUserInput = document.getElementById('adminUserInput');
+            const adminUserSearchBtn = document.getElementById('adminUserSearchBtn');
+            const adminRoomInput = document.getElementById('adminRoomInput');
+            const adminRoomSearchBtn = document.getElementById('adminRoomSearchBtn');
+            const adminSearchResults = document.getElementById('admin-search-results');
+            const adminRoomList = document.getElementById('admin-room-list');
+            const roomLockBtn = document.getElementById('roomLockBtn');
+            const usersOnlineBtn = document.getElementById('usersOnlineBtn');
+            const usersOnlineModal = document.getElementById('users-online-modal');
+            const usersListDiv = document.getElementById('users-list');
+            const alarmBtn = document.getElementById('alarmBtn');
+            const alarmModal = document.getElementById('alarm-modal');
+            const alarmOptionsDiv = document.getElementById('alarm-options');
+            const fontSizePlusBtn = document.getElementById('fontSizePlusBtn');
+            const fontSizeMinusBtn = document.getElementById('fontSizeMinusBtn');
+            const highlightBtn = document.getElementById('highlightBtn');
+            const highlightPicker = document.getElementById('highlightPicker');
+            const adminRoomUsersDiv = document.getElementById('admin-room-users');
+            const emojiBtn = document.getElementById('emojiBtn');
+            const emojiModal = document.getElementById('emoji-modal');
+            const emojiPicker = document.getElementById('emoji-picker');
+            const audioToggleBtn = document.getElementById('audioToggleBtn');
+            const minimizeChatBtn = document.getElementById('minimizeChatBtn');
+            const maximizeChatBtn = document.getElementById('maximizeChatBtn');
+            const restoreChatBtn = document.getElementById('restoreChatBtn');
+            const colorPaletteBtn = document.getElementById('colorPaletteBtn');
+            const chatWallpaperColor = document.getElementById('chatWallpaperColor');
+            const toggleRoomsBtn = document.getElementById('toggleRoomsBtn');
+            const toggleUsersOnlineBtn = document.getElementById('toggleUsersOnlineBtn');
+            const toggleAudioToggleBtn = document.getElementById('toggleAudioToggleBtn');
+            const toggleMinimizeChatBtn = document.getElementById('toggleMinimizeChatBtn');
+            const toggleMaximizeChatBtn = document.getElementById('toggleMaximizeChatBtn');
+            const toggleInviteUserBtn = document.getElementById('toggleInviteUserBtn');
+            const toggleAdminPanelBtn = document.getElementById('toggleAdminPanelBtn');
+            const toggleRoomLockBtn = document.getElementById('toggleRoomLockBtn');
+            const toggleAlarmBtn = document.getElementById('toggleAlarmBtn');
+            const toggleColorPaletteBtn = document.getElementById('toggleColorPaletteBtn');
+            const toggleSaveChatBtn = document.getElementById('toggleSaveChatBtn');
+            const toggleLogoutBtn = document.getElementById('toggleLogoutBtn');
+            const toggleFormattingBtnAdmin = document.getElementById('toggleFormattingBtn');
+            const toggleMentionBtn = document.getElementById('toggleMentionBtn');
+            const toggleAttachFileBtn = document.getElementById('toggleAttachFileBtn');
+            const toggleEmojiBtn = document.getElementById('toggleEmojiBtn');
+            const toggleSendBtn = document.getElementById('toggleSendBtn');
             
-            let usersHtml = '<h3>Users in Room:</h3>';
-            if (usersInCurrentRoom.length > 0) {
-                usersHtml += `<div class="admin-user-list"><ul>${usersInCurrentRoom.map(user => `<li>${user} <button data-user-to-kick="${user}">Kick</button></li>`).join('')}</ul></div>`;
-            } else {
-                usersHtml += '<p>No other users in this room.</p>';
-            }
-            adminRoomUsersDiv.innerHTML = usersHtml;
-        }
+            // --- State Variables ---
+            let currentRoom = 0;
+            let currentUser = "Guest", isAudioEnabled = true, messageIdCounter = 0;
+            let activeStyles = { bold: false, italic: false, underline: false, strikethrough: false, shadow: false, color: '#000000', fontFamily: 'Roboto', highlight: '' };
+            let activeFontSize = 16;
+            let adminGlobalStyles = { bold: false, italic: false, underline: false, strikethrough: false, shadow: false, color: '#000000', fontFamily: 'Roboto', highlight: '' };
+            let adminGlobalFontSize = 16;
+            let adminGlobalSound = 'none';
+            let isEditing = false;
+            let messageToEditId = null;
 
-        function kickUser(username) {
-            delete simulatedServerState.users[username];
-            displaySystemMessage(`${username} was kicked from Room ${currentRoom} by the Admin.`);
-            updateAdminRoomUsers();
-            updateAdminStats();
-        }
-
-        adminRoomUsersDiv.addEventListener('click', e => {
-            const button = e.target.closest('button');
-            if (button && button.dataset.userToKick) {
-                const userToKick = button.dataset.userToKick;
-                if (confirm(`Are you sure you want to kick ${userToKick}?`)) {
-                    kickUser(userToKick);
-                }
-            }
-        });
-        
-        function searchUserByName() {
-            const userToFind = adminUserInput.value.trim();
-            if (!userToFind) return;
-            let found = false;
-            for (const user in simulatedServerState.users) {
-                if (user.toLowerCase().startsWith(userToFind.toLowerCase())) {
-                    const room = simulatedServerState.users[user];
-                    adminSearchResults.innerHTML = `User <b>${user}</b> is in Room <b>${room}</b>.`;
-                    found = true;
-                    break;
-                }
-            }
-            if (!found) {
-                adminSearchResults.textContent = `User "${userToFind}" not found.`;
-            }
-        }
-
-        function searchRoomContents() {
-            const roomToFind = parseInt(adminRoomInput.value);
-            if (isNaN(roomToFind)) return;
-            const usersInRoom = [];
-            for (const user in simulatedServerState.users) {
-                if (simulatedServerState.users[user] === roomToFind) {
-                    usersInRoom.push(user);
-                }
-            }
-            if (usersInRoom.length > 0) {
-                adminSearchResults.innerHTML = `Users in Room <b>${roomToFind}</b>: ${usersInRoom.join(', ')}.`;
-            } else {
-                adminSearchResults.textContent = `Nobody in Room ${roomToFind}.`;
-            }
-        }
-        
-        function toggleRoomLock() {
-            const isLocked = simulatedServerState.roomLocks[currentRoom];
-            simulatedServerState.roomLocks[currentRoom] = !isLocked;
-            const icon = roomLockBtn.querySelector('i');
-            icon.setAttribute('data-feather', isLocked ? 'unlock' : 'lock');
-            feather.replace();
-            displaySystemMessage(`Room ${currentRoom} was ${isLocked ? 'unlocked' : 'locked'} by the Admin.`);
-        }
-
-        // --- Server Prep ---
-        function onUserJoined(username) { displaySystemMessage(`${username} entered the room.`); }
-        function onUserLeft(username) { displaySystemMessage(`${username} left the room.`); }
-        function onInviteReceived(inviterName, roomNumber) { displayInviteMessage(inviterName, roomNumber); }
-
-        // --- Main Functions ---
-        function displaySystemMessage(message) {const e=document.createElement('div');e.className='system-message';e.textContent=message;chatScreen.appendChild(e);chatScreen.scrollTop=chatScreen.scrollHeight; if (isAudioEnabled) messageSound.play();}
-        function displayInviteMessage(inviterName, roomNumber) {
-            const inviteDiv = document.createElement('div');
-            inviteDiv.className = 'invite-message';
-            inviteDiv.innerHTML = `<p><b>${inviterName}</b> invited you to join <b>Room ${roomNumber}</b>.</p><button class="invite-accept-btn" data-room="${roomNumber}">Yes</button><button class="invite-decline-btn decline">No</button>`;
-            chatScreen.appendChild(inviteDiv);
-            chatScreen.scrollTop = chatScreen.scrollHeight;
-        }
-
-        function displayGlobalMessage(message) {
-            const e = document.createElement('div');
-            e.className = 'global-message';
-            e.innerHTML = `<b>Global Announcement:</b><br>${message}`;
-            chatScreen.appendChild(e);
-            chatScreen.scrollTop = chatScreen.scrollHeight;
-            
-            if (isAudioEnabled && adminGlobalSound !== 'none') {
-                 const sound = globalSounds[adminGlobalSound];
-                 if (sound) {
-                     sound.currentTime = 0;
-                     sound.play();
-                 }
-            }
-        }
-
-        function applyFormatting(text) {
-            let s = text;
-            if (activeStyles.bold) s = `<b>${s}</b>`;
-            if (activeStyles.italic) s = `<i>${s}</i>`;
-            if (activeStyles.underline) s = `<u>${s}</u>`;
-            if (activeStyles.strikethrough) s = `<s>${s}</s>`;
-            if (activeStyles.highlight) s = `<span style="background-color: ${activeStyles.highlight};">${s}</span>`;
-            let style = `font-size: ${activeFontSize}px; color: ${activeStyles.color}; font-family: '${activeStyles.fontFamily}', sans-serif;`;
-            if (activeStyles.shadow) style += ' text-shadow: 1px 1px 1px rgba(0,0,0,0.4);';
-            return `<span style="${style}">${s}</span>`;
-        }
-
-        function applyGlobalFormatting(text) {
-             let s = text;
-            if (adminGlobalStyles.bold) s = `<b>${s}</b>`;
-            if (adminGlobalStyles.italic) s = `<i>${s}</i>`;
-            if (adminGlobalStyles.underline) s = `<u>${s}</u>`;
-            if (adminGlobalStyles.strikethrough) s = `<s>${s}</s>`;
-            if (adminGlobalStyles.highlight) s = `<span style="background-color: ${adminGlobalStyles.highlight};">${s}</span>`;
-            let style = `font-size: ${adminGlobalFontSize}px; color: ${adminGlobalStyles.color}; font-family: '${adminGlobalStyles.fontFamily}', sans-serif;`;
-            if (adminGlobalStyles.shadow) style += ' text-shadow: 1px 1px 1px rgba(0,0,0,0.4);';
-            return `<span style="${style}">${s}</span>`;
-        }
-
-        function getCurrentTime() {
-            const now = new Date();
-            const options = {
-                year: '2-digit',
-                month: '2-digit',
-                day: '2-digit',
-                hour: '2-digit',
-                minute: '2-digit',
-                second: '2-digit',
-                hour12: true,
-                timeZone: 'America/Vancouver'
+            const googleFonts = ['Roboto','Open Sans','Lato','Montserrat','Oswald','Raleway','Poppins','Nunito','Playfair Display','Merriweather','Indie Flower','Dancing Script','Pacifico','Lobster','Source Code Pro','Nunito Sans','Inter','Work Sans','Fira Sans','Source Sans Pro','PT Sans','Ubuntu','Lora','Quicksand','Comfortaa', 'Bebas Neue', 'Kanit', 'Permanent Marker', 'Anton', 'Archivo Black', 'Abril Fatface', 'Josefin Sans', 'Satisfy', 'Courgette', 'Noto Sans', 'Dosis', 'Merriweather Sans', 'Concert One', 'Passion One', 'Barlow', 'Caveat', 'Alfa Slab One', 'Exo 2', 'Secular One'];
+            const messageReactions = {};
+            const availableReactions = [{type:'icon',id:'thumbs-up',label:'Like'},{type:'icon',id:'heart',label:'Love'},{type:'icon',id:'smile',label:'Haha'},{type:'icon',id:'star',label:'Wow'},{type:'icon',id:'frown',label:'Sad'},{type:'icon',id:'thumbs-down',label:'No'},{type:'icon',id:'help-circle',label:'Thinking'},{type:'icon',id:'check-circle',label:'Approve'}];
+            const reactionSounds = {
+                'thumbs-up': new Audio('https://www.soundjay.com/buttons/sounds/button-36.mp3'),
+                'heart': new Audio('https://www.soundjay.com/buttons/sounds/button-18.mp3'),
+                'smile': new Audio('https://www.soundjay.com/buttons/sounds/button-3.mp3'),
+                'star': new Audio('https://www.soundjay.com/buttons/sounds/button-2.mp3'),
+                'frown': new Audio('https://www.soundjay.com/buttons/sounds/button-37.mp3'),
+                'thumbs-down': new Audio('https://www.soundjay.com/buttons/sounds/button-1.mp3'),
+                'help-circle': new Audio('https://www.soundjay.com/buttons/sounds/button-7.mp3'),
+                'check-circle': new Audio('https://www.soundjay.com/buttons/sounds/button-23.mp3')
             };
-            const formatter = new Intl.DateTimeFormat('en-US', options);
-            const formattedTime = formatter.format(now).replace(',', '');
-            return `[${formattedTime} SLT]`;
-        }
+            const globalSounds = {
+                'screamSound': new Audio('https://assets.mixkit.co/sfx/preview/mixkit-scream-of-a-man-in-fear-1279.mp3'),
+                'applauseSound': new Audio('https://assets.mixkit.co/sfx/preview/mixkit-small-group-of-people-applauding-511.mp3'),
+                'attentionSound': new Audio('https://assets.mixkit.co/sfx/preview/mixkit-attention-bell-2759.mp3'),
+            };
+            const emojis = {
+                '😀': ['😀', '😃', '😄', '😁', '😆', '😅', '🤣', '😂', '🙂', '🙃', '😉', '😊', '😇', '🥰', '😍', '🤩', '😘', '😗', '😚', '😙', '😋', '😛', '😜', '🤪', '😝', '🤗', '🤭', '🤫', '🤔', '🤐', '🤨', '😐', '😑', '😶', '😏', '😒', '🙄', '😬', '🤥', '😌', '😔', '😪', '🤤', '😴', '😷', '🤒', '🤕', '🤢', '🤮', '🤧', '🥵', '🥶', '🥴', '😵', '🤯', '🤠', '🥳', '😎', '🤓', '🧐', '😕', '😟', '🙁', '😮', '😯', '😲', '😳', '🥺', '😦', '😧', '😨', '😰', '😥', '😢', '😭', '😱', '😖', '😣', '😩', '😫', '😡', '😠', '😤', '🤬', '😈', '👿', '💀', '👻', '💩', '🤡'],
+                '🍔': ['🍇', '🍈', '🍉', '🍊', '🍋', '🍌', '🍍', '🥭', '🍎', '🍏', '🍐', '🍑', '🍒', '🍓', '🥝', '🍅', '🥥', '🥑', '🍆', '🥔', '🥕', '🌽', '🌶️', '🥒', '🥬', '🥦', '🍄', '🥜', '🌰', '🍞', '🥐', '🥖', '🥨', '🥞', '🧇', '🧀', '🍗', '🍖', '🥩', '🥓', '🍔', '🍟', '🍕', '🌭', '🥪', '🌮', '🌯', '🥙', '🍳', '🥚', '🥘', '🍲', '🍜', '🍝', '🍣', '🍤', '🍚', '🍙', '🍘', '🍥', '🍡', '🍢', '🍧', '🍨', '🍦', '🥧', '🍰', '🎂', '🍮', '🍬', '🍭', '🍫', '🍿', '🍩', '🍪', '🥛', '☕', '🍵', '🍶', '🍾', '🍷', '🍸', '🍹', '🍺', '🍻', '🥂', '🥃', '🥤', '🧃'],
+                '🐶': ['🐶', '🐱', '🐭', '🐹', '🐰', '🦊', '🐻', '🐼', '🐨', '🐯', '🦁', '🐮', '🐷', '🐸', '🐵', '🐔', '🐧', '🐦', '🦉', '🦆', '🦅', '🦋', '🐛', '🐝', '🐞', '🐢', '🐍', '🦕', '🦖', '🐙', '🦑', '🦀', '🦞', '🦐', '🐠', '🐟', '🐡', '🐬', '🐳', '🦈', '🐊', '🐅', '🐆', '🦓', '🦒', '🐘', '🦏', '🐪', '🐫', '🦘', '🐃', '🐂', '🐄', '🐖', '🐏', '🐑', '🐐', '🦌', '🐎', '🐴', '🦄', '🕊️', '🐾', '🌳', '🌲', '🌴', '🌵', '🌷', '🌸', '🌹', '🌻', '🌼', '🌺', '🌾', '🍁', '🍂', '🍄'],
+                '🚗': ['⚽', '🏀', '🏈', '⚾', '🎾', '🏐', '🏉', '🎱', '🏓', '🏸', '🏒', '🥍', '🏑', '🏹', '🎣', '🥊', '🥋', '🎿', '🏂', '🛷', '⛸️', '🥌', '🎽', '🤸', '🏋️', '⛹️', '🤺', '🏌️', '🏄', '🏊', '🤽', '🚣', '🏇', '🚴', '🚵', '🛣️', '🛤️', '🚢', '🛳️', '⛵', '🚤', '🛥️', '🚀', '🚁', '✈️', '🛫', '🛬', '🚊', '🚂', '🚃', '🚄', '🚅', '🚆', '🚇', '🚈', '🚉', '🚏', '🚌', '🚐', '🚑', '🚒', '🚓', '🚕', '🚖', '🚗', '🚙', '🚚', '🚛', '🚜', '🛵', '🚲', '🛴', '🗺️', '📍', '🧭'],
+                '💡': ['⌚', '📱', '📲', '💻', '🖥️', '⌨️', '🖱️', '💽', '💾', '💿', '📀', '🧮', '📹', '📷', '📸', '📽️', '🎥', '🎬', '📞', '☎️', '📟', '📠', '🔌', '🔋', '🗑️', '🛢️', '🔦', '💡', '🔦', '📖', '📚', '📜', '📰', '🗞️', '🔖', '🏷️', '💰', '💵', '💳', '💎', '🔑', '🔓', '🔏', '🔒', '🔐', '🔑', '🔨', '⚒️', '⛏️', '🔩', '⚙️', '🔧', '⛓️', '🧰', '🧱', '🚪', '🪑', '🛋️', '🛏️', '🛁', '🚿', '🚽', '🪠', '🔔', '🔕', '📢', '📣', '📯', '🎶', '🎼', '🎵', '🎙️', '🎤', '🎧', '📻', '📺', '📻', '🎁', '🎀', '🎉', '🎊', '🎈', '📧', '✉️', '📦', '📤', '📥', '📫', '📪', '📬', '📭', '📮'],
+                '🇧🇷': ['🇧🇷', '🇺🇸', '🇪🇸', '🇫🇷', '🇩🇪', '🇮🇹', '🇯🇵', '🇨🇳', '🇷🇺', '🇮🇳', '🇦🇷', '🇨🇦', '🇲🇽', '🇵🇹', '🇬🇧', '🇰🇷', '🇦🇺', '🇿🇦', '🇪🇬', '🇸🇦', '🇹🇷', '🇵🇱', '🇮🇩', '🇹🇭', '🇻🇳', '🇳🇬', '🇨🇴', '🇵🇰', '🇩🇿', '🇮🇶', '🇺🇦', '🇨🇭', '🇳🇱', '🇧🇪', '🇸🇪', '🇳🇴', '🇫🇮', '🇩🇰', '🇮🇪', '🇬🇷', '🇨🇱', '🇵🇪', '🇪🇨', '🇻🇪', '🇺🇾', '🇵🇾', '🇧🇴', '🇦🇪', '🇶🇦', '🇰🇼', '🇮🇱', '🇹🇼', '🇸🇬', '🇲🇾', '🇵🇭', '🇮🇨', '🇭🇷', '🇷🇴', '🇨🇿', '🇭🇺', '🇧🇬', '🇦🇹', '🇸🇰', '🇸🇮', '🇱🇻', '🇪🇪', '🇱🇹', '🇲🇹', '🇨🇾', '🇦🇱', '🇧🇦', '🇲🇪', '🇲🇰', '🇽🇰', '🇷🇸', '🇨🇿', '🇬🇪', '🇦🇲', '🇦🇿', '🇰🇿', '🇺🇿', '🇹🇲', '🇹🇯', '🇰🇬', '🇱🇰', '🇧🇩', '🇳🇵', '🇲🇲', '🇰🇭', '🇱🇦', '🇵🇬', '🇫🇯', '🇳🇿', '🇼🇸', '🇹🇴', '🇹🇻', '🇰🇮', '🇲🇭', '🇫🇲', '🇵🇼', '🇸🇧', '🇻🇺', '🇦🇮', '🇦🇶', '🇦🇸', '🇦🇼', '🇦🇽', '🇧🇧', '🇧🇲', '🇧🇼', '🇨🇩', '🇨🇫', '🇨🇬', '🇨🇮', '🇨🇰', '🇨🇽', '🇨🇿', '🇪🇭', '🇪🇷', '🇪🇹', '🇫🇴', '🇬🇦', '🇬🇩', '🇬🇫', '🇬🇬', '🇬🇭', '🇬🇮', '🇬🇱', '🇬🇲', '🇬🇼', '🇬🇾', '🇭🇰', '🇮🇴', '🇯🇪', '🇰🇪', '🇰🇲', '🇱🇨', '🇱🇮', '🇲🇬', '🇲🇷', '🇲🇺', '🇲🇼', '🇲🇽', '🇲🇾', '🇲🇿', '🇳🇦', '🇳🇨', '🇳🇪', '🇳🇫', '🇳🇬', '🇳🇱', '🇳🇴', '🇳🇵', '🇳🇷', '🇳🇺', '🇳🇿', '🇴🇲', '🇵🇦', '🇵🇪', '🇵🇫', '🇵🇬', '🇵🇭', '🇵🇰', '🇵🇱', '🇵🇲', '🇵🇳', '🇵🇷', '🇵🇸', '🇵🇹', '🇵🇼', '🇵🇾', '🇶🇦', '🇷🇪', '🇷🇴', '🇷🇸', '🇷🇺', '🇷🇼', '🇸🇦', '🇸🇧', '🇸🇨', '🇸🇩', '🇸🇪', '🇸🇬', '🇸🇭', '🇸🇮', '🇸🇰', '🇸🇱', '🇸🇲', '🇸🇳', '🇸🇴', '🇸🇷', '🇸🇸', '🇸🇹', '🇸🇻', '🇸🇽', '🇸🇾', '🇸🇿', '🇹🇨', '🇹🇩', '🇹🇫', '🇹🇬', '🇹🇭', '🇹🇯', '🇹🇰', '🇹🇱', '🇹🇲', '🇹🇳', '🇹🇴', '🇹🇷', '🇹🇹', '🇹🇻', '🇹🇼', '🇹🇿', '🇺🇦', '🇺🇬', '🇺🇲', '🇺🇳', '🇺🇸', '🇺🇾', '🇺🇿', '🇻🇦', '🇻🇨', '🇻🇪', '🇻🇬', '🇻🇮', '🇻🇳', '🇻🇺', '🇼🇫', '🇼🇸', '🇽🇰', '🇾🇪', '🇾🇹', '🇿🇦', '🇿🇲', '🇿🇼']
+            };
+            let chatState = { mode: 'main', withUser: null };
+            
+            const adminUsers = {}; // Será preenchido pelo servidor
+            const roomLocks = {}; // Será preenchido pelo servidor
+            const onlineUsers = {}; // Será preenchido pelo servidor
+            let userAlarmCounts = {}; // Lógica local
+            
+            const messageSound = new Audio('https://www.soundjay.com/buttons/button-10.mp3');
+            const applauseSound = new Audio('https://assets.mixkit.co/sfx/preview/mixkit-small-group-of-people-applauding-511.mp3');
+            const screamSound = new Audio('https://assets.mixkit.co/sfx/preview/mixkit-scream-of-a-man-in-fear-1279.mp3');
+            const attentionSound = new Audio('https://assets.mixkit.co/sfx/preview/mixkit-attention-bell-2759.mp3');
+            const thumbsUpSound = new Audio('https://www.soundjay.com/buttons/sounds/button-36.mp3');
+            const heartSound = new Audio('https://www.soundjay.com/buttons/sounds/button-18.mp3');
+            const smileSound = new Audio('https://www.soundjay.com/buttons/sounds/button-3.mp3');
+            const starSound = new Audio('https://www.soundjay.com/buttons/sounds/button-2.mp3');
+            const frownSound = new Audio('https://www.soundjay.com/buttons/sounds/button-37.mp3');
+            const thumbsDownSound = new Audio('https://www.soundjay.com/buttons/sounds/button-1.mp3');
+            const helpCircleSound = new Audio('https://www.soundjay.com/buttons/sounds/button-7.mp3');
+            const checkCircleSound = new Audio('https://www.soundjay.com/buttons/sounds/button-23.mp3');
 
-        function createMessageElement(content, isMyMessage = false) {
-            const id = `msg-${messageIdCounter++}`;
-            const messageDiv = document.createElement('div');
-            messageDiv.id = id;
-            messageDiv.className = 'chat-message';
-            if (isMyMessage) messageDiv.classList.add('my-message');
-            
-            let displayName = currentUser;
-            let adminStar = '';
-            if (currentUser.includes('(Admin)')) {
-                const usernameOnly = currentUser.replace(' (Admin)', '');
-                displayName = `<b>${usernameOnly}</b>`;
-                adminStar = '<i data-feather="star" class="admin-star"></i>';
-            }
-            
-            const headerDiv = document.createElement('div');
-            headerDiv.style.display = 'flex';
-            headerDiv.style.alignItems = 'center';
-            headerDiv.innerHTML = `${adminStar}<b>${displayName}:</b>`;
 
-            const contentDiv = document.createElement('div');
-            contentDiv.innerHTML = content;
-            
-            const timestampSpan = document.createElement('span');
-            timestampSpan.className = 'timestamp';
-            timestampSpan.textContent = getCurrentTime();
+            // Reset alarm count every hour
+            setInterval(() => { userAlarmCounts = {}; }, 3600000);
 
-            const reactionsWrapper = document.createElement('div');
-            reactionsWrapper.className = 'reactions-display';
-            
-            messageDiv.appendChild(headerDiv);
-            messageDiv.appendChild(contentDiv);
-            messageDiv.appendChild(timestampSpan);
-            messageDiv.appendChild(reactionsWrapper);
-            
-            messageReactions[id] = {};
-            userReactions[id] = {};
-            chatScreen.appendChild(messageDiv);
-            chatScreen.scrollTop = chatScreen.scrollHeight;
-            feather.replace();
-            if (isAudioEnabled) {
-                messageSound.currentTime = 0;
-                messageSound.play();
-            }
-        }
-        
-        function linkify(text) {
-            const urlRegex = /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])|(\bwww\.[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig;
-            return text.replace(urlRegex, url => `<a href="${url.startsWith('http')?url:'https://'+url}" target="_blank">${url}</a>`);
-        }
-
-        function sendMessage() {
-            if (messageInput.textContent.trim() === "") return;
-            const formattedText = applyFormatting(linkify(messageInput.innerHTML));
-
-            if (isEditing) {
-                const messageElement = document.getElementById(messageToEditId);
-                messageElement.querySelector('div:nth-child(2)').innerHTML = formattedText;
-                isEditing = false;
-                messageToEditId = null;
-                sendBtn.innerHTML = '<i data-feather="send"></i>';
-            } else {
-                createMessageElement(formattedText, true);
-            }
-
-            messageInput.innerHTML = '';
-            messageInput.focus();
-            feather.replace();
-        }
-        
-        // --- Navigation and State ---
-        function updateHeaderUI(){
-            const chatScreenActive=document.getElementById('chatScreen').classList.contains('active'),loginScreenActive=document.getElementById('loginScreen').classList.contains('active');
-            backToChatBtn.style.display=chatState.mode==='private'?'flex':'none';
-            roomsBtn.style.display=chatScreenActive&&chatState.mode==='main'?'flex':'none';
-            logoutBtn.style.display=loginScreenActive?'none':'flex';
-            inviteUserBtn.style.display=chatScreenActive&&currentRoom>0?'flex':'none';
-            adminPanelBtn.style.display = currentUser.includes('(Admin)') && !loginScreenActive ? 'flex' : 'none';
-            
-            roomLockBtn.style.display = currentUser.includes('(Admin)') && chatScreenActive && currentRoom !== 0 ? 'flex' : 'none';
-            const icon = roomLockBtn.querySelector('i');
-            if (icon) {
-                if (simulatedServerState.roomLocks[currentRoom]) {
-                    icon.setAttribute('data-feather', 'lock');
-                } else {
-                    icon.setAttribute('data-feather', 'unlock');
-                }
-            }
-            
-            usersOnlineBtn.style.display = chatScreenActive ? 'flex' : 'none';
-            alarmBtn.style.display = chatScreenActive ? 'flex' : 'none';
-            saveChatBtn.style.display = chatScreenActive ? 'flex' : 'none';
-            colorPaletteBtn.style.display = chatScreenActive ? 'flex' : 'none';
-            audioToggleBtn.style.display = !loginScreenActive ? 'flex' : 'none';
-            minimizeChatBtn.style.display = !loginScreenActive ? 'flex' : 'none';
-            maximizeChatBtn.style.display = !chatWindow.classList.contains('maximized') && !loginScreenActive ? 'flex' : 'none';
-            restoreChatBtn.style.display = chatWindow.classList.contains('maximized') && !loginScreenActive ? 'flex' : 'none';
-
-            if(loginScreenActive){
-                screenTitle.innerText='Login';
-            } else if (chatState.mode==='private'){
-                screenTitle.innerText=`Chat with ${chatState.withUser}`;
-            } else {
-                screenTitle.innerText=`Chat - Room ${currentRoom}`;
-            }
-            feather.replace();
-        }
-        
-        function showScreen(screenId){
-            document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active"));
-            document.getElementById(screenId).classList.add("active");
-            document.getElementById('chatFooter').style.display=screenId==='chatScreen'?'flex':'none';
-            updateHeaderUI();
-        }
-
-        function login() {
-            let username = usernameInput.value.trim();
-            if (username === "") return void alert("Please enter a username.");
-            
-            // Username validation and uniqueness
-            const allowedCharsRegex = /^[a-zA-Z0-9.\-]+$/;
-            if (!allowedCharsRegex.test(username)) {
-                return void alert("The username can only contain letters, numbers, one period, or one hyphen, without accents.");
-            }
-            const dotOrHyphenCount = (username.match(/[\.\-]/g) || []).length;
-            if (dotOrHyphenCount > 1) {
-                return void alert("The username can only contain one period or one hyphen.");
-            }
-            if (username.includes('.') && username.includes('-')) {
-                return void alert("The username can only contain one period or one hyphen, not both.");
-            }
-            
-            let originalUsername = username;
-            let counter = 1;
-            while (simulatedServerState.users.hasOwnProperty(username)) {
-                username = `${originalUsername}-${counter}`;
-                counter++;
-            }
-            
-            const adminNames = ['serkan', 'elieser'];
-            const adminPassword = '51995429192';
-            if (adminNames.includes(username.toLowerCase())) {
-                const enteredPassword = prompt("Restricted access. Please enter the Admin password:");
-                if (enteredPassword === adminPassword) {
-                    currentUser = `${username} (Admin)`;
-                    startMainChat();
-                } else {
-                    alert("Incorrect password. Access denied.");
-                    return;
-                }
-            } else {
-                currentUser = username;
-                startMainChat();
-            }
-        }
-
-        function startMainChat(){
-            currentRoom=0;
-            chatState={mode:'main',withUser:null};
-            chatScreen.innerHTML='';
-            simulatedServerState.users[currentUser] = 0;
-            displaySystemMessage(`Welcome, ${currentUser}!`);
-            displaySystemMessage(`You have entered Room ${currentRoom} (General).`);
-            updateHeaderUI();
-            showScreen('chatScreen');
-        }
-        
-        function changeRoom(newRoomStr) {
-            const newRoom = parseInt(newRoomStr);
-            if (isNaN(newRoom) || newRoom < 0) return alert("Invalid room number.");
-            if (newRoom === currentRoom) return;
-            
-            if (simulatedServerState.roomLocks[newRoom] && !currentUser.includes('(Admin)')) {
-                alert("Room temporarily locked, please find another room.");
-                return;
-            }
-            
-            currentRoom = newRoom;
-            simulatedServerState.users[currentUser] = newRoom;
-            chatScreen.innerHTML = '';
-            displaySystemMessage(`You have entered Room ${currentRoom}.`);
-            updateHeaderUI();
-        }
-        
-        // --- Event Listeners ---
-        loginBtn.addEventListener("click", login);
-        usernameInput.addEventListener('keydown', e => { if (e.key === 'Enter') login(); });
-        logoutBtn.addEventListener("click", () => {
-            delete simulatedServerState.users[currentUser];
-            showScreen('loginScreen');
-        });
-        
-        adminPanelBtn.addEventListener('click', () => {
-            adminPanelModal.style.display = 'flex';
-            updateAdminStats();
-            updateAdminRoomUsers();
-            
-            // Selectors for admin panel formatting and message
-            const adminGlobalMessageInput = document.getElementById('adminGlobalMessage');
-            const sendGlobalMessageBtn = document.getElementById('sendGlobalMessageBtn');
-            const adminGlobalFormattingToolbar = document.querySelector('.admin-global-formatting-toolbar');
-            const adminColorPicker = document.getElementById('admin-colorPicker');
-            const adminHighlightPicker = document.getElementById('admin-highlightPicker');
-            const adminGlobalSoundSelect = document.getElementById('admin-global-sound-select');
-
-            // Add event listener for the Send Global Message button
-            sendGlobalMessageBtn.addEventListener('click', () => {
-                const message = adminGlobalMessageInput.innerHTML.trim();
-                if (message) {
-                    const formattedMessage = applyGlobalFormatting(message);
-                    displayGlobalMessage(formattedMessage);
-                    adminGlobalMessageInput.innerHTML = '';
-                }
-            });
-
-            // Add event listener for formatting buttons within the admin toolbar
-            adminGlobalFormattingToolbar.addEventListener('click', e => {
-                const button = e.target.closest('.tool-button');
-                if (!button) return;
+            // --- Admin Panel Functions ---
+            function updateAdminStats() {
+                const totalUsers = Object.keys(onlineUsers).length;
+                const activeRooms = new Set(Object.values(onlineUsers).map(u => u.room));
+                adminStatsDiv.innerHTML = `<b>Online Users:</b> ${totalUsers}`;
                 
-                const command = button.dataset.command;
-                if (['bold', 'italic', 'underline', 'strikethrough', 'shadow'].includes(command)) {
-                    adminGlobalStyles[command] = !adminGlobalStyles[command];
-                    button.classList.toggle('active', adminGlobalStyles[command]);
-                } else if (button.id === 'admin-fontSizePlusBtn') {
-                    if (adminGlobalFontSize < 24) {
-                        adminGlobalFontSize += 2;
-                        adminGlobalMessageInput.style.fontSize = `${adminGlobalFontSize}px`;
+                adminRoomList.innerHTML = `<h3>Active Rooms:</h3><ul>${Array.from(activeRooms).map(room => `<li>Room ${room} ${roomLocks[room] ? '(Locked)' : ''}</li>`).join('')}</ul>`;
+            }
+            
+            function updateAdminRoomUsers() {
+                const usersInCurrentRoom = Object.entries(onlineUsers).filter(([user, data]) => data.room === currentRoom).map(([user]) => user);
+                
+                let usersHtml = '<h3>Users in Room:</h3>';
+                if (usersInCurrentRoom.length > 0) {
+                    usersHtml += `<div class="admin-user-list"><ul>${usersInCurrentRoom.map(user => `<li>${user} <button data-user-to-kick="${user}">Kick</button></li>`).join('')}</ul></div>`;
+                } else {
+                    usersHtml += '<p>No other users in this room.</p>';
+                }
+                adminRoomUsersDiv.innerHTML = usersHtml;
+            }
+
+            function kickUser(username) {
+                // A ação de kick agora é enviada ao servidor
+                socket.emit('kick_user', username);
+            }
+
+            adminRoomUsersDiv.addEventListener('click', e => {
+                const button = e.target.closest('button');
+                if (button && button.dataset.userToKick) {
+                    const userToKick = button.dataset.userToKick;
+                    if (confirm(`Are you sure you want to kick ${userToKick}?`)) {
+                        kickUser(userToKick);
                     }
-                } else if (button.id === 'admin-fontSizeMinusBtn') {
-                    if (adminGlobalFontSize > 12) {
-                        adminGlobalFontSize -= 2;
-                        adminGlobalMessageInput.style.fontSize = `${adminGlobalFontSize}px`;
-                    }
-                } else if (button.id === 'admin-highlightBtn') {
-                    adminHighlightPicker.click();
-                } else if (button.id === 'admin-colorBtn') {
-                    adminColorPicker.click();
                 }
             });
-
-            // Add event listeners for color pickers and sound selector
-            adminColorPicker.addEventListener('input', e => { adminGlobalStyles.color = e.target.value; });
-            adminHighlightPicker.addEventListener('input', e => { adminGlobalStyles.highlight = e.target.value; });
-            adminGlobalSoundSelect.addEventListener('change', (e) => {
-                adminGlobalSound = e.target.value;
-            });
-            feather.replace();
-        });
-        adminPanelModal.addEventListener('click', e => { if(e.target === adminPanelModal) adminPanelModal.style.display = 'none'; });
-        adminUserSearchBtn.addEventListener('click', searchUserByName);
-        adminRoomSearchBtn.addEventListener('click', searchRoomContents);
-        roomLockBtn.addEventListener('click', toggleRoomLock);
-
-        chatIcon.addEventListener("click",()=>chatWindow.classList.toggle('open'));
-        backToChatBtn.addEventListener("click",()=>changeRoom('0'));
-        roomsBtn.addEventListener("click", () => roomsModal.style.display = 'flex');
-        roomsModal.addEventListener('click', e => { if(e.target === roomsModal) roomsModal.style.display = 'none'; });
-        joinRoomBtn.addEventListener('click', () => {
-            changeRoom(roomNumberInput.value);
-            roomsModal.style.display = 'none';
-            roomNumberInput.value = '';
-        });
-        inviteUserBtn.addEventListener('click', () => inviteModal.style.display = 'flex');
-        inviteModal.addEventListener('click', e => { if(e.target === inviteModal) inviteModal.style.display = 'none'; });
-        sendBtn.addEventListener("click",sendMessage);
-        messageInput.addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendMessage();}});
-        
-        chatScreen.addEventListener('click', e => {
-            const messageElement = e.target.closest('.chat-message');
-            if (messageElement) {
-                const messageId = messageElement.id;
-                reactionPopup.style.display = 'flex';
-                const reactionOptionsHtml = availableReactions.map(r => `<button class="reaction-button" data-message-id="${messageId}" data-reaction="${r.id}"><i data-feather="${r.id}"></i></button>`).join('');
-                reactionPopup.querySelector('.reaction-options').innerHTML = reactionOptionsHtml;
-                reactionPopup.querySelector('.post-actions-buttons').innerHTML = `
-                    
-                    <button class="action-button edit-post" data-message-id="${messageId}" title="Edit"><i data-feather="edit-2"></i></button>
-                    <button class="action-button delete-post" data-message-id="${messageId}" title="Delete"><i data-feather="trash-2"></i></button>
-                `;
-                feather.replace();
-            } else if (e.target.classList.contains('invite-accept-btn')) {
-                const roomToJoin = e.target.getAttribute('data-room');
-                changeRoom(roomToJoin);
+            
+            function searchUserByName() {
+                const userToFind = adminUserInput.value.trim();
+                if (!userToFind) return;
+                let found = false;
+                for (const user in onlineUsers) {
+                    if (user.toLowerCase().startsWith(userToFind.toLowerCase())) {
+                        const room = onlineUsers[user].room;
+                        adminSearchResults.innerHTML = `User <b>${user}</b> is in Room <b>${room}</b>.`;
+                        found = true;
+                        break;
+                    }
+                }
+                if (!found) {
+                    adminSearchResults.textContent = `User "${userToFind}" not found.`;
+                }
             }
-        });
-        
-        reactionPopup.addEventListener('click', e => {
-            const button = e.target.closest('button');
-            if (button) {
-                const messageId = button.dataset.messageId;
-                const messageElement = document.getElementById(messageId);
-                const messageContent = messageElement ? messageElement.querySelector('div:nth-child(2)').innerHTML : '';
 
-                if (button.classList.contains('reaction-button')) {
-                    const reaction = button.dataset.reaction;
-
-                    if (!userReactions[messageId]) {
-                        userReactions[messageId] = {};
+            function searchRoomContents() {
+                const roomToFind = parseInt(adminRoomInput.value);
+                if (isNaN(roomToFind)) return;
+                const usersInRoom = [];
+                for (const user in onlineUsers) {
+                    if (onlineUsers[user].room === roomToFind) {
+                        usersInRoom.push(user);
                     }
-                    if (!messageReactions[messageId]) {
-                        messageReactions[messageId] = {};
-                    }
+                }
+                if (usersInRoom.length > 0) {
+                    adminSearchResults.innerHTML = `Users in Room <b>${roomToFind}</b>: ${usersInRoom.join(', ')}.`;
+                } else {
+                    adminSearchResults.textContent = `Nobody in Room ${roomToFind}.`;
+                }
+            }
+            
+            function toggleRoomLock() {
+                // Ação enviada ao servidor
+                socket.emit('admin_toggle_lock', currentRoom);
+            }
 
-                    const previousReaction = userReactions[messageId][currentUser];
-                    if (previousReaction === reaction) {
-                        messageReactions[messageId][reaction]--;
-                        if (messageReactions[messageId][reaction] <= 0) {
-                            delete messageReactions[messageId][reaction];
-                        }
-                        delete userReactions[messageId][currentUser];
+            // --- Main Functions ---
+            function displaySystemMessage(message) {const e=document.createElement('div');e.className='system-message';e.textContent=message;chatScreen.appendChild(e);chatScreen.scrollTop=chatScreen.scrollHeight; if (isAudioEnabled) messageSound.play();}
+            function displayInviteMessage(inviterName, roomNumber) {
+                const inviteDiv = document.createElement('div');
+                inviteDiv.className = 'invite-message';
+                inviteDiv.innerHTML = `<p><b>${inviterName}</b> invited you to join <b>Room ${roomNumber}</b>.</p><button class="invite-accept-btn" data-room="${roomNumber}">Yes</button><button class="invite-decline-btn decline">No</button>`;
+                chatScreen.appendChild(inviteDiv);
+                chatScreen.scrollTop = chatScreen.scrollHeight;
+            }
+
+            function displayGlobalMessage(message) {
+                const e = document.createElement('div');
+                e.className = 'global-message';
+                e.innerHTML = `<b>Global Announcement:</b><br>${message}`;
+                chatScreen.appendChild(e);
+                chatScreen.scrollTop = chatScreen.scrollHeight;
+                
+                if (isAudioEnabled && adminGlobalSound !== 'none') {
+                    const sound = globalSounds[adminGlobalSound];
+                    if (sound) {
+                        sound.currentTime = 0;
+                        sound.play();
+                    }
+                }
+            }
+
+            function applyFormatting(text) {
+                let s = text;
+                if (activeStyles.bold) s = `<b>${s}</b>`;
+                if (activeStyles.italic) s = `<i>${s}</i>`;
+                if (activeStyles.underline) s = `<u>${s}</u>`;
+                if (activeStyles.strikethrough) s = `<s>${s}</s>`;
+                if (activeStyles.highlight) s = `<span style="background-color: ${activeStyles.highlight};">${s}</span>`;
+                let style = `font-size: ${activeFontSize}px; color: ${activeStyles.color}; font-family: '${activeStyles.fontFamily}', sans-serif;`;
+                if (activeStyles.shadow) style += ' text-shadow: 1px 1px 1px rgba(0,0,0,0.4);';
+                return `<span style="${style}">${s}</span>`;
+            }
+
+            function applyGlobalFormatting(text) {
+                let s = text;
+                if (adminGlobalStyles.bold) s = `<b>${s}</b>`;
+                if (adminGlobalStyles.italic) s = `<i>${s}</i>`;
+                if (adminGlobalStyles.underline) s = `<u>${s}</u>`;
+                if (adminGlobalStyles.strikethrough) s = `<s>${s}</s>`;
+                if (adminGlobalStyles.highlight) s = `<span style="background-color: ${adminGlobalStyles.highlight};">${s}</span>`;
+                let style = `font-size: ${adminGlobalFontSize}px; color: ${adminGlobalStyles.color}; font-family: '${adminGlobalStyles.fontFamily}', sans-serif;`;
+                if (adminGlobalStyles.shadow) style += ' text-shadow: 1px 1px 1px rgba(0,0,0,0.4);';
+                return `<span style="${style}">${s}</span>`;
+            }
+
+            function getCurrentTime() {
+                const now = new Date();
+                const options = {
+                    year: '2-digit',
+                    month: '2-digit',
+                    day: '2-digit',
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    second: '2-digit',
+                    hour12: true,
+                    timeZone: 'America/Vancouver'
+                };
+                const formatter = new Intl.DateTimeFormat('en-US', options);
+                const formattedTime = formatter.format(now).replace(',', '');
+                return `[${formattedTime} SLT]`;
+            }
+
+            function createMessageElement(content, username, isMyMessage = false) {
+                const id = `msg-${messageIdCounter++}`;
+                const messageDiv = document.createElement('div');
+                messageDiv.id = id;
+                messageDiv.className = 'chat-message';
+                if (isMyMessage) messageDiv.classList.add('my-message');
+                
+                let displayName = username;
+                let adminStar = '';
+                if (adminUsers[username]) {
+                    displayName = `<b>${username}</b>`;
+                    adminStar = '<i data-feather="star" class="admin-star"></i>';
+                }
+                
+                const headerDiv = document.createElement('div');
+                headerDiv.style.display = 'flex';
+                headerDiv.style.alignItems = 'center';
+                headerDiv.innerHTML = `${adminStar}<b>${displayName}:</b>`;
+
+                const contentDiv = document.createElement('div');
+                contentDiv.innerHTML = content;
+                
+                const timestampSpan = document.createElement('span');
+                timestampSpan.className = 'timestamp';
+                timestampSpan.textContent = getCurrentTime();
+
+                const reactionsWrapper = document.createElement('div');
+                reactionsWrapper.className = 'reactions-display';
+                
+                messageDiv.appendChild(headerDiv);
+                messageDiv.appendChild(contentDiv);
+                messageDiv.appendChild(timestampSpan);
+                messageDiv.appendChild(reactionsWrapper);
+                
+                messageReactions[id] = {};
+                chatScreen.appendChild(messageDiv);
+                chatScreen.scrollTop = chatScreen.scrollHeight;
+                feather.replace();
+                if (isAudioEnabled) {
+                    messageSound.currentTime = 0;
+                    messageSound.play();
+                }
+            }
+            
+            function linkify(text) {
+                const urlRegex = /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])|(\bwww\.[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig;
+                return text.replace(urlRegex, url => `<a href="${url.startsWith('http')?url:'https://'+url}" target="_blank">${url}</a>`);
+            }
+
+            function sendMessage() {
+                if (messageInput.textContent.trim() === "") return;
+                const formattedText = applyFormatting(linkify(messageInput.innerHTML));
+
+                if (isEditing) {
+                    socket.emit('edit_message', {
+                        id: messageToEditId,
+                        content: formattedText
+                    });
+                    isEditing = false;
+                    messageToEditId = null;
+                    sendBtn.innerHTML = '<i data-feather="send"></i>';
+                } else {
+                    socket.emit('send_message', {
+                        content: formattedText,
+                        styles: activeStyles,
+                        fontSize: activeFontSize
+                    });
+                }
+
+                messageInput.innerHTML = '';
+                messageInput.focus();
+                feather.replace();
+            }
+            
+            // --- Navigation and State ---
+            function updateHeaderUI(){
+                const chatScreenActive=document.getElementById('chatScreen').classList.contains('active'),loginScreenActive=document.getElementById('loginScreen').classList.contains('active');
+                backToChatBtn.style.display=chatState.mode==='private'?'flex':'none';
+                roomsBtn.style.display=chatScreenActive&&chatState.mode==='main'?'flex':'none';
+                logoutBtn.style.display=loginScreenActive?'none':'flex';
+                inviteUserBtn.style.display=chatScreenActive&&currentRoom>0?'flex':'none';
+                adminPanelBtn.style.display = currentUser.includes('(Admin)') && !loginScreenActive ? 'flex' : 'none';
+                
+                roomLockBtn.style.display = currentUser.includes('(Admin)') && chatScreenActive && currentRoom !== 0 ? 'flex' : 'none';
+                const icon = roomLockBtn.querySelector('i');
+                if (icon) {
+                    if (roomLocks[currentRoom]) {
+                        icon.setAttribute('data-feather', 'lock');
                     } else {
-                        if (previousReaction) {
-                            messageReactions[messageId][previousReaction]--;
-                            if (messageReactions[messageId][previousReaction] <= 0) {
-                                delete messageReactions[messageId][previousReaction];
-                            }
+                        icon.setAttribute('data-feather', 'unlock');
+                    }
+                }
+                
+                usersOnlineBtn.style.display = chatScreenActive ? 'flex' : 'none';
+                alarmBtn.style.display = chatScreenActive ? 'flex' : 'none';
+                saveChatBtn.style.display = chatScreenActive ? 'flex' : 'none';
+                colorPaletteBtn.style.display = chatScreenActive ? 'flex' : 'none';
+                audioToggleBtn.style.display = !loginScreenActive ? 'flex' : 'none';
+                minimizeChatBtn.style.display = !loginScreenActive ? 'flex' : 'none';
+                maximizeChatBtn.style.display = !chatWindow.classList.contains('maximized') && !loginScreenActive ? 'flex' : 'none';
+                restoreChatBtn.style.display = chatWindow.classList.contains('maximized') && !loginScreenActive ? 'flex' : 'none';
+
+                if(loginScreenActive){
+                    screenTitle.innerText='Login';
+                } else if (chatState.mode==='private'){
+                    screenTitle.innerText=`Chat with ${chatState.withUser}`;
+                } else {
+                    screenTitle.innerText=`Chat - Room ${currentRoom}`;
+                }
+                feather.replace();
+            }
+            
+            function showScreen(screenId){
+                document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active"));
+                document.getElementById(screenId).classList.add("active");
+                document.getElementById('chatFooter').style.display=screenId==='chatScreen'?'flex':'none';
+                updateHeaderUI();
+            }
+
+            function login() {
+                let username = usernameInput.value.trim();
+                if (username === "") return void alert("Please enter a username.");
+                
+                const allowedCharsRegex = /^[a-zA-Z0-9.\-]+$/;
+                if (!allowedCharsRegex.test(username)) {
+                    return void alert("The username can only contain letters, numbers, one period, or one hyphen, without accents.");
+                }
+                const dotOrHyphenCount = (username.match(/[\.\-]/g) || []).length;
+                if (dotOrHyphenCount > 1) {
+                    return void alert("The username can only contain one period or one hyphen.");
+                }
+                if (username.includes('.') && username.includes('-')) {
+                    return void alert("The username can only contain one period or one hyphen, not both.");
+                }
+                
+                socket.emit('login', username);
+            }
+
+            function startMainChat(){
+                currentRoom=0;
+                chatState={mode:'main',withUser:null};
+                chatScreen.innerHTML='';
+                displaySystemMessage(`Welcome, ${currentUser}!`);
+                displaySystemMessage(`You have entered Room ${currentRoom} (General).`);
+                updateHeaderUI();
+                showScreen('chatScreen');
+            }
+            
+            function changeRoom(newRoomStr) {
+                const newRoom = parseInt(newRoomStr);
+                if (isNaN(newRoom) || newRoom < 0) return alert("Invalid room number.");
+                if (newRoom === currentRoom) return;
+                
+                socket.emit('join_room', newRoom);
+            }
+            
+            // --- Event Listeners ---
+            socket.on('login_success', (data) => {
+                currentUser = data.username;
+                if (data.isAdmin) {
+                    currentUser += ' (Admin)';
+                }
+                startMainChat();
+            });
+
+            socket.on('login_error', (message) => {
+                alert(message);
+            });
+
+            socket.on('update_users', (usersData) => {
+                // Atualiza a lista de usuários online
+                // onlineUsers = usersData;
+                updateAdminStats();
+                updateAdminRoomUsers();
+            });
+
+            socket.on('new_message', (messageData) => {
+                const isMyMessage = messageData.username === currentUser.replace(' (Admin)', '');
+                createMessageElement(messageData.content, messageData.username, isMyMessage);
+            });
+            
+            socket.on('system_message', (message) => {
+                displaySystemMessage(message);
+            });
+
+            socket.on('room_locked', () => {
+                alert('Room is locked by an admin.');
+            });
+
+            socket.on('invite_received', (data) => {
+                displayInviteMessage(data.inviter, data.room);
+            });
+
+            socket.on('update_room_locks', (locks) => {
+                Object.assign(roomLocks, locks);
+                updateHeaderUI();
+                updateAdminStats();
+            });
+
+            socket.on('global_message', (message) => {
+                displayGlobalMessage(message.content);
+            });
+
+            loginBtn.addEventListener("click", login);
+            usernameInput.addEventListener('keydown', e => { if (e.key === 'Enter') login(); });
+            logoutBtn.addEventListener("click", () => {
+                socket.emit('logout');
+                showScreen('loginScreen');
+            });
+            
+            adminPanelBtn.addEventListener('click', () => {
+                adminPanelModal.style.display = 'flex';
+                updateAdminStats();
+                updateAdminRoomUsers();
+                
+                const adminGlobalMessageInput = document.getElementById('adminGlobalMessage');
+                const sendGlobalMessageBtn = document.getElementById('sendGlobalMessageBtn');
+                const adminGlobalFormattingToolbar = document.querySelector('.admin-global-formatting-toolbar');
+                const adminColorPicker = document.getElementById('admin-colorPicker');
+                const adminHighlightPicker = document.getElementById('admin-highlightPicker');
+                const adminGlobalSoundSelect = document.getElementById('admin-global-sound-select');
+
+                sendGlobalMessageBtn.addEventListener('click', () => {
+                    const message = adminGlobalMessageInput.innerHTML.trim();
+                    if (message) {
+                        const formattedMessage = applyGlobalFormatting(message);
+                        socket.emit('send_global_message', {
+                            content: formattedMessage,
+                            sound: adminGlobalSound
+                        });
+                        adminGlobalMessageInput.innerHTML = '';
+                    }
+                });
+
+                adminGlobalFormattingToolbar.addEventListener('click', e => {
+                    const button = e.target.closest('.tool-button');
+                    if (!button) return;
+                    
+                    const command = button.dataset.command;
+                    if (['bold', 'italic', 'underline', 'strikethrough', 'shadow'].includes(command)) {
+                        adminGlobalStyles[command] = !adminGlobalStyles[command];
+                        button.classList.toggle('active', adminGlobalStyles[command]);
+                    } else if (button.id === 'admin-fontSizePlusBtn') {
+                        if (adminGlobalFontSize < 24) {
+                            adminGlobalFontSize += 2;
+                            adminGlobalMessageInput.style.fontSize = `${adminGlobalFontSize}px`;
                         }
-                        if (!messageReactions[messageId][reaction]) {
-                            messageReactions[messageId][reaction] = 0;
+                    } else if (button.id === 'admin-fontSizeMinusBtn') {
+                        if (adminGlobalFontSize > 12) {
+                            adminGlobalFontSize -= 2;
+                            adminGlobalMessageInput.style.fontSize = `${adminGlobalFontSize}px`;
                         }
-                        messageReactions[messageId][reaction]++;
-                        userReactions[messageId][currentUser] = reaction;
+                    } else if (button.id === 'admin-highlightBtn') {
+                        adminHighlightPicker.click();
+                    } else if (button.id === 'admin-colorBtn') {
+                        adminColorPicker.click();
+                    }
+                });
+
+                adminColorPicker.addEventListener('input', e => { adminGlobalStyles.color = e.target.value; });
+                adminHighlightPicker.addEventListener('input', e => { adminGlobalStyles.highlight = e.target.value; });
+                adminGlobalSoundSelect.addEventListener('change', (e) => {
+                    adminGlobalSound = e.target.value;
+                });
+                feather.replace();
+            });
+            adminPanelModal.addEventListener('click', e => { if(e.target === adminPanelModal) adminPanelModal.style.display = 'none'; });
+            adminUserSearchBtn.addEventListener('click', searchUserByName);
+            adminRoomSearchBtn.addEventListener('click', searchRoomContents);
+            roomLockBtn.addEventListener('click', toggleRoomLock);
+
+            chatIcon.addEventListener("click",()=>chatWindow.classList.toggle('open'));
+            backToChatBtn.addEventListener("click",()=>changeRoom('0'));
+            roomsBtn.addEventListener("click", () => roomsModal.style.display = 'flex');
+            roomsModal.addEventListener('click', e => { if(e.target === roomsModal) roomsModal.style.display = 'none'; });
+            joinRoomBtn.addEventListener('click', () => {
+                socket.emit('join_room', roomNumberInput.value);
+                roomsModal.style.display = 'none';
+                roomNumberInput.value = '';
+            });
+            inviteUserBtn.addEventListener('click', () => inviteModal.style.display = 'flex');
+            inviteModal.addEventListener('click', e => { if(e.target === inviteModal) inviteModal.style.display = 'none'; });
+            sendBtn.addEventListener("click",sendMessage);
+            messageInput.addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendMessage();}});
+            
+            chatScreen.addEventListener('click', e => {
+                const messageElement = e.target.closest('.chat-message');
+                if (messageElement) {
+                    const messageId = messageElement.id;
+                    reactionPopup.style.display = 'flex';
+                    const reactionOptionsHtml = availableReactions.map(r => `<button class="reaction-button" data-message-id="${messageId}" data-reaction="${r.id}"><i data-feather="${r.id}"></i></button>`).join('');
+                    reactionPopup.querySelector('.reaction-options').innerHTML = reactionOptionsHtml;
+                    reactionPopup.querySelector('.post-actions-buttons').innerHTML = `
+                         
+                        <button class="action-button edit-post" data-message-id="${messageId}" title="Edit"><i data-feather="edit-2"></i></button>
+                        <button class="action-button delete-post" data-message-id="${messageId}" title="Delete"><i data-feather="trash-2"></i></button>
+                    `;
+                    feather.replace();
+                } else if (e.target.classList.contains('invite-accept-btn')) {
+                    const roomToJoin = e.target.getAttribute('data-room');
+                    changeRoom(roomToJoin);
+                }
+            });
+            
+            reactionPopup.addEventListener('click', e => {
+                const button = e.target.closest('button');
+                if (button) {
+                    const messageId = button.dataset.messageId;
+                    const messageElement = document.getElementById(messageId);
+                    
+                    if (button.classList.contains('reaction-button')) {
+                        const reaction = button.dataset.reaction;
+                        socket.emit('add_reaction', { messageId, reaction });
+                        
                         if(isAudioEnabled && reactionSounds[reaction]) {
                             reactionSounds[reaction].currentTime = 0;
                             reactionSounds[reaction].play();
                         }
+                    }  else if (button.classList.contains('edit-post')) {
+                        const messageContentDiv = messageElement.querySelector('div:nth-child(2)');
+                        messageInput.innerHTML = messageContentDiv.innerHTML;
+                        isEditing = true;
+                        messageToEditId = messageId;
+                        sendBtn.innerHTML = '<i data-feather="check"></i>';
+                        messageInput.focus();
+                    } else if (button.classList.contains('delete-post')) {
+                        if (confirm("Are you sure you want to delete this message?")) {
+                            socket.emit('delete_message', messageId);
+                        }
                     }
-                    
-                    updateReactionsDisplay(messageId);
-                }  else if (button.classList.contains('edit-post')) {
-                    const messageContentDiv = messageElement.querySelector('div:nth-child(2)');
-                    messageInput.innerHTML = messageContentDiv.innerHTML;
-                    isEditing = true;
-                    messageToEditId = messageId;
-                    sendBtn.innerHTML = '<i data-feather="check"></i>'; // Muda o ícone para "salvar"
-                    messageInput.focus();
-                } else if (button.classList.contains('delete-post')) {
-                    if (confirm("Are you sure you want to delete this message?")) {
-                        messageElement.remove();
-                    }
-                }
-                 reactionPopup.style.display = 'none';
-            }
-        });
-
-
-        function updateReactionsDisplay(messageId) {
-            const reactionsWrapper = document.getElementById(messageId).querySelector('.reactions-display');
-            reactionsWrapper.innerHTML = '';
-            for (const reaction in messageReactions[messageId]) {
-                const count = messageReactions[messageId][reaction];
-                if (count > 0) {
-                    const reactionSpan = document.createElement('span');
-                    reactionSpan.className = 'reaction-count';
-                    reactionSpan.innerHTML = `<i data-feather="${reaction}"></i>${count}`;
-                    reactionsWrapper.appendChild(reactionSpan);
-                }
-            }
-            feather.replace();
-        }
-
-        // Formatting events
-        toggleFormattingBtn.addEventListener('click', () => { formattingPopup.classList.toggle('open'); });
-        
-        formattingPopup.addEventListener('click', e => {
-            const button = e.target.closest('.tool-button');
-            if (button && button.dataset.command) {
-                const command = button.dataset.command;
-                activeStyles[command] = !activeStyles[command];
-                button.classList.toggle('active', activeStyles[command]);
-            }
-        });
-
-        fontSelect.addEventListener('change', e => { activeStyles.fontFamily = e.target.value; });
-
-        colorBtn.addEventListener('click', () => { colorPicker.click(); });
-        colorPicker.addEventListener('input', e => { activeStyles.color = e.target.value; });
-
-        fontSizePlusBtn.addEventListener('click', () => {
-            if (activeFontSize < 24) {
-                activeFontSize += 2;
-                messageInput.style.fontSize = `${activeFontSize}px`;
-            }
-        });
-
-        fontSizeMinusBtn.addEventListener('click', () => {
-            if (activeFontSize > 12) {
-                activeFontSize -= 2;
-                messageInput.style.fontSize = `${activeFontSize}px`;
-            }
-        });
-
-        highlightBtn.addEventListener('click', () => { highlightPicker.click(); });
-        highlightPicker.addEventListener('input', e => { activeStyles.highlight = e.target.value; });
-
-
-        mentionBtn.addEventListener('click', () => {
-            const usernameToMention = prompt("Enter the username you want to mention:");
-            if (usernameToMention) {
-                messageInput.textContent = `@${usernameToMention} `;
-                messageInput.focus();
-            }
-        });
-
-        attachFileBtn.addEventListener('click', () => {
-            fileUpload.click();
-        });
-
-        fileUpload.addEventListener('change', (e) => {
-            const file = e.target.files[0];
-            if (file) {
-                if (file.type.startsWith('image/')) {
-                    const reader = new FileReader();
-                    reader.onload = function(e) {
-                        const img = `<img src="${e.target.result}" style="max-width: 100%; max-height: 200px; display: block; margin-top: 10px; cursor: pointer;" onclick="window.open(this.src)" />`;
-                        createMessageElement(`${img}`, true);
-                        displaySystemMessage(`Image "${file.name}" sent.`);
-                    };
-                    reader.readAsDataURL(file);
-                } else {
-                    displaySystemMessage(`File "${file.name}" attached.`);
-                }
-                fileUpload.value = '';
-            }
-        });
-
-        emojiBtn.addEventListener('click', () => {
-            emojiModal.style.display = 'flex';
-            
-            const emojiCategoryMap = {
-                '😀': 'Smileys & Emotion',
-                '🐶': 'Animals & Nature',
-                '🍔': 'Food & Drink',
-                '🚗': 'Activities & Travel',
-                '💡': 'Objects & Symbols',
-                '🇧🇷': 'Flags'
-            };
-
-            let emojiHtml = `<div class="emoji-category-tabs">`;
-            for (const emojiKey in emojis) {
-                emojiHtml += `<button data-category-key="${emojiKey}">${emojiKey}</button>`;
-            }
-            emojiHtml += `</div>`;
-            emojiHtml += `<div id="emoji-list-content" class="emoji-picker-container"></div>`;
-            emojiPicker.innerHTML = emojiHtml;
-            
-            const emojiListContent = document.getElementById('emoji-list-content');
-            let initialCategoryKey = '😀'; 
-            
-            const renderEmojis = (categoryKey) => {
-                const categoryEmojis = emojis[categoryKey];
-                emojiListContent.innerHTML = categoryEmojis.map(emoji => `<button class="emoji-button">${emoji}</button>`).join('');
-            };
-            
-            renderEmojis(initialCategoryKey);
-
-            const categoryTabs = document.querySelector('.emoji-category-tabs');
-            categoryTabs.addEventListener('click', e => {
-                const button = e.target.closest('button');
-                if (button) {
-                    const categoryKey = button.dataset.categoryKey;
-                    renderEmojis(categoryKey);
+                     reactionPopup.style.display = 'none';
                 }
             });
-        });
 
-        emojiPicker.addEventListener('click', e => {
-            const button = e.target.closest('.emoji-button');
-            if (button) {
-                messageInput.textContent += button.textContent;
-                emojiModal.style.display = 'none';
-                messageInput.focus();
-            }
-        });
-        
-        saveChatBtn.addEventListener('click', () => {
-            const element = document.getElementById('chatScreen');
-            const opt = {
-                margin: 1,
-                filename: `chat-sala-${currentRoom}.pdf`,
-                image: { type: 'jpeg', quality: 0.98 },
-                html2canvas: { scale: 2 },
-                jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
-            };
-            html2pdf().from(element).set(opt).save();
-        });
-        
-        // --- Online Users and Alarm Functions ---
-        usersOnlineBtn.addEventListener('click', () => {
-            usersOnlineModal.style.display = 'flex';
-            const usersInCurrentRoom = Object.entries(simulatedServerState.users).filter(([user, room]) => room === currentRoom).map(([user]) => user);
+            socket.on('update_reactions', ({ messageId, reactions }) => {
+                const reactionsWrapper = document.getElementById(messageId).querySelector('.reactions-display');
+                reactionsWrapper.innerHTML = '';
+                for (const reaction in reactions) {
+                    const count = reactions[reaction];
+                    if (count > 0) {
+                        const reactionSpan = document.createElement('span');
+                        reactionSpan.className = 'reaction-count';
+                        reactionSpan.innerHTML = `<i data-feather="${reaction}"></i>${count}`;
+                        reactionsWrapper.appendChild(reactionSpan);
+                    }
+                }
+                feather.replace();
+            });
+
+            // Formatting events
+            toggleFormattingBtn.addEventListener('click', () => { formattingPopup.classList.toggle('open'); });
             
-            let usersHtml = '<h3>Users in Room:</h3>';
-            if (usersInCurrentRoom.length > 0) {
-                usersHtml += `<ul>${usersInCurrentRoom.map(user => `<li>${user}</li>`).join('')}</ul>`;
-            } else {
-                usersHtml += '<p>No other users in this room.</p>';
-            }
+            formattingPopup.addEventListener('click', e => {
+                const button = e.target.closest('.tool-button');
+                if (button && button.dataset.command) {
+                    const command = button.dataset.command;
+                    activeStyles[command] = !activeStyles[command];
+                    button.classList.toggle('active', activeStyles[command]);
+                }
+            });
 
-            usersListDiv.innerHTML = usersHtml;
-        });
+            fontSelect.addEventListener('change', e => { activeStyles.fontFamily = e.target.value; });
 
-        alarmBtn.addEventListener('click', () => {
-            if (!userAlarmCounts[currentUser]) {
-                userAlarmCounts[currentUser] = 0;
-            }
-            if (userAlarmCounts[currentUser] >= 3) {
-                alert('You can only call for attention 3 times per hour. Please wait to try again.');
-                return;
-            }
+            colorBtn.addEventListener('click', () => { colorPicker.click(); });
+            colorPicker.addEventListener('input', e => { activeStyles.color = e.target.value; });
 
-            alarmModal.style.display = 'flex';
-            const usersInRoom = Object.entries(simulatedServerState.users).filter(([user, room]) => room === currentRoom).map(([user]) => user);
-            const userListHtml = usersInRoom.map(user => `<button data-user="${user}">${user}</button>`).join('');
-            alarmOptionsDiv.innerHTML = `<h3>Call Attention: (${userAlarmCounts[currentUser]}/3)</h3><button data-user="all">All in Room</button>${userListHtml}`;
-        });
-        
-        alarmOptionsDiv.addEventListener('click', e => {
-            const button = e.target.closest('button');
-            if (button) {
-                const user = button.dataset.user;
+            fontSizePlusBtn.addEventListener('click', () => {
+                if (activeFontSize < 24) {
+                    activeFontSize += 2;
+                    messageInput.style.fontSize = `${activeFontSize}px`;
+                }
+            });
+
+            fontSizeMinusBtn.addEventListener('click', () => {
+                if (activeFontSize > 12) {
+                    activeFontSize -= 2;
+                    messageInput.style.fontSize = `${activeFontSize}px`;
+                }
+            });
+
+            highlightBtn.addEventListener('click', () => { highlightPicker.click(); });
+            highlightPicker.addEventListener('input', e => { activeStyles.highlight = e.target.value; });
+
+
+            mentionBtn.addEventListener('click', () => {
+                const usernameToMention = prompt("Enter the username you want to mention:");
+                if (usernameToMention) {
+                    messageInput.textContent = `@${usernameToMention} `;
+                    messageInput.focus();
+                }
+            });
+
+            attachFileBtn.addEventListener('click', () => {
+                fileUpload.click();
+            });
+
+            fileUpload.addEventListener('change', (e) => {
+                const file = e.target.files[0];
+                if (file) {
+                    if (file.type.startsWith('image/')) {
+                        const reader = new FileReader();
+                        reader.onload = function(e) {
+                            const img = `<img src="${e.target.result}" style="max-width: 100%; max-height: 200px; display: block; margin-top: 10px; cursor: pointer;" onclick="window.open(this.src)" />`;
+                            socket.emit('send_message', {
+                                content: img
+                            });
+                            displaySystemMessage(`Image "${file.name}" sent.`);
+                        };
+                        reader.readAsDataURL(file);
+                    } else {
+                        socket.emit('send_message', {
+                            content: `File attached: ${file.name}`
+                        });
+                        displaySystemMessage(`File "${file.name}" attached.`);
+                    }
+                    fileUpload.value = '';
+                }
+            });
+
+            emojiBtn.addEventListener('click', () => {
+                emojiModal.style.display = 'flex';
+                
+                const emojiCategoryMap = {
+                    '😀': 'Smileys & Emotion',
+                    '🐶': 'Animals & Nature',
+                    '🍔': 'Food & Drink',
+                    '🚗': 'Activities & Travel',
+                    '💡': 'Objects & Symbols',
+                    '🇧🇷': 'Flags'
+                };
+
+                let emojiHtml = `<div class="emoji-category-tabs">`;
+                for (const emojiKey in emojis) {
+                    emojiHtml += `<button data-category-key="${emojiKey}">${emojiKey}</button>`;
+                }
+                emojiHtml += `</div>`;
+                emojiHtml += `<div id="emoji-list-content" class="emoji-picker-container"></div>`;
+                emojiPicker.innerHTML = emojiHtml;
+                
+                const emojiListContent = document.getElementById('emoji-list-content');
+                let initialCategoryKey = '😀'; 
+                
+                const renderEmojis = (categoryKey) => {
+                    const categoryEmojis = emojis[categoryKey];
+                    emojiListContent.innerHTML = categoryEmojis.map(emoji => `<button class="emoji-button">${emoji}</button>`).join('');
+                };
+                
+                renderEmojis(initialCategoryKey);
+
+                const categoryTabs = document.querySelector('.emoji-category-tabs');
+                categoryTabs.addEventListener('click', e => {
+                    const button = e.target.closest('button');
+                    if (button) {
+                        const categoryKey = button.dataset.categoryKey;
+                        renderEmojis(categoryKey);
+                    }
+                });
+            });
+
+            emojiPicker.addEventListener('click', e => {
+                const button = e.target.closest('.emoji-button');
+                if (button) {
+                    messageInput.textContent += button.textContent;
+                    emojiModal.style.display = 'none';
+                    messageInput.focus();
+                }
+            });
+            
+            saveChatBtn.addEventListener('click', () => {
+                const element = document.getElementById('chatScreen');
+                const opt = {
+                    margin: 1,
+                    filename: `chat-sala-${currentRoom}.pdf`,
+                    image: { type: 'jpeg', quality: 0.98 },
+                    html2canvas: { scale: 2 },
+                    jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
+                };
+                html2pdf().from(element).set(opt).save();
+            });
+            
+            // --- Online Users and Alarm Functions ---
+            usersOnlineBtn.addEventListener('click', () => {
+                usersOnlineModal.style.display = 'flex';
+                const usersInCurrentRoom = Object.entries(onlineUsers).filter(([user, data]) => data.room === currentRoom).map(([user]) => user);
+                
+                let usersHtml = '<h3>Users in Room:</h3>';
+                if (usersInCurrentRoom.length > 0) {
+                    usersHtml += `<ul>${usersInCurrentRoom.map(user => `<li>${user}</li>`).join('')}</ul>`;
+                } else {
+                    usersHtml += '<p>No other users in this room.</p>';
+                }
+
+                usersListDiv.innerHTML = usersHtml;
+            });
+
+            alarmBtn.addEventListener('click', () => {
                 if (!userAlarmCounts[currentUser]) {
                     userAlarmCounts[currentUser] = 0;
                 }
-                userAlarmCounts[currentUser]++;
-                
-                if (user === 'all') {
-                    displaySystemMessage(`Attention! Alarm message for everyone in the room!`);
-                    chatWindow.classList.add('shake-animation');
-                    if (isAudioEnabled) {
-                        applauseSound.currentTime = 0;
-                        applauseSound.play();
-                    }
-                    setTimeout(() => chatWindow.classList.remove('shake-animation'), 500);
-                } else {
-                    displaySystemMessage(`Attention! Alarm message for ${user}!`);
+                if (userAlarmCounts[currentUser] >= 3) {
+                    alert('You can only call for attention 3 times per hour. Please wait to try again.');
+                    return;
                 }
-                alarmModal.style.display = 'none';
-            }
-        });
-        
-        // Close modals on overlay click
-        usersOnlineModal.addEventListener('click', e => { if(e.target === usersOnlineModal) usersOnlineModal.style.display = 'none'; });
-        alarmModal.addEventListener('click', e => { if(e.target === alarmModal) alarmModal.style.display = 'none'; });
-        emojiModal.addEventListener('click', e => { if(e.target === emojiModal) emojiModal.style.display = 'none'; });
+
+                alarmModal.style.display = 'flex';
+                const usersInRoom = Object.entries(onlineUsers).filter(([user, data]) => data.room === currentRoom).map(([user]) => user);
+                const userListHtml = usersInRoom.map(user => `<button data-user="${user}">${user}</button>`).join('');
+                alarmOptionsDiv.innerHTML = `<h3>Call Attention: (${userAlarmCounts[currentUser]}/3)</h3><button data-user="all">All in Room</button>${userListHtml}`;
+            });
+            
+            alarmOptionsDiv.addEventListener('click', e => {
+                const button = e.target.closest('button');
+                if (button) {
+                    const user = button.dataset.user;
+                    if (!userAlarmCounts[currentUser]) {
+                        userAlarmCounts[currentUser] = 0;
+                    }
+                    userAlarmCounts[currentUser]++;
+                    
+                    if (user === 'all') {
+                        displaySystemMessage(`Attention! Alarm message for everyone in the room!`);
+                        chatWindow.classList.add('shake-animation');
+                        if (isAudioEnabled) {
+                            applauseSound.currentTime = 0;
+                            applauseSound.play();
+                        }
+                        setTimeout(() => chatWindow.classList.remove('shake-animation'), 500);
+                    } else {
+                        displaySystemMessage(`Attention! Alarm message for ${user}!`);
+                    }
+                    alarmModal.style.display = 'none';
+                }
+            });
+            
+            // Close modals on overlay click
+            usersOnlineModal.addEventListener('click', e => { if(e.target === usersOnlineModal) usersOnlineModal.style.display = 'none'; });
+            alarmModal.addEventListener('click', e => { if(e.target === alarmModal) alarmModal.style.display = 'none'; });
+            emojiModal.addEventListener('click', e => { if(e.target === emojiModal) emojiModal.style.display = 'none'; });
 
 
-        // Audio and Window control events
-        audioToggleBtn.addEventListener('click', () => {
-            isAudioEnabled = !isAudioEnabled;
-            const icon = audioToggleBtn.querySelector('i');
-            icon.setAttribute('data-feather', isAudioEnabled ? 'volume-2' : 'volume-x');
+            // Audio and Window control events
+            audioToggleBtn.addEventListener('click', () => {
+                isAudioEnabled = !isAudioEnabled;
+                const icon = audioToggleBtn.querySelector('i');
+                icon.setAttribute('data-feather', isAudioEnabled ? 'volume-2' : 'volume-x');
+                feather.replace();
+            });
+
+            minimizeChatBtn.addEventListener('click', () => {
+                chatWindow.classList.add('minimized');
+                chatWindow.classList.remove('maximized');
+                maximizeChatBtn.style.display = 'flex';
+                restoreChatBtn.style.display = 'none';
+                minimizeChatBtn.style.display = 'none';
+            });
+            
+            maximizeChatBtn.addEventListener('click', () => {
+                chatWindow.classList.add('maximized');
+                chatWindow.classList.remove('minimized');
+                maximizeChatBtn.style.display = 'none';
+                restoreChatBtn.style.display = 'flex';
+                minimizeChatBtn.style.display = 'flex';
+            });
+
+            restoreChatBtn.addEventListener('click', () => {
+                chatWindow.classList.remove('maximized');
+                chatWindow.classList.remove('minimized');
+                restoreChatBtn.style.display = 'none';
+                maximizeChatBtn.style.display = 'flex';
+                minimizeChatBtn.style.display = 'flex';
+            });
+
+            colorPaletteBtn.addEventListener('click', () => {
+                chatWallpaperColor.click();
+            });
+
+            chatWallpaperColor.addEventListener('input', (e) => {
+                chatScreen.style.backgroundColor = e.target.value;
+            });
+            
+            // --- Initialization ---
+            googleFonts.forEach(fontName=>{const option=document.createElement('option');option.value=fontName;option.textContent=fontName;option.style.fontFamily=fontName;fontSelect.appendChild(option);});
+            
             feather.replace();
+            showScreen('loginScreen');
         });
-
-        minimizeChatBtn.addEventListener('click', () => {
-            chatWindow.classList.add('minimized');
-            chatWindow.classList.remove('maximized');
-            maximizeChatBtn.style.display = 'flex';
-            restoreChatBtn.style.display = 'none';
-            minimizeChatBtn.style.display = 'none';
-        });
-        
-        maximizeChatBtn.addEventListener('click', () => {
-            chatWindow.classList.add('maximized');
-            chatWindow.classList.remove('minimized');
-            maximizeChatBtn.style.display = 'none';
-            restoreChatBtn.style.display = 'flex';
-            minimizeChatBtn.style.display = 'flex';
-        });
-
-        restoreChatBtn.addEventListener('click', () => {
-            chatWindow.classList.remove('maximized');
-            chatWindow.classList.remove('minimized');
-            restoreChatBtn.style.display = 'none';
-            maximizeChatBtn.style.display = 'flex';
-            minimizeChatBtn.style.display = 'flex';
-        });
-
-        colorPaletteBtn.addEventListener('click', () => {
-            chatWallpaperColor.click();
-        });
-
-        chatWallpaperColor.addEventListener('input', (e) => {
-            chatScreen.style.backgroundColor = e.target.value;
-        });
-        
-        // --- Initialization ---
-        googleFonts.forEach(fontName=>{const option=document.createElement('option');option.value=fontName;option.textContent=fontName;option.style.fontFamily=fontName;fontSelect.appendChild(option);});
-        
-        feather.replace();
-        showScreen('loginScreen');
-    });
     </script>
-</!doctype>
+</body>
+</html>
