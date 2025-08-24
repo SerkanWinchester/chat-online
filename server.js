@@ -17,19 +17,10 @@ const users = {};
 const roomLocks = { 0: false };
 const adminPasswords = { 'serkan': '51995429192', 'elieser': '51995429192' };
 const messages = {};
-const messageReactions = {};
 
 io.on('connection', (socket) => {
     console.log(`User ${socket.id} connected`);
     
-    // Envia o estado inicial para o novo usuário
-    socket.emit('initial_data', {
-        users: Object.values(users).map(u => ({ username: u.username, room: u.room, isAdmin: u.isAdmin })),
-        roomLocks,
-        messages,
-        messageReactions
-    });
-
     socket.on('login', (username) => {
         if (users[username]) {
             socket.emit('login_error', 'Username already exists. Please choose another one.');
@@ -47,7 +38,7 @@ io.on('connection', (socket) => {
                     socket.username = username;
                     socket.emit('login_success', { username, isAdmin: true });
                     io.to(0).emit('system_message', `${username} (Admin) has entered the room.`);
-                    io.emit('update_data', { users: Object.values(users), roomLocks, messages, messageReactions });
+                    io.emit('update_data', { users: Object.values(users), roomLocks, messages });
                 } else {
                     socket.emit('login_error', 'Incorrect password. Access denied.');
                 }
@@ -58,7 +49,7 @@ io.on('connection', (socket) => {
             socket.username = username;
             socket.emit('login_success', { username, isAdmin: false });
             io.to(0).emit('system_message', `${username} has entered the room.`);
-            io.emit('update_data', { users: Object.values(users), roomLocks, messages, messageReactions });
+            io.emit('update_data', { users: Object.values(users), roomLocks, messages });
         }
     });
 
@@ -67,7 +58,7 @@ io.on('connection', (socket) => {
             const room = users[socket.username].room;
             delete users[socket.username];
             io.to(room).emit('system_message', `${socket.username} has left the room.`);
-            io.emit('update_data', { users: Object.values(users), roomLocks, messages, messageReactions });
+            io.emit('update_data', { users: Object.values(users), roomLocks, messages });
         }
     });
 
@@ -109,7 +100,7 @@ io.on('connection', (socket) => {
             socket.leaveAll();
             socket.join(newRoom);
             users[socket.username].room = newRoom;
-            io.emit('update_data', { users: Object.values(users), roomLocks, messages, messageReactions });
+            io.emit('update_data', { users: Object.values(users), roomLocks, messages });
             io.to(newRoom).emit('system_message', `${socket.username} has joined Room ${newRoom}.`);
         }
     });
@@ -120,6 +111,16 @@ io.on('connection', (socket) => {
                 messages[messageId].reactions[reaction] = 0;
             }
             messages[messageId].reactions[reaction]++;
+            io.emit('update_reactions', { messageId, reactions: messages[messageId].reactions });
+        }
+    });
+    
+    socket.on('remove_reaction', ({ messageId, reaction }) => {
+        if (messages[messageId] && messages[messageId].reactions[reaction]) {
+            messages[messageId].reactions[reaction]--;
+            if (messages[messageId].reactions[reaction] <= 0) {
+                delete messages[messageId].reactions[reaction];
+            }
             io.emit('update_reactions', { messageId, reactions: messages[messageId].reactions });
         }
     });
@@ -142,7 +143,7 @@ io.on('connection', (socket) => {
             }
             roomLocks[room] = !roomLocks[room];
             io.emit('system_message', `Room ${room} was ${roomLocks[room] ? 'locked' : 'unlocked'} by the Admin.`);
-            io.emit('update_data', { users: Object.values(users), roomLocks, messages, messageReactions });
+            io.emit('update_data', { users: Object.values(users), roomLocks, messages });
         }
     });
     
