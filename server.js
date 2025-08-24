@@ -1,82 +1,205 @@
-<style>
-/* Estilos para o container flutuante */
-#floating-radio-player {
-    position: fixed;
-    top: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: 999;
-    padding: 10px 15px;
-    background-color: #1a1a1a;
-    border-radius: 0 0 10px 10px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
+const express = require('express');
+const http = require('http');
+const { Server } = require('socket.io');
+const cors = require('cors');
 
-/* Estilos para o menu de seleção de rádio */
-#radio-selector {
-    padding: 8px 10px;
-    border: 1px solid #333;
-    border-radius: 5px;
-    font-size: 1em;
-    background-color: #333;
-    color: #f5f5f5;
-}
-
-/* Estilos para o player de áudio */
-#dynamic-audio-player {
-    width: 250px;
-}
-</style>
-
-<div id="floating-radio-player">
-    <select id="radio-selector"></select>
-    <audio id="dynamic-audio-player" controls autoplay></audio>
-</div>
-
-<script>
-// Lista de estações de rádio ajustada
-const radioStations = {
-    '🇧🇷 Rádio Atlântida': 'https://playerservices.streamtheworld.com/api/livestream-redirect/ATL_FLO.mp3',
-    '🇩🇪 Rádio Classic Rock Live': 'http://stream.antenne.de:80/classic-rock-live',
-    '🇩🇪 Rádio Gay FM': 'https://icepool.silvacast.com/GAYFM.mp3',
-    '🇺🇸 Rádio Paradise': 'http://stream.radioparadise.com/mp3-128'
-};
-
-document.addEventListener('DOMContentLoaded', () => {
-    const selector = document.getElementById('radio-selector');
-    const audioPlayer = document.getElementById('dynamic-audio-player');
-    const stationNames = Object.keys(radioStations).sort();
-
-    for (let i = 0; i < stationNames.length; i++) {
-        const name = stationNames[i];
-        const option = document.createElement('option');
-        option.value = radioStations[name];
-        option.textContent = name;
-        selector.appendChild(option);
+const app = express();
+const server = http.createServer(app);
+const io = new Server(server, {
+    cors: {
+        origin: "*", 
+        methods: ["GET", "POST"]
     }
-    
-    audioPlayer.src = radioStations['🇧🇷 Rádio Atlântida'];
-    selector.value = audioPlayer.src;
+});
 
-    audioPlayer.play().catch(error => {
-        console.log("Autoplay da rádio padrão bloqueado. O usuário precisa clicar no play.");
+const users = {};
+const roomLocks = { 0: false };
+const adminPasswords = { 'serkan': '51995429192', 'elieser': '51995429192' };
+const messages = {};
+const userReactions = {};
+
+io.on('connection', (socket) => {
+    console.log(`User ${socket.id} connected`);
+    
+    socket.on('login', (username) => {
+        if (users[username]) {
+            socket.emit('login_error', 'Username already exists. Please choose another one.');
+            return;
+        }
+        
+        const isAdmin = adminPasswords.hasOwnProperty(username.toLowerCase());
+        
+        if (isAdmin) {
+            socket.emit('admin_login_challenge');
+            socket.once('admin_password_submit', (password) => {
+                if (password === adminPasswords[username.toLowerCase()]) {
+                    users[username] = { id: socket.id, username, room: 0, isAdmin: true };
+                    socket.join(0);
+                    socket.username = username;
+                    socket.emit('login_success', { username, isAdmin: true });
+                    io.to(0).emit('system_message', `${username} (Admin) has entered the room.`);
+                    io.emit('update_data', { users: Object.values(users), roomLocks, messages, userReactions });
+                } else {
+                    socket.emit('login_error', 'Incorrect password. Access denied.');
+                }
+            });
+        } else {
+            users[username] = { id: socket.id, username, room: 0, isAdmin: false };
+            socket.join(0);
+            socket.username = username;
+            socket.emit('login_success', { username, isAdmin: false });
+            io.to(0).emit('system_message', `${username} has entered the room.`);
+            io.emit('update_data', { users: Object.values(users), roomLocks, messages, userReactions });
+        }
     });
 
-    selector.addEventListener('change', (event) => {
-        const selectedUrl = event.target.value;
-        if (selectedUrl) {
-            audioPlayer.src = selectedUrl;
+    socket.on('disconnect', () => {
+        if (socket.username) {
+            const room = users[socket.username].room;
+            delete users[socket.username];
+            io.to(room).emit('system_message', `${socket.username} has left the room.`);
+            io.emit('update_data', { users: Object.values(users), roomLocks, messages, userReactions });
+        }
+    });
+
+    socket.on('send_message', (messageData) => {
+        if (socket.username) {
+            const room = users[socket.username].room;
+            const messageId = `msg-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
+            messages[messageId] = {
+                id: messageId,
+                username: socket.username,
+                content: messageData.content,
+                timestamp: new Date(),
+                reactions: {},
+                styles: messageData.styles,
+                fontSize: messageData.fontSize,
+                hideTimestamp: messageData.hideTimestamp
+            };
+            io.to(room).emit('new_message', messages[messageId]);
+        }
+    });
+    
+    socket.on('edit_message', (data) => {
+        if (messages[data.id] && messages[data.id].username === socket.username) {
+            messages[data.id].content = data.content;
+            io.to(users[socket.username].room).emit('update_message', messages[data.id]);
+        }
+    });
+
+    socket.on('delete_message', (messageId) => {
+        if (messages[messageId] && messages[messageId].username === socket.username) {
+            const room = users[socket.username].room;
+            delete messages[messageId];
+            io.to(room).emit('delete_message', messageId);
+        }
+    });
+
+    socket.on('join_room', (newRoom) => {
+        if (socket.username) {
+            if (roomLocks[newRoom] && !users[socket.username].isAdmin) {
+                socket.emit('room_locked');
+                return;
+            }
+            socket.leaveAll();
+            socket.join(newRoom);
+            users[socket.username].room = newRoom;
+            io.emit('update_data', { users: Object.values(users), roomLocks, messages, userReactions });
+            io.to(newRoom).emit('system_message', `${socket.username} has joined Room ${newRoom}.`);
+        }
+    });
+    
+    socket.on('toggle_reaction', ({ messageId, reaction }) => {
+        if (messages[messageId]) {
+            if (!userReactions[socket.username]) {
+                userReactions[socket.username] = {};
+            }
             
-            const playPromise = audioPlayer.play();
-            if (playPromise !== undefined) {
-                playPromise.catch(error => {
-                    console.log("Autoplay bloqueado. O usuário precisa clicar no play.");
-                });
+            const previousReaction = userReactions[socket.username][messageId];
+            if (previousReaction === reaction) {
+                messages[messageId].reactions[reaction]--;
+                if (messages[messageId].reactions[reaction] <= 0) {
+                    delete messages[messageId].reactions[reaction];
+                }
+                delete userReactions[socket.username][messageId];
+            } else {
+                if (previousReaction) {
+                    messages[messageId].reactions[previousReaction]--;
+                    if (messages[messageId].reactions[previousReaction] <= 0) {
+                        delete messages[messageId].reactions[previousReaction];
+                    }
+                }
+                if (!messages[messageId].reactions[reaction]) {
+                    messages[messageId].reactions[reaction] = 0;
+                }
+                messages[messageId].reactions[reaction]++;
+                userReactions[socket.username][messageId] = reaction;
+            }
+            io.emit('update_reactions', { messageId, reactions: messages[messageId].reactions });
+        }
+    });
+
+    socket.on('call_attention', (data) => {
+        if (users[socket.username]) {
+            const room = users[socket.username].room;
+            if (data.user === 'all') {
+                io.to(room).emit('attention_call', data);
+            } else {
+                const targetUserSocket = Object.values(io.sockets.sockets).find(s => s.username === data.user);
+                if (targetUserSocket) {
+                    targetUserSocket.emit('attention_call', data);
+                }
             }
         }
     });
+
+    socket.on('admin_toggle_lock', (room) => {
+        if (users[socket.username] && users[socket.username].isAdmin) {
+            if (!roomLocks.hasOwnProperty(room)) {
+                roomLocks[room] = false;
+            }
+            roomLocks[room] = !roomLocks[room];
+            io.emit('system_message', `Room ${room} was ${roomLocks[room] ? 'locked' : 'unlocked'} by the Admin.`);
+            io.emit('update_data', { users: Object.values(users), roomLocks, messages, userReactions });
+        }
+    });
+    
+    socket.on('send_global_message', (messageData) => {
+         if (users[socket.username] && users[socket.username].isAdmin) {
+             io.emit('global_message', messageData);
+         }
+     });
+
+    socket.on('kick_user', (userToKick) => {
+        if (users[socket.username] && users[socket.username].isAdmin) {
+            const userSocket = Object.values(io.sockets.sockets).find(s => s.username === userToKick);
+            if (userSocket) {
+                userSocket.emit('kick_success');
+                userSocket.disconnect(true);
+            }
+        }
+    });
+    
+    socket.on('search_user', (userToFind) => {
+        for (const user in users) {
+            if (user.toLowerCase().includes(userToFind.toLowerCase())) {
+                socket.emit('search_result', {
+                    username: user,
+                    room: users[user].room
+                });
+                return;
+            }
+        }
+        socket.emit('search_result', null);
+    });
+
+    socket.on('search_room', (roomToFind) => {
+        const usersInRoom = Object.values(users).filter(u => u.room === roomToFind).map(u => u.username);
+        socket.emit('search_result_room', usersInRoom);
+    });
 });
-</script>
+
+const PORT = process.env.PORT || 3000;
+server.listen(PORT, () => {
+    console.log(`Server listening on port ${PORT}`);
+});
