@@ -4,7 +4,7 @@
     
     
     <head>
-    <title>Chat</title>
+    <title>Floating Chat</title>
     <script src="https://unpkg.com/feather-icons"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
@@ -763,7 +763,7 @@
                 sendBtn.innerHTML = '<i data-feather="send"></i>';
             } else {
                 // Envia a mensagem para o servidor
-                socket.emit('chat message', { user: currentUser, text: formattedText, timestamp: getCurrentTime() });
+                socket.emit('chat message', { user: currentUser, text: formattedText, isMyMessage: true, timestamp: getCurrentTime() });
             }
 
             messageInput.innerHTML = '';
