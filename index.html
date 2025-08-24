@@ -38,6 +38,7 @@
         .chat-window.open { display: flex; opacity: 1; transform: translateY(0); pointer-events: auto; }
         .chat-window.maximized { width: 100vw; height: 100vh; bottom: 0; right: 0; border-radius: 0; }
         .chat-window.minimized { height: 40px; }
+        .chat-window.mobile-view { width: 100vw; height: 100vh; bottom: 0; right: 0; border-radius: 0; }
 
 
         .chat-header { 
@@ -264,6 +265,7 @@
                 <button id="minimizeChatBtn" class="header-button" title="Minimize" style="display: none;"><i data-feather="minus"></i></button>
                 <button id="maximizeChatBtn" class="header-button" title="Maximize" style="display: none;"><i data-feather="maximize-2"></i></button>
                 <button id="restoreChatBtn" class="header-button" title="Restore" style="display: none;"><i data-feather="minimize-2"></i></button>
+                <button id="mobileViewBtn" class="header-button" title="Mobile View" style="display: none;"><i data-feather="smartphone"></i></button>
             </div>
             <h2 id="screenTitle">Login</h2>
             <div class="header-icons-right">
@@ -449,6 +451,7 @@
             const minimizeChatBtn = document.getElementById('minimizeChatBtn');
             const maximizeChatBtn = document.getElementById('maximizeChatBtn');
             const restoreChatBtn = document.getElementById('restoreChatBtn');
+            const mobileViewBtn = document.getElementById('mobileViewBtn');
             const colorPaletteBtn = document.getElementById('colorPaletteBtn');
             const chatWallpaperColor = document.getElementById('chatWallpaperColor');
             const toggleRoomsBtn = document.getElementById('toggleRoomsBtn');
@@ -535,11 +538,11 @@
             }
             
             function updateAdminRoomUsers() {
-                const usersInCurrentRoom = Object.entries(onlineUsers).filter(([user, data]) => data.room === currentRoom).map(([user]) => user);
+                const usersInCurrentRoom = Object.values(onlineUsers).filter(data => data.room === currentRoom);
                 
                 let usersHtml = '<h3>Users in Room:</h3>';
                 if (usersInCurrentRoom.length > 0) {
-                    usersHtml += `<div class="admin-user-list"><ul>${usersInCurrentRoom.map(user => `<li>${user} <button data-user-to-kick="${user}">Kick</button></li>`).join('')}</ul></div>`;
+                    usersHtml += `<div class="admin-user-list"><ul>${usersInCurrentRoom.map(user => `<li>${user.username} <button data-user-to-kick="${user.username}">Kick</button></li>`).join('')}</ul></div>`;
                 } else {
                     usersHtml += '<p>No other users in this room.</p>';
                 }
@@ -605,27 +608,15 @@
                 }
             }
 
-            function applyFormatting(text) {
+            function applyFormatting(text, styles) {
                 let s = text;
-                if (activeStyles.bold) s = `<b>${s}</b>`;
-                if (activeStyles.italic) s = `<i>${s}</i>`;
-                if (activeStyles.underline) s = `<u>${s}</u>`;
-                if (activeStyles.strikethrough) s = `<s>${s}</s>`;
-                if (activeStyles.highlight) s = `<span style="background-color: ${activeStyles.highlight};">${s}</span>`;
-                let style = `font-size: ${activeFontSize}px; color: ${activeStyles.color}; font-family: '${activeStyles.fontFamily}', sans-serif;`;
-                if (activeStyles.shadow) style += ' text-shadow: 1px 1px 1px rgba(0,0,0,0.4);';
-                return `<span style="${style}">${s}</span>`;
-            }
-
-            function applyGlobalFormatting(text) {
-                let s = text;
-                if (adminGlobalStyles.bold) s = `<b>${s}</b>`;
-                if (adminGlobalStyles.italic) s = `<i>${s}</i>`;
-                if (adminGlobalStyles.underline) s = `<u>${s}</u>`;
-                if (adminGlobalStyles.strikethrough) s = `<s>${s}</s>`;
-                if (adminGlobalStyles.highlight) s = `<span style="background-color: ${adminGlobalStyles.highlight};">${s}</span>`;
-                let style = `font-size: ${adminGlobalFontSize}px; color: ${adminGlobalStyles.color}; font-family: '${adminGlobalStyles.fontFamily}', sans-serif;`;
-                if (adminGlobalStyles.shadow) style += ' text-shadow: 1px 1px 1px rgba(0,0,0,0.4);';
+                if (styles.bold) s = `<b>${s}</b>`;
+                if (styles.italic) s = `<i>${s}</i>`;
+                if (styles.underline) s = `<u>${s}</u>`;
+                if (styles.strikethrough) s = `<s>${s}</s>`;
+                if (styles.highlight) s = `<span style="background-color: ${styles.highlight};">${s}</span>`;
+                let style = `font-size: ${styles.fontSize}px; color: ${styles.color}; font-family: '${styles.fontFamily}', sans-serif;`;
+                if (styles.shadow) style += ' text-shadow: 1px 1px 1px rgba(0,0,0,0.4);';
                 return `<span style="${style}">${s}</span>`;
             }
 
@@ -688,7 +679,9 @@
                     messageSound.currentTime = 0;
                     messageSound.play();
                 }
-                updateReactionsDisplay(messageData.id, messageData.reactions);
+                if (allMessages[messageData.id] && allMessages[messageData.id].reactions) {
+                    updateReactionsDisplay(messageData.id, allMessages[messageData.id].reactions);
+                }
             }
 
             function renderAllMessages() {
@@ -711,7 +704,7 @@
 
             function sendMessage() {
                 if (messageInput.textContent.trim() === "") return;
-                const formattedText = applyFormatting(linkify(messageInput.innerHTML));
+                const formattedText = applyFormatting(linkify(messageInput.innerHTML), activeStyles);
 
                 if (isEditing) {
                     socket.emit('edit_message', {
@@ -756,6 +749,7 @@
                 alarmBtn.style.display = chatScreenActive ? 'flex' : 'none';
                 saveChatBtn.style.display = chatScreenActive ? 'flex' : 'none';
                 colorPaletteBtn.style.display = chatScreenActive ? 'flex' : 'none';
+                mobileViewBtn.style.display = !chatWindow.classList.contains('mobile-view') && !loginScreenActive ? 'flex' : 'none';
                 audioToggleBtn.style.display = !loginScreenActive ? 'flex' : 'none';
                 minimizeChatBtn.style.display = !loginScreenActive ? 'flex' : 'none';
                 maximizeChatBtn.style.display = !chatWindow.classList.contains('maximized') && !loginScreenActive ? 'flex' : 'none';
@@ -798,7 +792,7 @@
             }
 
             function startMainChat(){
-                currentRoom=0;
+                chatScreen.innerHTML = '';
                 chatState={mode:'main',withUser:null};
                 renderAllMessages();
                 updateHeaderUI();
@@ -810,6 +804,7 @@
                 if (isNaN(newRoom) || newRoom < 0) return alert("Invalid room number.");
                 if (newRoom === currentRoom) return;
                 
+                currentRoom = newRoom;
                 socket.emit('join_room', newRoom);
             }
             
@@ -856,7 +851,8 @@
 
             socket.on('new_message', (messageData) => {
                 allMessages[messageData.id] = messageData;
-                if (onlineUsers[messageData.username].room === currentRoom) {
+                const sender = onlineUsers[messageData.username];
+                if (sender && sender.room === currentRoom) {
                      createMessageElement(messageData, messageData.username === currentUser.replace(' (Admin)', ''));
                 }
             });
@@ -896,16 +892,18 @@
             });
 
             socket.on('attention_call', (data) => {
-                chatWindow.classList.add('shake-animation');
-                if (isAudioEnabled) {
-                    globalSounds[data.sound].currentTime = 0;
-                    globalSounds[data.sound].play();
+                if (data.user === 'all' || data.user === currentUser.replace(' (Admin)', '')) {
+                    chatWindow.classList.add('shake-animation');
+                    if (isAudioEnabled) {
+                        globalSounds[data.sound].currentTime = 0;
+                        globalSounds[data.sound].play();
+                    }
+                    setTimeout(() => chatWindow.classList.remove('shake-animation'), 500);
                 }
-                setTimeout(() => chatWindow.classList.remove('shake-animation'), 500);
             });
 
             socket.on('update_reactions', ({ messageId, reactions }) => {
-                const reactionsWrapper = document.getElementById(messageId).querySelector('.reactions-display');
+                const reactionsWrapper = document.getElementById(messageId);
                 if (reactionsWrapper) {
                     reactionsWrapper.innerHTML = '';
                     for (const reaction in reactions) {
@@ -1023,6 +1021,68 @@
                         }
                     }
                      reactionPopup.style.display = 'none';
+                }
+            });
+
+            const adminGlobalMessageInput = document.getElementById('adminGlobalMessage');
+            const sendGlobalMessageBtn = document.getElementById('sendGlobalMessageBtn');
+            const adminGlobalFormattingToolbar = document.querySelector('.admin-global-formatting-toolbar');
+            
+            adminGlobalFormattingToolbar.addEventListener('click', e => {
+                const button = e.target.closest('.tool-button');
+                if (!button) return;
+                
+                const command = button.dataset.command;
+                if (['bold', 'italic', 'underline', 'strikethrough', 'shadow'].includes(command)) {
+                    adminGlobalStyles[command] = !adminGlobalStyles[command];
+                    button.classList.toggle('active', adminGlobalStyles[command]);
+                } else if (button.id === 'admin-fontSizePlusBtn') {
+                    if (adminGlobalFontSize < 24) {
+                        adminGlobalFontSize += 2;
+                        adminGlobalMessageInput.style.fontSize = `${adminGlobalFontSize}px`;
+                    }
+                } else if (button.id === 'admin-fontSizeMinusBtn') {
+                    if (adminGlobalFontSize > 12) {
+                        adminGlobalFontSize -= 2;
+                        adminGlobalMessageInput.style.fontSize = `${adminGlobalFontSize}px`;
+                    }
+                } else if (button.id === 'admin-highlightBtn') {
+                    document.getElementById('admin-highlightPicker').click();
+                } else if (button.id === 'admin-colorBtn') {
+                    document.getElementById('admin-colorPicker').click();
+                }
+            });
+
+            document.getElementById('admin-colorPicker').addEventListener('input', e => { adminGlobalStyles.color = e.target.value; });
+            document.getElementById('admin-highlightPicker').addEventListener('input', e => { adminGlobalStyles.highlight = e.target.value; });
+            document.getElementById('admin-global-sound-select').addEventListener('change', (e) => {
+                adminGlobalSound = e.target.value;
+            });
+
+            sendGlobalMessageBtn.addEventListener('click', () => {
+                const message = adminGlobalMessageInput.innerHTML.trim();
+                if (message) {
+                    const formattedMessage = applyFormatting(message, {
+                        bold: adminGlobalStyles.bold,
+                        italic: adminGlobalStyles.italic,
+                        underline: adminGlobalStyles.underline,
+                        strikethrough: adminGlobalStyles.strikethrough,
+                        shadow: adminGlobalStyles.shadow,
+                        color: adminGlobalStyles.color,
+                        fontFamily: adminGlobalStyles.fontFamily,
+                        highlight: adminGlobalStyles.highlight,
+                        fontSize: adminGlobalFontSize
+                    });
+                    socket.emit('send_global_message', { content: formattedMessage, sound: adminGlobalSound });
+                    adminGlobalMessageInput.innerHTML = '';
+                }
+            });
+
+            // Adiciona listener para a tecla Enter no input do admin
+            adminGlobalMessageInput.addEventListener('keydown', e => {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    sendGlobalMessageBtn.click();
                 }
             });
 
@@ -1195,11 +1255,11 @@
                     userAlarmCounts[currentUser]++;
                     
                     if (user === 'all') {
-                        socket.emit('call_attention', { user: 'all', sound: 'screamSound' });
-                        displaySystemMessage(`Attention! Alarm message for everyone in the room!`);
+                        socket.emit('call_attention', { user: 'all', sound: 'applauseSound' });
+                        displaySystemMessage(`${currentUser.replace(' (Admin)', '')} is calling everyone's attention.`);
                     } else {
                         socket.emit('call_attention', { user: user, sound: 'attentionSound' });
-                        displaySystemMessage(`Attention! Alarm message for ${user}!`);
+                        displaySystemMessage(`${currentUser.replace(' (Admin)', '')} is calling ${user}'s attention.`);
                     }
                     alarmModal.style.display = 'none';
                 }
@@ -1220,24 +1280,40 @@
             minimizeChatBtn.addEventListener('click', () => {
                 chatWindow.classList.add('minimized');
                 chatWindow.classList.remove('maximized');
+                chatWindow.classList.remove('mobile-view');
                 maximizeChatBtn.style.display = 'flex';
                 restoreChatBtn.style.display = 'none';
+                mobileViewBtn.style.display = 'flex';
                 minimizeChatBtn.style.display = 'none';
             });
             
             maximizeChatBtn.addEventListener('click', () => {
                 chatWindow.classList.add('maximized');
                 chatWindow.classList.remove('minimized');
+                chatWindow.classList.remove('mobile-view');
                 maximizeChatBtn.style.display = 'none';
                 restoreChatBtn.style.display = 'flex';
+                mobileViewBtn.style.display = 'flex';
                 minimizeChatBtn.style.display = 'flex';
             });
 
             restoreChatBtn.addEventListener('click', () => {
                 chatWindow.classList.remove('maximized');
                 chatWindow.classList.remove('minimized');
+                chatWindow.classList.remove('mobile-view');
                 restoreChatBtn.style.display = 'none';
                 maximizeChatBtn.style.display = 'flex';
+                mobileViewBtn.style.display = 'flex';
+                minimizeChatBtn.style.display = 'flex';
+            });
+            
+            mobileViewBtn.addEventListener('click', () => {
+                chatWindow.classList.add('mobile-view');
+                chatWindow.classList.remove('maximized');
+                chatWindow.classList.remove('minimized');
+                mobileViewBtn.style.display = 'none';
+                maximizeChatBtn.style.display = 'none';
+                restoreChatBtn.style.display = 'flex';
                 minimizeChatBtn.style.display = 'flex';
             });
 
