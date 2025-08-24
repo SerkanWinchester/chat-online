@@ -14,6 +14,7 @@ const io = new Server(server, {
 
 const users = {};
 const roomLocks = { 1: false, 2: false };
+const messages = {}; // Novo objeto para armazenar mensagens e reações
 
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'index.html'));
@@ -48,6 +49,7 @@ io.on('connection', (socket) => {
   });
 
   socket.on('chat message', (msg) => {
+    messages[msg.id] = msg; // Salva a mensagem no servidor
     io.to(socket.room).emit('chat message', msg);
   });
 
@@ -64,6 +66,18 @@ io.on('connection', (socket) => {
     socket.to(oldRoom).emit('system message', `${username} left the room.`);
     socket.to(newRoom).emit('system message', `${username} entered the room.`);
     socket.emit('system message', `You have entered Room ${newRoom}.`);
+  });
+
+  socket.on('react to message', (data) => {
+    const { messageId, reaction } = data;
+    if (messages[messageId]) {
+      if (!messages[messageId].reactions[reaction]) {
+        messages[messageId].reactions[reaction] = 0;
+      }
+      messages[messageId].reactions[reaction]++;
+      // Envia a atualização de reações para todos na sala
+      io.to(socket.room).emit('message reacted', { messageId, reactions: messages[messageId].reactions });
+    }
   });
 
   socket.on('kick user', (username) => {
