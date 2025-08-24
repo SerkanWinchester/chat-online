@@ -15,15 +15,31 @@ app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'index.html'));
 });
 
-io.on('connection', (socket) => {
-  console.log('A user connected');
+// Lista de usuários online
+let onlineUsers = {};
 
+io.on('connection', (socket) => {
+  console.log('A user connected:', socket.id);
+
+  // Quando um usuário entra, adicionamos ele à lista e avisamos a todos
+  socket.on('user joined', (username) => {
+    onlineUsers[socket.id] = username;
+    io.emit('online users list', Object.values(onlineUsers));
+    io.emit('system message', `${username} has joined the room.`);
+  });
+
+  // Quando uma mensagem é recebida, re-enviamos para todos os clientes
   socket.on('chat message', (msg) => {
     io.emit('chat message', msg);
   });
 
+  // Quando um usuário se desconecta, removemos ele da lista e avisamos a todos
   socket.on('disconnect', () => {
-    console.log('A user disconnected');
+    const username = onlineUsers[socket.id];
+    console.log('A user disconnected:', username);
+    delete onlineUsers[socket.id];
+    io.emit('online users list', Object.values(onlineUsers));
+    io.emit('system message', `${username} has left the room.`);
   });
 });
 
