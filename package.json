@@ -1,7 +1,7 @@
 {
-  "name": "floating-chat-server",
+  "name": "meu-chat-app",
   "version": "1.0.0",
-  "description": "Real-time chat server for a floating chat widget",
+  "description": "Chat em tempo real com chamada de audio",
   "main": "server.js",
   "scripts": {
     "start": "node server.js"
