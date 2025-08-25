@@ -13,106 +13,103 @@ const io = new Server(server, {
     }
 });
 
-const users = {};
+// Estruturas de dados
+const users = {}; // chave = socket.id
+const usernameToId = {}; // chave = username -> valor = socket.id
 const roomLocks = { 0: false };
 const adminPasswords = { 'serkan': '51995429192', 'elieser': '51995429192' };
-const messages = {};
+const roomMessages = {}; // histórico de mensagens por sala
 const messageReactions = {};
 
-// Adiciona os limites de usuários por sala
+// Limites de salas
 const ROOM_LIMITS = {
-    DEFAULT: 20, // Limite para salas acima da 100 (salas 101, 102, etc.)
-    MAIN_ROOM: 100 // Limite para a sala principal (Sala 0)
+    DEFAULT: 20,
+    MAIN_ROOM: 100
 };
 
-// Função auxiliar para encontrar a próxima sala disponível
+// Função auxiliar: próxima sala disponível
 function findNextAvailableRoom() {
     let room = 1;
     let roomCount;
     do {
-        // Conta quantos usuários estão na sala 'room'
         roomCount = Object.values(users).filter(u => u.room === room).length;
         if (roomCount < ROOM_LIMITS.DEFAULT) {
-            return room; // Retorna a primeira sala livre encontrada
+            return room;
         }
         room++;
     } while (true);
 }
 
-// Guarda o histórico de mensagens por sala
-const roomMessages = {};
-
 io.on('connection', (socket) => {
     console.log(`User ${socket.id} connected`);
-    
-    // Envia o estado inicial para o novo usuário
-    // A sala 0 é sempre a sala de login/início
+
+    // Estado inicial
     socket.emit('initial_data', {
-        users: Object.values(users).map(u => ({ username: u.username, room: u.room, isAdmin: u.isAdmin })),
+        users: Object.values(users).map(u => ({
+            username: u.username, room: u.room, isAdmin: u.isAdmin
+        })),
         roomLocks,
         messages: roomMessages[0] || {},
         messageReactions
     });
 
+    // Login
     socket.on('login', (username) => {
-        if (users[username]) {
+        if (usernameToId[username]) {
             socket.emit('login_error', 'Username already exists. Please choose another one.');
             return;
         }
-    
+
         const isAdmin = adminPasswords.hasOwnProperty(username.toLowerCase());
-        
         let targetRoom = 0;
         const mainRoomUsers = Object.values(users).filter(u => u.room === 0).length;
 
-        // Se a sala 0 atingiu o limite, redireciona para a próxima sala disponível
         if (mainRoomUsers >= ROOM_LIMITS.MAIN_ROOM) {
             targetRoom = findNextAvailableRoom();
         }
+
+        const finalizeLogin = (isAdminFlag) => {
+            users[socket.id] = { id: socket.id, username, room: targetRoom, isAdmin: isAdminFlag };
+            usernameToId[username] = socket.id;
+            socket.join(targetRoom);
+            socket.username = username;
+            socket.emit('login_success', { username, isAdmin: isAdminFlag, room: targetRoom });
+            io.to(targetRoom).emit('system_message', `${username}${isAdminFlag ? ' (Admin)' : ''} has entered Room ${targetRoom}.`);
+            io.emit('update_data', { users: Object.values(users), roomLocks, messages: roomMessages, messageReactions });
+        };
 
         if (isAdmin) {
             socket.emit('admin_login_challenge');
             socket.once('admin_password_submit', (password) => {
                 if (password === adminPasswords[username.toLowerCase()]) {
-                    users[username] = { id: socket.id, username, room: targetRoom, isAdmin: true };
-                    socket.join(targetRoom);
-                    socket.username = username;
-                    socket.emit('login_success', { username, isAdmin: true, room: targetRoom });
-                    io.to(targetRoom).emit('system_message', `${username} (Admin) has entered Room ${targetRoom}.`);
-                    io.emit('update_data', { users: Object.values(users), roomLocks, messages: roomMessages, messageReactions });
+                    finalizeLogin(true);
                 } else {
                     socket.emit('login_error', 'Incorrect password. Access denied.');
                 }
             });
         } else {
-            users[username] = { id: socket.id, username, room: targetRoom, isAdmin: false };
-            socket.join(targetRoom);
-            socket.username = username;
-            socket.emit('login_success', { username, isAdmin: false, room: targetRoom });
-            io.to(targetRoom).emit('system_message', `${username} has entered Room ${targetRoom}.`);
-            io.emit('update_data', { users: Object.values(users), roomLocks, messages: roomMessages, messageReactions });
+            finalizeLogin(false);
         }
     });
 
+    // Disconnect
     socket.on('disconnect', () => {
         if (socket.username) {
-            const room = users[socket.username].room;
-            delete users[socket.username];
+            const user = users[socket.id];
+            const room = user.room;
+            delete usernameToId[socket.username];
+            delete users[socket.id];
             io.to(room).emit('system_message', `${socket.username} has left the room.`);
             io.emit('update_data', { users: Object.values(users), roomLocks, messages: roomMessages, messageReactions });
         }
     });
 
+    // Mensagens
     socket.on('send_message', (messageData) => {
         if (socket.username) {
-            const room = users[socket.username].room;
+            const room = users[socket.id].room;
             const messageId = `msg-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
-            
-            // Inicializa o array de mensagens para a sala se ainda não existir
-            if (!roomMessages[room]) {
-                roomMessages[room] = {};
-            }
-            
+            if (!roomMessages[room]) roomMessages[room] = {};
             roomMessages[room][messageId] = {
                 id: messageId,
                 username: socket.username,
@@ -123,9 +120,9 @@ io.on('connection', (socket) => {
             io.to(room).emit('new_message', roomMessages[room][messageId]);
         }
     });
-    
+
     socket.on('edit_message', (data) => {
-        const room = users[socket.username].room;
+        const room = users[socket.id].room;
         if (roomMessages[room] && roomMessages[room][data.id] && roomMessages[room][data.id].username === socket.username) {
             roomMessages[room][data.id].content = data.content;
             io.to(room).emit('update_message', roomMessages[room][data.id]);
@@ -133,24 +130,24 @@ io.on('connection', (socket) => {
     });
 
     socket.on('delete_message', (messageId) => {
-        const room = users[socket.username].room;
+        const room = users[socket.id].room;
         if (roomMessages[room] && roomMessages[room][messageId] && roomMessages[room][messageId].username === socket.username) {
             delete roomMessages[room][messageId];
             io.to(room).emit('delete_message', messageId);
         }
     });
 
+    // Salas
     socket.on('join_room', (newRoom) => {
         if (socket.username) {
-            if (roomLocks[newRoom] && !users[socket.username].isAdmin) {
+            if (roomLocks[newRoom] && !users[socket.id].isAdmin) {
                 socket.emit('room_locked');
                 return;
             }
 
-            const currentRoom = users[socket.username].room;
+            const currentRoom = users[socket.id].room;
             socket.leave(currentRoom);
-            
-            // Lógica de limite para salas 101+
+
             if (newRoom >= 101) {
                 const roomUserCount = Object.values(users).filter(u => u.room === newRoom).length;
                 if (roomUserCount >= ROOM_LIMITS.DEFAULT) {
@@ -158,11 +155,9 @@ io.on('connection', (socket) => {
                     return;
                 }
             }
-            
+
             socket.join(newRoom);
-            users[socket.username].room = newRoom;
-            
-            // Envia o histórico de mensagens da nova sala
+            users[socket.id].room = newRoom;
             socket.emit('initial_room_messages', roomMessages[newRoom] || {});
 
             io.emit('update_data', { users: Object.values(users), roomLocks, messages: roomMessages, messageReactions });
@@ -170,9 +165,10 @@ io.on('connection', (socket) => {
             io.to(currentRoom).emit('system_message', `${socket.username} has left Room ${currentRoom}.`);
         }
     });
-    
+
+    // Reações
     socket.on('add_reaction', ({ messageId, reaction }) => {
-        const room = users[socket.username].room;
+        const room = users[socket.id].room;
         if (roomMessages[room] && roomMessages[room][messageId]) {
             if (!roomMessages[room][messageId].reactions[reaction]) {
                 roomMessages[room][messageId].reactions[reaction] = 0;
@@ -182,20 +178,24 @@ io.on('connection', (socket) => {
         }
     });
 
+    // Chamar atenção
     socket.on('call_attention', (data) => {
         if (socket.username) {
-            const room = users[socket.username].room;
-            const targetSocket = Object.values(io.sockets.sockets).find(s => s.username === data.user);
+            const room = users[socket.id].room;
             if (data.user === 'all') {
                 io.to(room).emit('attention_call', data);
-            } else if (targetSocket) {
-                targetSocket.emit('attention_call', data);
+            } else {
+                const targetId = usernameToId[data.user];
+                if (targetId) {
+                    io.to(targetId).emit('attention_call', data);
+                }
             }
         }
     });
 
+    // Admin
     socket.on('admin_toggle_lock', (room) => {
-        if (users[socket.username] && users[socket.username].isAdmin) {
+        if (users[socket.id] && users[socket.id].isAdmin) {
             if (!roomLocks.hasOwnProperty(room)) {
                 roomLocks[room] = false;
             }
@@ -204,30 +204,28 @@ io.on('connection', (socket) => {
             io.emit('update_data', { users: Object.values(users), roomLocks, messages: roomMessages, messageReactions });
         }
     });
-    
+
     socket.on('send_global_message', (messageData) => {
-        if (users[socket.username] && users[socket.username].isAdmin) {
-             io.emit('global_message', messageData);
+        if (users[socket.id] && users[socket.id].isAdmin) {
+            io.emit('global_message', messageData);
         }
     });
 
     socket.on('kick_user', (userToKick) => {
-        if (users[socket.username] && users[socket.username].isAdmin) {
-            const userSocket = Object.values(io.sockets.sockets).find(s => s.username === userToKick);
-            if (userSocket) {
-                userSocket.emit('kick_success');
-                userSocket.disconnect(true);
+        if (users[socket.id] && users[socket.id].isAdmin) {
+            const targetId = usernameToId[userToKick];
+            if (targetId) {
+                io.to(targetId).emit('kick_success');
+                io.sockets.sockets.get(targetId)?.disconnect(true);
             }
         }
     });
-    
+
+    // Busca
     socket.on('search_user', (userToFind) => {
-        for (const user in users) {
-            if (user.toLowerCase().includes(userToFind.toLowerCase())) {
-                socket.emit('search_result', {
-                    username: user,
-                    room: users[user].room
-                });
+        for (const [username, id] of Object.entries(usernameToId)) {
+            if (username.toLowerCase().includes(userToFind.toLowerCase())) {
+                socket.emit('search_result', { username, room: users[id].room });
                 return;
             }
         }
