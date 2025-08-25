@@ -22,6 +22,14 @@ const messageReactions = {};
 io.on('connection', (socket) => {
     console.log(`User ${socket.id} connected`);
     
+    // Envia o estado inicial para o novo usuário
+    socket.emit('initial_data', {
+        users: Object.values(users).map(u => ({ username: u.username, room: u.room, isAdmin: u.isAdmin })),
+        roomLocks,
+        messages,
+        messageReactions
+    });
+
     socket.on('login', (username) => {
         if (users[username]) {
             socket.emit('login_error', 'Username already exists. Please choose another one.');
@@ -118,7 +126,12 @@ io.on('connection', (socket) => {
 
     socket.on('call_attention', (data) => {
         if (socket.username) {
-            io.to(users[socket.username].room).emit('attention_call', data);
+            const targetSocket = Object.values(io.sockets.sockets).find(s => s.username === data.user);
+            if (data.user === 'all') {
+                io.to(users[socket.username].room).emit('attention_call', data);
+            } else if (targetSocket) {
+                targetSocket.emit('attention_call', data);
+            }
         }
     });
 
