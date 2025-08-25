@@ -6,70 +6,70 @@
     <title>Chat Online</title>
     <script src="https://unpkg.com/feather-icons"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script src="https://meu-chat-lin7.onrender.com/socket.io/socket.io.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Roboto&family=Open+Sans&family=Lato&family=Montserrat&family=Oswald&family=Raleway&family=Poppins&family=Nunito&family=Playfair+Display&family=Merriweather&family=Indie+Flower&family=Dancing+Script&family=Pacifico&family=Lobster&family=Source+Code+Pro&family=Nunito+Sans&family=Inter&family=Work+Sans&family=Fira+Sans&family=Source+Sans+Pro&family=PT+Sans&family=Ubuntu&family=Lora&family=Quicksand&family=Comfortaa&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&family=Bebas+Neue&family=Kanit&family=Permanent+Marker&family=Anton&family=Archivo+Black&family=Abril+Fatface&family=Josefin+Sans&family=Satisfy&family=Courgette&family=Noto+Sans&family=Dosis&family=Merriweather+Sans&family=Concert+One&family=Passion+One&family=Barlow&family=Caveat&family=Alfa+Slab+One&family=Exo+2&family=Secular+One&display=swap" rel="stylesheet" />
     <style>
         body { margin: 0; font-family: Arial, sans-serif; background: #f0f2f5; overflow: hidden; }
 
-        #chatIcon {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            background: black;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            cursor: pointer;
-            box-shadow: 0 0 20px rgba(255,0,255,0.5), 0 0 20px rgba(0,255,255,0.5);
-            z-index: 1000;
+        #chatIcon { 
+            position: fixed; 
+            bottom: 20px; 
+            right: 20px; 
+            width: 60px; 
+            height: 60px; 
+            border-radius: 50%; 
+            background: black; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            cursor: pointer; 
+            box-shadow: 0 0 20px rgba(255,0,255,0.5), 0 0 20px rgba(0,255,255,0.5); 
+            z-index: 1000; 
         }
         
-        .chat-window {
-            position: fixed;
-            bottom: 90px;
-            right: 20px;
-            width: 590px;
-            height: 470px;
-            background: rgba(255, 255, 255, 0.2);
-            backdrop-filter: blur(10px);
+        .chat-window { 
+            position: fixed; 
+            bottom: 90px; 
+            right: 20px; 
+            width: 590px; 
+            height: 470px; 
+            background: rgba(255, 255, 255, 0.2); 
+            backdrop-filter: blur(10px); 
             -webkit-backdrop-filter: blur(10px);
-            border-radius: 15px;
-            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+            border-radius: 15px; 
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1); 
             border: 1px solid rgba(255, 255, 255, 0.3);
-            display: none;
-            flex-direction: column;
-            overflow: hidden;
-            z-index: 999;
-            opacity: 0;
-            transform: translateY(20px);
-            pointer-events: none;
-            transition: opacity 0.3s ease, transform 0.3s ease;
+            display: none; 
+            flex-direction: column; 
+            overflow: hidden; 
+            z-index: 999; 
+            opacity: 0; 
+            transform: translateY(20px); 
+            pointer-events: none; 
+            transition: opacity 0.3s ease, transform 0.3s ease; 
         }
-        .chat-window.open {
-            display: flex;
-            opacity: 1;
-            transform: translateY(0);
-            pointer-events: auto;
+        .chat-window.open { 
+            display: flex; 
+            opacity: 1; 
+            transform: translateY(0); 
+            pointer-events: auto; 
             z-index: 1001;
         }
         .chat-window.maximized { width: 100vw; height: 100vh; bottom: 0; right: 0; border-radius: 0; }
         .chat-window.minimized { height: 40px; }
-        .chat-window.mobile-view { width: 100vw; height: 100vh; bottom: 0; right: 0; border-radius: 0; }
 
-        .chat-header {
-            background: rgba(255, 255, 255, 0.3);
-            padding: 10px 15px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.5);
-            position: relative;
-            min-height: 40px;
-            cursor: move;
+
+        .chat-header { 
+            background: rgba(255, 255, 255, 0.3); 
+            padding: 10px 15px; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            border-bottom: 1px solid rgba(255, 255, 255, 0.5); 
+            position: relative; 
+            min-height: 40px; 
         }
         .header-icons-left, .header-icons-right { display: flex; align-items: center; gap: 15px; }
         .chat-header h2 { margin: 0; font-size: 18px; color: #111; position: absolute; left: 50%; transform: translateX(-50%); white-space: nowrap; }
@@ -78,19 +78,20 @@
         #chatScreen { justify-content: flex-start; align-items: stretch; }
         #chatScreen[style*="background-color"] { background-color: var(--chat-wallpaper-color, #fff); }
 
-        .chat-message {
-            background-color: rgba(255, 255, 255, 0.4) !important;
+
+        .chat-message { 
+            background-color: rgba(255, 255, 255, 0.4) !important; 
             backdrop-filter: blur(8px);
             -webkit-backdrop-filter: blur(8px);
             border: 1px solid rgba(255, 255, 255, 0.5);
-            padding: 8px 12px;
-            border-radius: 18px;
-            margin-bottom: 8px;
-            max-width: 80%;
-            align-self: flex-start;
-            word-wrap: break-word;
-            position: relative;
-            cursor: pointer;
+            padding: 8px 12px; 
+            border-radius: 18px; 
+            margin-bottom: 8px; 
+            max-width: 80%; 
+            align-self: flex-start; 
+            word-wrap: break-word; 
+            position: relative; 
+            cursor: pointer; 
         }
         .chat-message.my-message { align-self: flex-end; }
         .system-message { text-align: center; font-size: 12px; color: #888; margin: 8px 0; font-style: italic; }
@@ -168,8 +169,6 @@
         }
         #reaction-popup { display: none; }
         .reaction-options { display: flex; flex-wrap: wrap; gap: 5px; justify-content: center; }
-        .admin-global-formatting-toolbar .tool-button { color: #555; }
-        .admin-global-formatting-toolbar .tool-button.active { background-color: #dcdcdc; }
 
         /* ADMIN PANEL STYLES */
         #admin-panel-modal .modal-content {
@@ -543,39 +542,6 @@
         let allMessages = {};
         let userReactions = {};
         let userAlarmCounts = {};
-
-        const googleFonts = ['Roboto','Open Sans','Lato','Montserrat','Oswald','Raleway','Poppins','Nunito','Playfair Display','Merriweather','Indie Flower','Dancing Script','Pacifico','Lobster','Source Code Pro','Nunito Sans','Inter','Work Sans','Fira Sans','Source Sans Pro','PT Sans','Ubuntu','Lora','Quicksand','Comfortaa', 'Bebas Neue', 'Kanit', 'Permanent Marker', 'Anton', 'Archivo Black', 'Abril Fatface', 'Josefin Sans', 'Satisfy', 'Courgette', 'Noto Sans', 'Dosis', 'Merriweather Sans', 'Concert One', 'Passion One', 'Barlow', 'Caveat', 'Alfa Slab One', 'Exo 2', 'Secular One'];
-        const availableReactions = [{type:'icon',id:'thumbs-up',label:'Like'},{type:'icon',id:'heart',label:'Love'},{type:'icon',id:'smile',label:'Haha'},{type:'icon',id:'star',label:'Wow'},{type:'icon',id:'frown',label:'Sad'},{type:'icon',id:'thumbs-down',label:'No'},{type:'icon',id:'help-circle',label:'Thinking'},{type:'icon',id:'check-circle',label:'Approve'}];
-        const reactionSounds = {
-            'thumbs-up': new Audio('https://www.soundjay.com/buttons/sounds/button-36.mp3'),
-            'heart': new Audio('https://www.soundjay.com/buttons/sounds/button-18.mp3'),
-            'smile': new Audio('https://www.soundjay.com/buttons/sounds/button-3.mp3'),
-            'star': new Audio('https://www.soundjay.com/buttons/sounds/button-2.0.mp3'),
-            'frown': new Audio('https://www.soundjay.com/buttons/sounds/button-37.mp3'),
-            'thumbs-down': new Audio('https://www.soundjay.com/buttons/sounds/button-1.mp3'),
-            'help-circle': new Audio('https://www.soundjay.com/buttons/sounds/button-7.mp3'),
-            'check-circle': new Audio('https://www.soundjay.com/buttons/sounds/button-23.mp3')
-        };
-        const globalSounds = {
-            'screamSound': new Audio('https://assets.mixkit.co/sfx/preview/mixkit-scream-of-a-man-in-fear-1279.mp3'),
-            'applauseSound': new Audio('https://assets.mixkit.co/sfx/preview/mixkit-small-group-of-people-applauding-511.mp3'),
-            'attentionSound': new Audio('https://assets.mixkit.co/sfx/preview/mixkit-attention-bell-2759.mp3'),
-        };
-        const emojis = {
-            '😀': ['😀', '😃', '😄', '😁', '😆', '😅', '🤣', '😂', '🙂', '🙃', '😉', '😊', '😇', '🥰', '😍', '🤩', '😘', '😗', '😚', '😙', '😋', '😛', '😜', '🤪', '😝', '🤗', '🤭', '🤫', '🤔', '🤐', '🤨', '😐', '😑', '😶', '😏', '😒', '🙄', '😬', '🤥', '😌', '😔', '😪', '🤤', '😴', '😷', '🤒', '🤕', '🤢', '🤮', '🤧', '🥵', '🥶', '🥴', '😵', '🤯', '🤠', '🥳', '😎', '🤓', '🧐', '😕', '😟', '🙁', '😮', '😯', '😲', '😳', '🥺', '😦', '😧', '😨', '😰', '😥', '😢', '😭', '😱', '😖', '😣', '😩', '😫', '😡', '😠', '😤', '🤬', '😈', '👿', '💀', '👻', '💩', '🤡'],
-            '🍔': ['🍇', '🍈', '🍉', '🍊', '🍋', '🍌', '🍍', '🥭', '🍎', '🍏', '🍐', '🍑', '🍒', '🍓', '🥝', '🍅', '🥥', '🥑', '🍆', '🥔', '🥕', '🌽', '🌶️', '🥒', '🥬', '🥦', '🍄', '🥜', '🌰', '🍞', '🥐', '🥖', '🥨', '🥞', '🧇', '🧀', '🍗', '🍖', '🥩', '🥓', '🍔', '🍟', '🍕', '🌭', '🥪', '🌮', '🌯', '🥙', '🍳', '🥚', '🥘', '🍲', '🍜', '🍝', '🍣', '🍤', '🍚', '🍙', '🍘', '🍥', '🍡', '🍢', '🍧', '🍨', '🍦', '🥧', '🍰', '🎂', '🍮', '🍬', '🍭', '🍫', '🍿', '🍩', '🍪', '🥛', '☕', '🍵', '🍶', '🍾', '🍷', '🍸', '🍹', '🍺', '🍻', '🥂', '🥃', '🥤', '🧃'],
-            '🐶': ['🐶', '🐱', '🐭', '🐹', '🐰', '🦊', '🐻', '🐼', '🐨', '🐯', '🦁', '🐮', '🐷', '🐸', '🐵', '🐔', '🐧', '🐦', '🦉', '🦆', '🦅', '🦋', '🐛', '🐝', '🐞', '🐢', '🐍', '🦕', '🦖', '🐙', '🦑', '🦀', '🦞', '🦐', '🐠', '🐟', '🐡', '🐬', '🐳', '🦈', '🐊', '🐅', '🐆', '🦓', '🦒', '🐘', '🦏', '🐪', '🐫', '🦘', '🐃', '🐂', '🐄', '🐖', '🐏', '🐑', '🐐', '🦌', '🐎', '🐴', '🦄', '🕊️', '🐾', '🌳', '🌲', '🌴', '🌵', '🌷', '🌸', '🌹', '🌻', '🌼', '🌺', '🌾', '🍁', '🍂', '🍄'],
-            '🚗': ['⚽', '🏀', '🏈', '⚾', '🎾', '🏐', '🏉', '🎱', '🏓', '🏸', '🏒', '🥍', '🏑', '🏹', '🎣', '🥊', '🥋', '🎿', '🏂', '🛷', '⛸️', '🥌', '🎽', '🤸', '🏋️', '⛹️', '🤺', '🏌️', '🏄', '🏊', '🤽', '🚣', '🏇', '🚴', '🚵', '🛣️', '🛤️', '🚢', '🛳️', '⛵', '🚤', '🛥️', '🚀', '🚁', '✈️', '🛫', '🛬', '🚊', '🚂', '🚃', '🚄', '🚅', '🚆', '🚇', '🚈', '🚉', '🚏', '🚌', '🚐', '🚑', '🚒', '🚓', '🚕', '🚖', '🚗', '🚙', '🚚', '🚛', '🚜', '🛵', '🚲', '🛴', '🗺️', '📍', '🧭'],
-            '💡': ['⌚', '📱', '📲', '💻', '🖥️', '⌨️', '🖱️', '💽', '💾', '💿', '📀', '🧮', '📹', '📷', '📸', '📽️', '🎥', '🎬', '📞', '☎️', '📟', '📠', '🔌', '🔋', '🗑️', '🛢️', '🔦', '💡', '🔦', '📖', '📚', '📜', '📰', '🗞️', '🔖', '🏷️', '💰', '💵', '💳', '💎', '🔑', '🔓', '🔏', '🔒', '🔐', '🔑', '🔨', '⚒️', '⛏️', '🔩', '⚙️', '🔧', '⛓️', '🧰', '🧱', '🚪', '🪑', '🛋️', '🛏️', '🛁', '🚿', '🚽', '🪠', '🔔', '🔕', '📢', '📣', '📯', '🎶', '🎼', '🎵', '🎙️', '🎤', '🎧', '📻', '📺', '📻', '🎁', '🎀', '🎉', '🎊', '🎈', '📧', '✉️', '📦', '📤', '📥', '📫', '📪', '📬', '📭', '📮'],
-            '🇧🇷': ['🇧🇷', '🇺🇸', '🇪🇸', '🇫🇷', '🇩🇪', '🇮🇹', '🇯🇵', '🇨🇳', '🇷🇺', '🇮🇳', '🇦🇷', '🇨🇦', '🇲🇽', '🇵🇹', '🇬🇧', '🇰🇷', '🇦🇺', '🇿🇦', '🇪🇬', '🇸🇦', '🇹🇷', '🇵🇱', '🇮🇩', '🇹🇭', '🇻🇳', '🇳🇬', '🇨🇴', '🇵🇰', '🇩🇿', '🇮🇶', '🇺🇦', '🇨🇭', '🇳🇱', '🇧🇪', '🇸🇪', '🇳🇴', '🇫🇮', '🇩🇰', '🇮🇪', '🇬🇷', '🇨🇱', '🇵🇪', '🇪🇨', '🇻🇪', '🇺🇾', '🇵🇾', '🇧🇴', '🇦🇪', '🇶🇦', '🇰🇼', '🇮🇱', '🇹🇼', '🇸🇬', '🇲🇾', '🇵🇭', '🇮🇨', '🇭🇷', '🇷🇴', '🇨🇿', '🇭🇺', '🇧🇬', '🇦🇹', '🇸🇰', '🇸🇮', '🇱🇻', '🇪🇪', '🇱🇹', '🇲🇹', '🇨🇾', '🇦🇱', '🇧🇦', '🇲🇪', '🇲🇰', '🇽🇰', '🇷🇸', '🇨🇿', '🇬🇪', '🇦🇲', '🇦🇿', '🇰🇿', '🇺🇿', '🇹🇲', '🇹🇯', '🇰🇬', '🇱🇰', '🇧🇩', '🇳🇵', '🇲🇲', '🇰🇭', '🇱🇦', '🇵🇬', '🇫🇯', '🇳🇿', '🇼🇸', '🇹🇴', '🇹🇻', '🇰🇮', '🇲🇭', '🇫🇲', '🇵🇼', '🇸🇧', '🇻🇺', '🇦🇮', '🇦🇶', '🇦🇸', '🇦🇼', '🇦🇽', '🇧🇧', '🇧🇲', '🇧🇼', '🇨🇩', '🇨🇫', '🇨🇬', '🇨🇮', '🇨🇰', '🇨🇽', '🇨🇿', '🇪🇭', '🇪🇷', '🇪🇹', '🇫🇴', '🇬🇦', '🇬🇩', '🇬🇫', '🇬🇬', '🇬🇭', '🇬🇮', '🇬🇱', '🇬🇲', '🇬🇼', '🇬🇾', '🇭🇰', '🇮🇴', '🇯🇪', '🇰🇪', '🇰🇲', '🇱🇨', '🇱🇮', '🇲🇬', '🇲🇷', '🇲🇺', '🇲🇼', '🇲🇽', '🇲🇾', '🇲🇿', '🇳🇦', '🇳🇨', '🇳🇪', '🇳🇫', '🇳🇬', '🇳🇱', '🇳🇴', '🇳🇵', '🇳🇷', '🇳🇺', '🇳🇿', '🇴🇲', '🇵🇦', '🇵🇪', '🇵🇫', '🇵🇬', '🇵🇭', '🇵🇰', '🇵🇱', '🇵🇲', '🇵🇳', '🇵🇷', '🇵🇸', '🇵🇹', '🇵🇼', '🇵🇾', '🇶🇦', '🇷🇪', '🇷🇴', '🇷🇸', '🇷🇺', '🇷🇼', '🇸🇦', '🇸🇧', '🇸🇨', '🇸🇩', '🇸🇪', '🇸🇬', '🇸🇭', '🇸🇮', '🇸🇰', '🇸🇱', '🇸🇲', '🇸🇳', '🇸🇴', '🇸🇷', '🇸🇸', '🇸🇹', '🇸🇻', '🇸🇽', '🇸🇾', '🇸🇿', '🇹🇨', '🇹🇩', '🇹🇫', '🇹🇬', '🇹🇭', '🇹🇯', '🇹🇰', '🇹🇱', '🇹🇲', '🇹🇳', '🇹🇴', '🇹🇷', '🇹🇹', '🇹🇻', '🇹🇼', '🇹🇿', '🇺🇦', '🇺🇬', '🇺🇲', '🇺🇳', '🇺🇸', '🇺🇾', '🇺🇿', '🇻🇦', '🇻🇨', '🇻🇪', '🇻🇬', '🇻🇮', '🇻🇳', '🇻🇺', '🇼🇫', '🇼🇸', '🇽🇰', '🇾🇪', '🇾🇹', '🇿🇦', '🇿🇲', '🇿🇼']
-        };
-        let chatState = { mode: 'main', withUser: null };
-        
-        let onlineUsers = {};
-        let roomLocks = {};
-        let allMessages = {};
-        let userReactions = {};
-        let userAlarmCounts = {};
         let hideTimestamps = false;
         
         const messageSound = new Audio('https://www.soundjay.com/buttons/button-10.mp3');
@@ -684,45 +650,6 @@
             if (styles.shadow) style += ' text-shadow: 1px 1px 1px rgba(0,0,0,0.4);';
             return `<span style="${style}">${s}</span>`;
         }
-        
-        function applyMultiColorFormatting(text) {
-            const span = document.createElement('span');
-            span.style.fontFamily = activeStyles.fontFamily;
-            span.style.fontSize = `${activeFontSize}px`;
-            if (activeStyles.shadow) {
-                span.style.textShadow = '1px 1px 1px rgba(0,0,0,0.4)';
-            }
-            
-            const selection = window.getSelection();
-            if (selection.rangeCount > 0) {
-                const range = selection.getRangeAt(0);
-                const container = document.createElement('div');
-                container.appendChild(range.cloneContents());
-                
-                let html = container.innerHTML;
-                let newHtml = '';
-                const color = activeStyles.color;
-                
-                for (const char of html) {
-                    if (char !== '<' && char !== '>') {
-                         let formattedChar = char;
-                         if (activeStyles.bold) formattedChar = `<b>${formattedChar}</b>`;
-                         if (activeStyles.italic) formattedChar = `<i>${formattedChar}</i>`;
-                         if (activeStyles.underline) formattedChar = `<u>${formattedChar}</u>`;
-                         if (activeStyles.strikethrough) formattedChar = `<s>${formattedChar}</s>`;
-                         if (activeStyles.highlight) formattedChar = `<span style="background-color: ${activeStyles.highlight};">${formattedChar}</span>`;
-                         newHtml += `<span style="color: ${color};">${formattedChar}</span>`;
-                    } else {
-                         newHtml += char;
-                    }
-                }
-                
-                range.deleteContents();
-                const newSpan = document.createElement('span');
-                newSpan.innerHTML = newHtml;
-                range.insertNode(newSpan);
-            }
-        }
 
         function getCurrentTime(timestamp) {
             if (hideTimestamps) return '';
@@ -791,7 +718,7 @@
             
             const headerDiv = document.createElement('div');
             headerDiv.style.display = 'flex';
-            headerDiv.style.alignItems = 'center';
+            headerDiv.style.align-items = 'center';
             headerDiv.innerHTML = `${adminStar}<b>${displayName}:</b>`;
 
             const contentDiv = document.createElement('div');
@@ -831,6 +758,7 @@
                     createMessageElement(msg, isMyMessage);
                 });
             }
+            chatScreen.scrollTop = chatScreen.scrollHeight;
         }
         
         function linkify(text) {
@@ -995,7 +923,6 @@
             if (sender && sender.room === currentRoom) {
                  createMessageElement(messageData, messageData.username === currentUser.replace(' (Admin)', ''));
             }
-            saveChatToLocalStorage();
         });
         
         socket.on('update_message', (messageData) => {
@@ -1006,7 +933,6 @@
                     messageElement.querySelector('.message-content').innerHTML = messageData.content;
                 }
             }
-            saveChatToLocalStorage();
         });
 
         socket.on('delete_message', (messageId) => {
@@ -1015,7 +941,6 @@
                 messageElement.remove();
             }
             delete allMessages[messageId];
-            saveChatToLocalStorage();
         });
         
         socket.on('system_message', (message) => {
@@ -1087,10 +1012,7 @@
             });
         });
 
-        chatIcon.addEventListener("click", () => {
-            chatWindow.classList.toggle('open');
-        });
-
+        chatIcon.addEventListener("click",()=>chatWindow.classList.toggle('open'));
         loginBtn.addEventListener("click", login);
         usernameInput.addEventListener('keydown', e => { if (e.key === 'Enter') login(); });
         logoutBtn.addEventListener("click", () => {
@@ -1292,16 +1214,11 @@
                     const reader = new FileReader();
                     reader.onload = function(e) {
                         const img = `<img src="${e.target.result}" style="max-width: 100%; max-height: 200px; display: block; margin-top: 10px; cursor: pointer;" onclick="window.open(this.src)" />`;
-                        socket.emit('send_message', {
-                            content: img
-                        });
+                        createMessageElement(`${img}`, true);
                         displaySystemMessage(`Image "${file.name}" sent.`);
                     };
                     reader.readAsDataURL(file);
                 } else {
-                    socket.emit('send_message', {
-                        content: `File attached: ${file.name}`
-                    });
                     displaySystemMessage(`File "${file.name}" attached.`);
                 }
                 fileUpload.value = '';
@@ -1372,11 +1289,11 @@
         // --- Online Users and Alarm Functions ---
         usersOnlineBtn.addEventListener('click', () => {
             usersOnlineModal.style.display = 'flex';
-            const usersInCurrentRoom = Object.values(onlineUsers).filter(user => user.room === currentRoom);
+            const usersInCurrentRoom = Object.entries(simulatedServerState.users).filter(([user, room]) => room === currentRoom).map(([user]) => user);
             
             let usersHtml = '<h3>Users in Room:</h3>';
             if (usersInCurrentRoom.length > 0) {
-                usersHtml += `<ul>${usersInCurrentRoom.map(user => `<li>${user.username}</li>`).join('')}</ul>`;
+                usersHtml += `<ul>${usersInCurrentRoom.map(user => `<li>${user}</li>`).join('')}</ul>`;
             } else {
                 usersHtml += '<p>No other users in this room.</p>';
             }
@@ -1394,8 +1311,8 @@
             }
 
             alarmModal.style.display = 'flex';
-            const usersInRoom = Object.values(onlineUsers).filter(user => user.room === currentRoom);
-            const userListHtml = usersInRoom.map(user => `<button data-user="${user.username}">${user.username}</button>`).join('');
+            const usersInRoom = Object.entries(simulatedServerState.users).filter(([user, room]) => room === currentRoom).map(([user]) => user);
+            const userListHtml = usersInRoom.map(user => `<button data-user="${user}">${user}</button>`).join('');
             alarmOptionsDiv.innerHTML = `<h3>Call Attention: (${userAlarmCounts[currentUser]}/3)</h3><button data-user="all">All in Room</button>${userListHtml}`;
         });
         
@@ -1409,21 +1326,27 @@
                 userAlarmCounts[currentUser]++;
                 
                 if (user === 'all') {
-                    socket.emit('call_attention', { user: 'all', sound: 'applauseSound' });
-                    displaySystemMessage(`${currentUser.replace(' (Admin)', '')} is calling everyone's attention.`);
+                    displaySystemMessage(`Attention! Alarm message for everyone in the room!`);
+                    chatWindow.classList.add('shake-animation');
+                    if (isAudioEnabled) {
+                        applauseSound.currentTime = 0;
+                        applauseSound.play();
+                    }
+                    setTimeout(() => chatWindow.classList.remove('shake-animation'), 500);
                 } else {
-                    socket.emit('call_attention', { user: user, sound: 'attentionSound' });
-                    displaySystemMessage(`${currentUser.replace(' (Admin)', '')} is calling ${user}'s attention.`);
+                    displaySystemMessage(`Attention! Alarm message for ${user}!`);
                 }
                 alarmModal.style.display = 'none';
             }
         });
         
+        // Close modals on overlay click
         usersOnlineModal.addEventListener('click', e => { if(e.target === usersOnlineModal) usersOnlineModal.style.display = 'none'; });
         alarmModal.addEventListener('click', e => { if(e.target === alarmModal) alarmModal.style.display = 'none'; });
         emojiModal.addEventListener('click', e => { if(e.target === emojiModal) emojiModal.style.display = 'none'; });
 
 
+        // Audio and Window control events
         audioToggleBtn.addEventListener('click', () => {
             isAudioEnabled = !isAudioEnabled;
             const icon = audioToggleBtn.querySelector('i');
@@ -1434,40 +1357,24 @@
         minimizeChatBtn.addEventListener('click', () => {
             chatWindow.classList.add('minimized');
             chatWindow.classList.remove('maximized');
-            chatWindow.classList.remove('mobile-view');
             maximizeChatBtn.style.display = 'flex';
             restoreChatBtn.style.display = 'none';
-            mobileViewBtn.style.display = 'flex';
             minimizeChatBtn.style.display = 'none';
         });
         
         maximizeChatBtn.addEventListener('click', () => {
             chatWindow.classList.add('maximized');
             chatWindow.classList.remove('minimized');
-            chatWindow.classList.remove('mobile-view');
             maximizeChatBtn.style.display = 'none';
             restoreChatBtn.style.display = 'flex';
-            mobileViewBtn.style.display = 'flex';
             minimizeChatBtn.style.display = 'flex';
         });
 
         restoreChatBtn.addEventListener('click', () => {
             chatWindow.classList.remove('maximized');
             chatWindow.classList.remove('minimized');
-            chatWindow.classList.remove('mobile-view');
             restoreChatBtn.style.display = 'none';
             maximizeChatBtn.style.display = 'flex';
-            mobileViewBtn.style.display = 'flex';
-            minimizeChatBtn.style.display = 'flex';
-        });
-        
-        mobileViewBtn.addEventListener('click', () => {
-            chatWindow.classList.add('mobile-view');
-            chatWindow.classList.remove('maximized');
-            chatWindow.classList.remove('minimized');
-            mobileViewBtn.style.display = 'none';
-            maximizeChatBtn.style.display = 'none';
-            restoreChatBtn.style.display = 'flex';
             minimizeChatBtn.style.display = 'flex';
         });
 
@@ -1479,11 +1386,11 @@
             chatScreen.style.backgroundColor = e.target.value;
         });
         
+        // --- Initialization ---
         googleFonts.forEach(fontName=>{const option=document.createElement('option');option.value=fontName;option.textContent=fontName;option.style.fontFamily=fontName;fontSelect.appendChild(option);});
         
         feather.replace();
         showScreen('loginScreen');
     });
     </script>
-</body>
-</html>
+</!doctype>
