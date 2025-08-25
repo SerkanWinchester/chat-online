@@ -128,12 +128,11 @@
         }
         #formatting-popup.open { display: flex; }
 
-        #reaction-popup, #emoji-modal { position: fixed; display: none; background: #fff; border-radius: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.25); padding: 8px; z-index: 1001; top: 50%; left: 50%; transform: translate(-50%, -50%); flex-direction: column; }
-        #emoji-modal .modal-content { padding: 0; }
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); display: none; justify-content: center; align-items: center; z-index: 1002; }
-        .modal-content { background: white; padding: 20px; border-radius: 10px; max-width: 400px; width: 90%; box-shadow: 0 5px 15px rgba(0,0,0,0.3); display: flex; flex-direction: column; align-items: center; }
+        .modal-content { background: white; padding: 20px; border-radius: 10px; max-width: 400px; width: 90%; box-shadow: 0 5px 15px rgba(0,0,0,0.3); display: flex; flex-direction: column; align-items: center; position: relative;}
         .modal-header { display: flex; justify-content: center; align-items: center; border-bottom: 1px solid #e0e0e0; padding-bottom: 10px; margin-bottom: 15px; width: 100%; }
         .modal-header h2 { margin: 0; font-size: 18px; }
+        .modal-close-btn { position: absolute; top: 10px; right: 10px; background: none; border: none; font-size: 24px; cursor: pointer; color: #999; }
         .screen.active { display: flex; }
         .form-group { display: flex; align-items: center; border-bottom: 1px solid #e0e0e0; padding: 5px; width: 90%; }
         input { border: none; outline: none; flex: 1; padding: 8px; background: transparent; }
@@ -308,29 +307,63 @@
         </div>
     </div>
     
-    <div id="reaction-popup" class="modal-content">
-        <div class="reaction-options">
-            <button class="reaction-button" data-message-id="" data-reaction="thumbs-up"><i data-feather="thumbs-up"></i></button>
-            <button class="reaction-button" data-message-id="" data-reaction="heart"><i data-feather="heart"></i></button>
-            <button class="reaction-button" data-message-id="" data-reaction="smile"><i data-feather="smile"></i></button>
-            <button class="reaction-button" data-message-id="" data-reaction="star"><i data-feather="star"></i></button>
-            <button class="reaction-button" data-message-id="" data-reaction="frown"><i data-feather="frown"></i></button>
-            <button class="reaction-button" data-message-id="" data-reaction="thumbs-down"><i data-feather="thumbs-down"></i></button>
-            <button class="reaction-button" data-message-id="" data-reaction="help-circle"><i data-feather="help-circle"></i></button>
-            <button class="reaction-button" data-message-id="" data-reaction="check-circle"><i data-feather="check-circle"></i></button>
-        </div>
-        <div class="post-actions-buttons">
-            
-             <button class="action-button edit-post" title="Edit"><i data-feather="edit-2"></i></button>
-             <button class="action-button delete-post" data-message-id="${messageId}" title="Delete"><i data-feather="trash-2"></i></button>
+    <div class="modal-overlay" id="reaction-popup">
+        <div class="modal-content">
+            <button class="modal-close-btn" data-target="reaction-popup">&times;</button>
+            <div class="reaction-options">
+                <button class="reaction-button" data-message-id="" data-reaction="thumbs-up"><i data-feather="thumbs-up"></i></button>
+                <button class="reaction-button" data-message-id="" data-reaction="heart"><i data-feather="heart"></i></button>
+                <button class="reaction-button" data-message-id="" data-reaction="smile"><i data-feather="smile"></i></button>
+                <button class="reaction-button" data-message-id="" data-reaction="star"><i data-feather="star"></i></button>
+                <button class="reaction-button" data-message-id="" data-reaction="frown"><i data-feather="frown"></i></button>
+                <button class="reaction-button" data-message-id="" data-reaction="thumbs-down"><i data-feather="thumbs-down"></i></button>
+                <button class="reaction-button" data-message-id="" data-reaction="help-circle"><i data-feather="help-circle"></i></button>
+                <button class="reaction-button" data-message-id="" data-reaction="check-circle"><i data-feather="check-circle"></i></button>
+            </div>
+            <div class="post-actions-buttons">
+                
+                <button class="action-button edit-post" title="Edit"><i data-feather="edit-2"></i></button>
+                <button class="action-button delete-post" data-message-id="${messageId}" title="Delete"><i data-feather="trash-2"></i></button>
+            </div>
         </div>
     </div>
-    <div class="modal-overlay" id="emoji-modal"><div class="modal-content"><div class="modal-header"><h2>Choose Emoji</h2></div><div id="emoji-picker"></div></div></div>
-    <div class="modal-overlay" id="rooms-modal"><div class="modal-content"><div class="modal-header"><h2>Change Room</h2></div><div class="form-group"><i data-feather="hash"></i><input type="number" id="roomNumberInput" placeholder="Room number (0 = General)" min="0" /></div><button id="joinRoomBtn">Join Room</button></div></div>
-    <div class="modal-overlay" id="users-online-modal"><div class="modal-content"><div class="modal-header"><h2>Online Users</h2></div><div id="users-list"></div></div></div>
-    <div class="modal-overlay" id="alarm-modal"><div class="modal-content"><div class="modal-header"><h2>Call Attention</h2></div><div id="alarm-options"></div></div></div>
+    
+    <div class="modal-overlay" id="emoji-modal">
+        <div class="modal-content">
+            <button class="modal-close-btn" data-target="emoji-modal">&times;</button>
+            <div class="modal-header"><h2>Choose Emoji</h2></div>
+            <div id="emoji-picker"></div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="rooms-modal">
+        <div class="modal-content">
+            <button class="modal-close-btn" data-target="rooms-modal">&times;</button>
+            <div class="modal-header"><h2>Change Room</h2></div>
+            <div class="form-group"><i data-feather="hash"></i><input type="number" id="roomNumberInput" placeholder="Room number (0 = General)" min="0" /></div>
+            <button id="joinRoomBtn">Join Room</button>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="users-online-modal">
+        <div class="modal-content">
+            <button class="modal-close-btn" data-target="users-online-modal">&times;</button>
+            <div class="modal-header"><h2>Online Users</h2></div>
+            <div id="users-list"></div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="alarm-modal">
+        <div class="modal-content">
+            <button class="modal-close-btn" data-target="alarm-modal">&times;</button>
+            <div class="modal-header"><h2>Call Attention</h2></div>
+            <div id="alarm-options"></div>
+        </div>
+    </div>
+
     <div class="modal-overlay" id="invite-modal">
         <div class="modal-content">
+            <button class="modal-close-btn" data-target="invite-modal">&times;</button>
             <div class="modal-header"><h2>Invite User</h2></div>
             <div class="form-group">
                 <i data-feather="user"></i>
@@ -342,6 +375,7 @@
     
     <div class="modal-overlay" id="admin-panel-modal">
         <div class="modal-content">
+            <button class="modal-close-btn" data-target="admin-panel-modal">&times;</button>
             <div class="modal-header"><h2>Admin Panel</h2></div>
             <div id="admin-stats"></div>
             <div class="admin-search-group">
@@ -903,8 +937,9 @@
             });
 
             socket.on('update_reactions', ({ messageId, reactions }) => {
-                const reactionsWrapper = document.getElementById(messageId);
-                if (reactionsWrapper) {
+                const messageElement = document.getElementById(messageId);
+                if (messageElement) {
+                    const reactionsWrapper = messageElement.querySelector('.reactions-display');
                     reactionsWrapper.innerHTML = '';
                     for (const reaction in reactions) {
                         const count = reactions[reaction];
@@ -933,6 +968,13 @@
                 } else {
                     adminSearchResults.textContent = "Nobody in this room.";
                 }
+            });
+            
+            document.querySelectorAll('.modal-close-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const targetId = e.target.dataset.target;
+                    document.getElementById(targetId).style.display = 'none';
+                });
             });
 
             loginBtn.addEventListener("click", login);
@@ -972,11 +1014,14 @@
                 const messageElement = e.target.closest('.chat-message');
                 if (messageElement) {
                     const messageId = messageElement.id;
+                    const messageData = allMessages[messageId];
+                    if (!messageData) return;
+
                     reactionPopup.style.display = 'flex';
                     const reactionOptionsHtml = availableReactions.map(r => `<button class="reaction-button" data-message-id="${messageId}" data-reaction="${r.id}"><i data-feather="${r.id}"></i></button>`).join('');
                     reactionPopup.querySelector('.reaction-options').innerHTML = reactionOptionsHtml;
                     
-                    const isMyMessage = messageElement.querySelector('b').textContent === currentUser.replace(' (Admin)', '');
+                    const isMyMessage = messageData.username === currentUser.replace(' (Admin)', '');
                     const postActions = reactionPopup.querySelector('.post-actions-buttons');
                     if (isMyMessage) {
                         postActions.innerHTML = `
@@ -1069,7 +1114,7 @@
                         strikethrough: adminGlobalStyles.strikethrough,
                         shadow: adminGlobalStyles.shadow,
                         color: adminGlobalStyles.color,
-                        fontFamily: adminGlobalStyles.fontFamily,
+                        fontFamily: 'Roboto', // Mantém a fonte padrão para o anúncio
                         highlight: adminGlobalStyles.highlight,
                         fontSize: adminGlobalFontSize
                     });
@@ -1078,7 +1123,6 @@
                 }
             });
 
-            // Adiciona listener para a tecla Enter no input do admin
             adminGlobalMessageInput.addEventListener('keydown', e => {
                 if (e.key === 'Enter' && !e.shiftKey) {
                     e.preventDefault();
