@@ -1,6 +1,7 @@
 const express = require('express');
 const http = require('http');
 const { Server } = require('socket.io');
+const path = require('path');
 const cors = require('cors');
 
 const app = express();
@@ -17,6 +18,13 @@ const roomLocks = { 0: false };
 const adminPasswords = { 'serkan': '51995429192', 'elieser': '51995429192' };
 const messages = {};
 const userReactions = {};
+
+app.use(cors());
+
+// Servir o arquivo HTML
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'index.html'));
+});
 
 io.on('connection', (socket) => {
     console.log(`User ${socket.id} connected`);
@@ -71,10 +79,7 @@ io.on('connection', (socket) => {
                 username: socket.username,
                 content: messageData.content,
                 timestamp: new Date(),
-                reactions: {},
-                styles: messageData.styles,
-                fontSize: messageData.fontSize,
-                hideTimestamp: messageData.hideTimestamp
+                reactions: {}
             };
             io.to(room).emit('new_message', messages[messageId]);
         }
