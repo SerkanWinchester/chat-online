@@ -17,7 +17,7 @@ const io = new Server(server, {
 const users = {}; // chave = socket.id
 const usernameToId = {}; // chave = username -> valor = socket.id
 const roomLocks = { 0: false };
-const adminPasswords = { 'serkan': '51995429192', 'elieser': '51995429192' };
+const adminPasswords = { 'gato': '51995429192','serkan': '51995429192', 'elieser': '51995429192' };
 const roomMessages = {}; // histórico de mensagens por sala
 const messageReactions = {};
 
